@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PDF Compressor — Reduce PDF Size Free — ToolBox</title>
+  <meta name="description" content="Free online PDF compressor. Reduce PDF file size in your browser — no upload, no account needed. Privacy-first." />
+  <link rel="stylesheet" href="style.css" />
+  <script src="utils.js" defer></script>
+  <!-- pdf-lib for PDF manipulation -->
+  <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+  <!-- PDF.js for rendering pages to canvas -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <!-- jsPDF for rebuilding compressed PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a href="index.html" class="logo">
+      <div class="logo-icon">🛠️</div>
+      ToolBox
+    </a>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="word-counter.html">Word Counter</a>
+      <a href="font-changer.html">Font Changer</a>
+      <a href="password-generator.html">Password</a>
+      <a href="qr-generator.html">QR Code</a>
+      <a href="image-compressor.html">Image Tools</a>
+      <a href="unit-converter.html">Converter</a>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-btn" id="darkToggle" onclick="toggleDarkMode()" title="Toggle dark mode">🌙</button>
+      <button class="icon-btn nav-toggle" onclick="openMobileNav()">☰</button>
+    </div>
+  </div>
+</header>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobileNav">
+  <div class="mobile-nav-backdrop" onclick="closeMobileNav()"></div>
+  <div class="mobile-nav-drawer">
+    <button class="mobile-nav-close" onclick="closeMobileNav()">✕</button>
+    <a href="index.html">🏠 Home</a>
+    <a href="word-counter.html">📄 Word Counter</a>
+    <a href="font-changer.html">✍️ Font Changer</a>
+    <a href="unit-converter.html">📐 Unit Converter</a>
+    <a href="password-generator.html">🔒 Password Generator</a>
+    <a href="qr-generator.html">📱 QR Code Generator</a>
+    <a href="image-to-pdf.html">🖼️ Image to PDF</a>
+    <a href="image-compressor.html">🗜️ Image Compressor</a>
+    <a href="pdf-compressor.html" class="active">📋 PDF Compressor</a>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main>
+
+  <!-- TOP AD -->
+  <div class="ad-unit ad-top">
+    <span class="ad-label">Advertisement</span>
+    <ins class="adsbygoogle" style="display:block;width:100%;min-height:90px"
+         data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX" data-ad-slot="4444444444"
+         data-ad-format="horizontal" data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+
+  <!-- BREADCRUMB -->
+  <div class="breadcrumb">
+    <a href="index.html">🏠 Home</a>
+    <span>›</span>
+    <span>PDF Compressor</span>
+  </div>
+
+  <!-- TOOL LAYOUT -->
+  <div class="tool-layout">
+
+    <!-- LEFT: TOOL -->
+    <div>
+      <div class="tool-box">
+        <div class="tool-box-header">
+          <h1>📋 PDF Compressor</h1>
+          <p>Reduce your PDF file size. Select a compression level and download — no file ever leaves your device.</p>
+        </div>
+
+        <!-- Drop Zone -->
+        <div class="drop-zone" id="dropZone">
+          <input type="file" id="fileInput" accept="application/pdf"
+                 onchange="loadPDF(this.files[0])" />
+          <div class="drop-icon">📋</div>
+          <div class="drop-text"><strong>Click to upload</strong> or drag &amp; drop a PDF file</div>
+          <div class="drop-hint">PDF files only • Max 100 MB</div>
+        </div>
+
+        <!-- File info -->
+        <div id="fileInfo" style="display:none;margin-top:16px;">
+          <div style="display:flex;align-items:center;gap:12px;padding:14px;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm);">
+            <span style="font-size:2rem;">📋</span>
+            <div style="flex:1;min-width:0;">
+              <div style="font-weight:600;color:var(--text-1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" id="fileName">—</div>
+              <div style="font-size:.8rem;color:var(--text-3);margin-top:2px;" id="fileDetails">—</div>
+            </div>
+            <button class="btn btn-danger btn-sm" onclick="resetTool()">✕</button>
+          </div>
+        </div>
+
+        <!-- Settings -->
+        <div id="settingsSection" style="display:none;margin-top:20px;padding-top:20px;border-top:1px solid var(--border);">
+
+          <!-- Compression mode -->
+          <div class="form-group">
+            <label>Compression Mode</label>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+              <label style="cursor:pointer;margin:0;">
+                <input type="radio" name="compMode" value="light" style="display:none;" />
+                <div class="mode-card" onclick="selectMode('light',this)" style="padding:14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);text-align:center;transition:all .2s;cursor:pointer;">
+                  <div style="font-size:1.5rem;margin-bottom:6px;">🟢</div>
+                  <div style="font-weight:700;font-size:.9rem;">Light</div>
+                  <div style="font-size:.72rem;color:var(--text-3);margin-top:3px;">~10-30% smaller<br>Best quality</div>
+                </div>
+              </label>
+              <label style="cursor:pointer;margin:0;">
+                <input type="radio" name="compMode" value="medium" checked style="display:none;" />
+                <div class="mode-card active-mode" onclick="selectMode('medium',this)" style="padding:14px;border:1.5px solid var(--clr-primary);border-radius:var(--radius-sm);text-align:center;transition:all .2s;cursor:pointer;background:var(--clr-primary-glow);">
+                  <div style="font-size:1.5rem;margin-bottom:6px;">🟡</div>
+                  <div style="font-weight:700;font-size:.9rem;color:var(--clr-primary);">Medium</div>
+                  <div style="font-size:.72rem;color:var(--text-3);margin-top:3px;">~30-60% smaller<br>Good quality</div>
+                </div>
+              </label>
+              <label style="cursor:pointer;margin:0;">
+                <input type="radio" name="compMode" value="heavy" style="display:none;" />
+                <div class="mode-card" onclick="selectMode('heavy',this)" style="padding:14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);text-align:center;transition:all .2s;cursor:pointer;">
+                  <div style="font-size:1.5rem;margin-bottom:6px;">🔴</div>
+                  <div style="font-weight:700;font-size:.9rem;">Heavy</div>
+                  <div style="font-size:.72rem;color:var(--text-3);margin-top:3px;">~60-80% smaller<br>Lower quality</div>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- DPI info -->
+          <div class="alert alert-info" style="font-size:.83rem;">
+            ℹ️ <strong>Note:</strong> Compression is achieved by re-rendering each page at a lower resolution. Results vary by PDF content — image-heavy PDFs compress significantly more than text-only PDFs.
+          </div>
+
+          <button class="btn btn-primary btn-lg btn-full" id="compressBtn" onclick="compressPDF()">
+            🗜️ Compress PDF &amp; Download
+          </button>
+
+          <!-- Progress -->
+          <div id="progressSection" style="display:none;margin-top:16px;">
+            <div style="font-size:.85rem;color:var(--text-2);margin-bottom:6px;" id="progressText">Loading...</div>
+            <div class="progress-wrap">
+              <div class="progress-bar" id="progressBar" style="width:0%;"></div>
+            </div>
+          </div>
+
+          <!-- Result -->
+          <div id="resultSection" style="display:none;margin-top:16px;">
+            <div class="size-compare">
+              <div class="size-box">
+                <div class="label">Original</div>
+                <div class="value" id="origSize">—</div>
+              </div>
+              <div class="size-arrow">→</div>
+              <div class="size-box saved">
+                <div class="label">Compressed</div>
+                <div class="value" id="compSize">—</div>
+              </div>
+            </div>
+            <div style="text-align:center;margin:4px 0;">
+              <span class="savings-badge" id="savingsBadge"></span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- MID AD -->
+      <div class="ad-unit ad-mid">
+        <span class="ad-label">Advertisement</span>
+        <ins class="adsbygoogle" style="display:block;width:100%;min-height:90px"
+             data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX" data-ad-slot="5555555555"
+             data-ad-format="horizontal" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </div>
+
+      <!-- Tips -->
+      <div class="tool-box">
+        <h2>💡 PDF Compression Tips</h2>
+        <ul class="tips-list">
+          <li>PDFs with <strong>many images</strong> compress the most — up to 80% reduction.</li>
+          <li><strong>Text-only PDFs</strong> will see minimal compression since text is already compact.</li>
+          <li>Use <strong>Light mode</strong> for important documents where quality matters (legal, medical).</li>
+          <li>Use <strong>Heavy mode</strong> for drafts, references, or when email attachment size is the issue.</li>
+          <li>All processing is done <strong>entirely in your browser</strong> — your PDF stays private.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- RIGHT: SIDEBAR -->
+    <aside class="sidebar">
+
+      <!-- Sidebar Ad -->
+      <div class="ad-unit ad-rect">
+        <span class="ad-label">Advertisement</span>
+        <ins class="adsbygoogle" style="display:block;width:100%;min-height:250px"
+             data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX" data-ad-slot="6666666666"
+             data-ad-format="rectangle" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </div>
+
+      <!-- When to compress -->
+      <div class="tool-box">
+        <h3>📌 When to Compress</h3>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:.83rem;color:var(--text-2);">
+          <div style="padding:8px;background:var(--surface-2);border-radius:var(--radius-xs);">📧 Email attachments have size limits</div>
+          <div style="padding:8px;background:var(--surface-2);border-radius:var(--radius-xs);">📤 Uploading to web forms / portals</div>
+          <div style="padding:8px;background:var(--surface-2);border-radius:var(--radius-xs);">💾 Saving storage space</div>
+          <div style="padding:8px;background:var(--surface-2);border-radius:var(--radius-xs);">📱 Sharing via messaging apps</div>
+          <div style="padding:8px;background:var(--surface-2);border-radius:var(--radius-xs);">🌐 Faster website PDF downloads</div>
+        </div>
+      </div>
+
+      <!-- Related Tools -->
+      <div class="tool-box">
+        <h3>Related Tools</h3>
+        <div class="related-tools">
+          <a href="image-to-pdf.html" class="related-item">
+            <div class="related-icon" style="background:#fee2e2;">🖼️</div>
+            <div class="related-item-text">
+              <strong>Image to PDF</strong>
+              <span>Convert images to PDF</span>
+            </div>
+          </a>
+          <a href="image-compressor.html" class="related-item">
+            <div class="related-icon" style="background:#fef9c3;">🗜️</div>
+            <div class="related-item-text">
+              <strong>Image Compressor</strong>
+              <span>Reduce image size</span>
+            </div>
+          </a>
+          <a href="password-generator.html" class="related-item">
+            <div class="related-icon" style="background:#dcfce7;">🔒</div>
+            <div class="related-item-text">
+              <strong>Password Generator</strong>
+              <span>Secure passwords</span>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- Sidebar Ad 2 -->
+      <div class="ad-unit ad-rect">
+        <span class="ad-label">Advertisement</span>
+        <ins class="adsbygoogle" style="display:block;width:100%;min-height:250px"
+             data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX" data-ad-slot="7777777777"
+             data-ad-format="rectangle" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </div>
+
+    </aside>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="index.html" class="logo" style="color:#fff;">
+          <div class="logo-icon">🛠️</div> ToolBox
+        </a>
+        <p style="margin-top:12px;">Free, fast, privacy-friendly tools for everyday tasks.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Text Tools</h4>
+        <ul>
+          <li><a href="word-counter.html">Word Counter</a></li>
+          <li><a href="font-changer.html">Font Changer</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Converters</h4>
+        <ul>
+          <li><a href="unit-converter.html">Unit Converter</a></li>
+          <li><a href="qr-generator.html">QR Code Generator</a></li>
+          <li><a href="image-to-pdf.html">Image to PDF</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Other Tools</h4>
+        <ul>
+          <li><a href="password-generator.html">Password Generator</a></li>
+          <li><a href="image-compressor.html">Image Compressor</a></li>
+          <li><a href="pdf-compressor.html">PDF Compressor</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 ToolBox. All rights reserved.</span>
+      <div class="footer-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms</a>
+        <a href="#">Contact</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Set PDF.js worker
+  if (typeof pdfjsLib !== 'undefined') {
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+      'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  }
+
+  let pdfFile     = null;
+  let pdfFileSize = 0;
+
+  // DPI per compression mode
+  const MODE_DPI = { light: 150, medium: 96, heavy: 60 };
+  const MODE_QUALITY = { light: 0.85, medium: 0.70, heavy: 0.45 };
+
+  // Drag/drop
+  const dropZone = document.getElementById('dropZone');
+  dropZone.addEventListener('dragover',  e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file && file.type === 'application/pdf') loadPDF(file);
+    else showToast('Please drop a PDF file.', 'warning');
+  });
+
+  function loadPDF(file) {
+    if (!file) return;
+    if (file.size > 100 * 1024 * 1024) { showToast('File too large. Max 100 MB.', 'error'); return; }
+    pdfFile     = file;
+    pdfFileSize = file.size;
+
+    document.getElementById('fileName').textContent    = file.name;
+    document.getElementById('origSize').textContent    = formatBytes(file.size);
+    document.getElementById('fileDetails').textContent = `${formatBytes(file.size)} PDF file`;
+    document.getElementById('fileInfo').style.display      = 'block';
+    document.getElementById('settingsSection').style.display = 'block';
+    document.getElementById('resultSection').style.display   = 'none';
+    dropZone.style.display = 'none';
+  }
+
+  function selectMode(mode, el) {
+    document.querySelectorAll('.mode-card').forEach(c => {
+      c.style.borderColor  = 'var(--border)';
+      c.style.background   = '';
+    });
+    el.style.borderColor = 'var(--clr-primary)';
+    el.style.background  = 'var(--clr-primary-glow)';
+    el.querySelector('div:nth-child(2)').style.color = 'var(--clr-primary)';
+  }
+
+  function getSelectedMode() {
+    const checked = document.querySelector('input[name="compMode"]:checked');
+    return checked ? checked.value : 'medium';
+  }
+
+  async function compressPDF() {
+    if (!pdfFile) { showToast('Upload a PDF first.', 'warning'); return; }
+
+    const btn      = document.getElementById('compressBtn');
+    const progSec  = document.getElementById('progressSection');
+    const progBar  = document.getElementById('progressBar');
+    const progText = document.getElementById('progressText');
+
+    btn.disabled = true;
+    btn.textContent = '⏳ Compressing...';
+    progSec.style.display = 'block';
+    document.getElementById('resultSection').style.display = 'none';
+
+    try {
+      const mode    = getSelectedMode();
+      const dpi     = MODE_DPI[mode];
+      const quality = MODE_QUALITY[mode];
+      const scale   = dpi / 72; // PDF.js renders at 72dpi base
+
+      const arrayBuf = await pdfFile.arrayBuffer();
+      const pdfDoc   = await pdfjsLib.getDocument({ data: arrayBuf }).promise;
+      const numPages = pdfDoc.numPages;
+
+      const { jsPDF } = window.jspdf;
+      let outPdf = null;
+
+      for (let pageNum = 1; pageNum <= numPages; pageNum++) {
+        progText.textContent = `Compressing page ${pageNum} of ${numPages}...`;
+        progBar.style.width  = ((pageNum - 1) / numPages * 85) + '%';
+
+        const page     = await pdfDoc.getPage(pageNum);
+        const viewport = page.getViewport({ scale });
+
+        const canvas  = document.createElement('canvas');
+        canvas.width  = Math.floor(viewport.width);
+        canvas.height = Math.floor(viewport.height);
+        const ctx     = canvas.getContext('2d');
+
+        await page.render({ canvasContext: ctx, viewport }).promise;
+
+        const imgData  = canvas.toDataURL('image/jpeg', quality);
+        const pdfWmm   = viewport.width  * 25.4 / dpi;
+        const pdfHmm   = viewport.height * 25.4 / dpi;
+        const orient   = pdfWmm >= pdfHmm ? 'l' : 'p';
+
+        if (!outPdf) {
+          outPdf = new jsPDF({ orientation: orient, unit: 'mm', format: [pdfWmm, pdfHmm] });
+        } else {
+          outPdf.addPage([pdfWmm, pdfHmm], orient);
+        }
+
+        outPdf.addImage(imgData, 'JPEG', 0, 0, pdfWmm, pdfHmm);
+        await new Promise(r => setTimeout(r, 0)); // keep UI responsive
+      }
+
+      progBar.style.width  = '100%';
+      progText.textContent = 'Done! Preparing download...';
+
+      const outputBytes = outPdf.output('arraybuffer');
+      const blob        = new Blob([outputBytes], { type: 'application/pdf' });
+      const origName    = pdfFile.name.replace(/\.pdf$/i, '');
+      const filename    = `${origName}-compressed.pdf`;
+
+      // Show results
+      const saved    = pdfFileSize - blob.size;
+      const savedPct = ((saved / pdfFileSize) * 100).toFixed(1);
+      document.getElementById('compSize').textContent = formatBytes(blob.size);
+      const badge = document.getElementById('savingsBadge');
+
+      if (saved > 0) {
+        badge.textContent   = `✅ Saved ${formatBytes(saved)} (${savedPct}% smaller)`;
+        badge.style.background = '#d1fae5';
+        badge.style.color      = '#065f46';
+      } else {
+        badge.textContent   = `⚠️ No reduction achieved — PDF is likely already optimised.`;
+        badge.style.background = '#fef9c3';
+        badge.style.color      = '#92400e';
+      }
+
+      document.getElementById('resultSection').style.display = 'block';
+
+      // Download
+      downloadBlob(blob, filename);
+      showToast(`PDF compressed! ${savedPct}% smaller.`);
+
+    } catch (err) {
+      showToast('Compression failed: ' + err.message, 'error');
+      console.error(err);
+    } finally {
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.textContent = '🗜️ Compress PDF & Download';
+        progSec.style.display = 'none';
+        progBar.style.width = '0%';
+      }, 1000);
+    }
+  }
+
+  function resetTool() {
+    pdfFile = null;
+    document.getElementById('fileInput').value = '';
+    document.getElementById('fileInfo').style.display      = 'none';
+    document.getElementById('settingsSection').style.display = 'none';
+    document.getElementById('resultSection').style.display   = 'none';
+    dropZone.style.display = '';
+  }
+</script>
+
+</body>
+</html>

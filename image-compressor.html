@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Image Compressor — Free Online — ToolBox</title>
+  <meta name="description" content="Free online image compressor. Reduce JPG, PNG and WebP file sizes without losing quality. Before/after preview. No upload — runs in your browser." />
+  <link rel="stylesheet" href="style.css" />
+  <script src="utils.js" defer></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+  <style>
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 16px 0;
+    }
+
+    .compare-panel {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      background: var(--surface-2);
+    }
+
+    .compare-header {
+      padding: 8px 12px;
+      font-size: .78rem;
+      font-weight: 700;
+      background: var(--surface-1);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .compare-img {
+      width: 100%;
+      max-height: 260px;
+      object-fit: contain;
+      display: block;
+      background: repeating-conic-gradient(#ccc 0% 25%, transparent 0% 50%) 0 0/16px 16px;
+    }
+
+    @media (max-width: 500px) {
+      .compare-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a href="index.html" class="logo">
+      <div class="logo-icon">🛠️</div>
+      ToolBox
+    </a>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="word-counter.html">Word Counter</a>
+      <a href="font-changer.html">Font Changer</a>
+      <a href="password-generator.html">Password</a>
+      <a href="qr-generator.html">QR Code</a>
+      <a href="image-compressor.html" class="active">Image Tools</a>
+      <a href="unit-converter.html">Converter</a>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-btn" id="darkToggle" onclick="toggleDarkMode()" title="Toggle dark mode">🌙</button>
+      <button class="icon-btn nav-toggle" onclick="openMobileNav()">☰</button>
+    </div>
+  </div>
+</header>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobileNav">
+  <div class="mobile-nav-backdrop" onclick="closeMobileNav()"></div>
+  <div class="mobile-nav-drawer">
+    <button class="mobile-nav-close" onclick="closeMobileNav()">✕</button>
+    <a href="index.html">🏠 Home</a>
+    <a href="word-counter.html">📄 Word Counter</a>
+    <a href="font-changer.html">✍️ Font Changer</a>
+    <a href="unit-converter.html">📐 Unit Converter</a>
+    <a href="password-generator.html">🔒 Password Generator</a>
+    <a href="qr-generator.html">📱 QR Code Generator</a>
+    <a href="image-to-pdf.html">🖼️ Image to PDF</a>
+    <a href="image-compressor.html" class="active">🗜️ Image Compressor</a>
+    <a href="pdf-compressor.html">📋 PDF Compressor</a>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main>
+
+  <!-- TOP AD -->
+  <div class="ad-unit ad-top">
+    <span class="ad-label">Advertisement</span>
+    <ins class="adsbygoogle" style="display:block;width:100%;min-height:90px"
+         data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX" data-ad-slot="4444444444"
+         data-ad-format="horizontal" data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+
+  <!-- BREADCRUMB -->
+  <div class="breadcrumb">
+    <a href="index.html">🏠 Home</a>
+    <span>›</span>
+    <span>Image Compressor</span>
+  </div>
+
+  <!-- TOOL LAYOUT -->
+  <div class="tool-layout">
+
+    <!-- LEFT: TOOL -->
+    <div>
+      <div class="tool-box">
+        <div class="tool-box-header">
+          <h1>🗜️ Image Compressor</h1>
+          <p>Compress images and reduce file size without quality loss. Runs entirely in your browser.</p>
+        </div>
+
+        <!-- Drop Zone -->
+        <div class="drop-zone" id="dropZone">
+          <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp"
+                 onchange="loadImage(this.files[0])" />
+          <div class="drop-icon">🖼️</div>
+          <div class="drop-text"><strong>Click to upload</strong> or drag &amp; drop an image</div>
+          <div class="drop-hint">Supports JPG, PNG, WebP</div>
+        </div>
+
+        <!-- Settings (shown after image loaded) -->
+        <div id="settingsSection" style="display:none;margin-top:20px;">
+
+          <!-- Quality -->
+          <div class="form-group">
+            <label>Quality — <strong id="qualityVal">80</strong>%
+              <span style="font-size:.75rem;color:var(--text-3);font-weight:400;margin-left:8px;" id="qualityHint">Good balance</span>
+            </label>
+            <input type="range" id="qualityRange" min="1" max="100" value="80"
+                   oninput="updateQualityLabel();compressImage()" />
+            <div style="display:flex;justify-content:space-between;font-size:.72rem;color:var(--text-3);margin-top:2px;">
+              <span>1% — Smallest file</span>
+              <span>100% — Best quality</span>
+            </div>
+          </div>
+
+          <!-- Output format -->
+          <div class="form-group">
+            <label for="outputFormat">Output Format</label>
+            <select id="outputFormat" onchange="compressImage()">
+              <option value="image/jpeg">JPG — Best for photos</option>
+              <option value="image/png">PNG — Best for graphics / transparency</option>
+              <option value="image/webp">WebP — Modern, smallest size</option>
+            </select>
+          </div>
+
+          <!-- Resize (optional) -->
+          <div class="form-group">
+            <label>Resize (optional)</label>
+            <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;">
+              <input type="number" id="resizeW" placeholder="Width (px)" oninput="onResizeInput('w')" style="text-align:center;" />
+              <span style="color:var(--text-3);font-size:.85rem;text-align:center;">×</span>
+              <input type="number" id="resizeH" placeholder="Height (px)" oninput="onResizeInput('h')" style="text-align:center;" />
+            </div>
+            <div style="font-size:.76rem;color:var(--text-3);margin-top:5px;">Leave blank to keep original size. Aspect ratio is maintained.</div>
+          </div>
+
+          <button class="btn btn-primary btn-lg btn-full" onclick="compressImage()">🗜️ Compress Image</button>
+        </div>
+
+        <!-- Size comparison -->
+        <div id="resultSection" style="display:none;margin-top:20px;padding-top:20px;border-top:1px solid var(--border);">
+
+          <div class="size-compare">
+            <div class="size-box">
+              <div class="label">Original</div>
+              <div class="value" id="origSize">—</div>
+            </div>
+            <div class="size-arrow">→</div>
+            <div class="size-box saved">
+              <div class="label">Compressed</div>
+              <div class="value" id="compSize">—</div>
+            </div>
+          </div>
+
+          <div style="text-align:center;margin:4px 0 12px;">
+            <span class="savings-badge" id="savingsBadge">—</span>
+          </div>
+
+          <!-- Before / After preview -->
+          <div class="compare-grid">
+            <div class="compare-panel">
+              <div class="compare-header">
+                <span>Original</span>
+                <span id="origDim" style="color:var(--text-3);font-weight:400;">—</span>
+              </div>
+              <img id="origPreview" class="compare-img" alt="Original" />
+            </div>
+            <div class="compare-panel">
+              <div class="compare-header">
+                <span>Compressed</span>
+                <span id="compDim" style="color:var(--clr-success);font-weight:400;">—</span>
+              </div>
+              <img id="compPreview" class="compare-img" alt="Compressed" />
+            </div>
+          </div>
+
+          <!-- Download -->
+          <div class="btn-group" style="justify-content:center;">
+            <button class="btn btn-success btn-lg" onclick="downloadCompressed()">⬇️ Download Compressed</button>
+            <button class="btn btn-ghost" onclick="resetTool()">🔄 New Image</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- MID AD -->
+      <div class="ad-unit ad-mid">
+        <span class="ad-label">Advertisement</span>
+        <ins class="adsbygoogle" style="display:block;width:100%;min-height:90px"
+             data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX" data-ad-slot="5555555555"
+             data-ad-format="horizontal" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </div>
+
+      <!-- Tips -->
+      <div class="tool-box">
+        <h2>💡 Compression Tips</h2>
+        <ul class="tips-list">
+          <li><strong>80–85% quality</strong> is the sweet spot for most photos — minimal visual difference, great file size reduction.</li>
+          <li>Use <strong>WebP format</strong> for the smallest output — it's supported in all modern browsers.</li>
+          <li>Use <strong>PNG</strong> when your image has transparent areas.</li>
+          <li>Resizing to a smaller dimension also dramatically reduces file size.</li>
+          <li>Reduce to <strong>1200px wide</strong> max for web use — full HD screens don't need more.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- RIGHT: SIDEBAR -->
+    <aside class="sidebar">
+
+      <!-- Sidebar Ad -->
+      <div class="ad-unit ad-rect">
+        <span class="ad-label">Advertisement</span>
+        <ins class="adsbygoogle" style="display:block;width:100%;min-height:250px"
+             data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX" data-ad-slot="6666666666"
+             data-ad-format="rectangle" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </div>
+
+      <!-- Quick presets -->
+      <div class="tool-box">
+        <h3>⚡ Quick Presets</h3>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <button class="btn btn-ghost btn-sm" style="justify-content:flex-start;" onclick="applyPreset(90,'image/jpeg')">📷 High Quality (90%)</button>
+          <button class="btn btn-ghost btn-sm" style="justify-content:flex-start;" onclick="applyPreset(80,'image/jpeg')">🖼️ Balanced (80%)</button>
+          <button class="btn btn-ghost btn-sm" style="justify-content:flex-start;" onclick="applyPreset(60,'image/jpeg')">📦 Small Size (60%)</button>
+          <button class="btn btn-ghost btn-sm" style="justify-content:flex-start;" onclick="applyPreset(40,'image/jpeg')">🗜️ Smallest (40%)</button>
+          <button class="btn btn-ghost btn-sm" style="justify-content:flex-start;" onclick="applyPreset(85,'image/webp')">🌐 Web Optimized (WebP)</button>
+          <button class="btn btn-ghost btn-sm" style="justify-content:flex-start;" onclick="applyPreset(90,'image/png')">🎨 PNG Lossless</button>
+        </div>
+      </div>
+
+      <!-- Related Tools -->
+      <div class="tool-box">
+        <h3>Related Tools</h3>
+        <div class="related-tools">
+          <a href="image-to-pdf.html" class="related-item">
+            <div class="related-icon" style="background:#fee2e2;">🖼️</div>
+            <div class="related-item-text">
+              <strong>Image to PDF</strong>
+              <span>Convert images to PDF</span>
+            </div>
+          </a>
+          <a href="pdf-compressor.html" class="related-item">
+            <div class="related-icon" style="background:#f0fdf4;">📋</div>
+            <div class="related-item-text">
+              <strong>PDF Compressor</strong>
+              <span>Reduce PDF size</span>
+            </div>
+          </a>
+          <a href="qr-generator.html" class="related-item">
+            <div class="related-icon" style="background:#fff7ed;">📱</div>
+            <div class="related-item-text">
+              <strong>QR Code Generator</strong>
+              <span>Create QR codes</span>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- Sidebar Ad 2 -->
+      <div class="ad-unit ad-rect">
+        <span class="ad-label">Advertisement</span>
+        <ins class="adsbygoogle" style="display:block;width:100%;min-height:250px"
+             data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX" data-ad-slot="7777777777"
+             data-ad-format="rectangle" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </div>
+
+    </aside>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="index.html" class="logo" style="color:#fff;">
+          <div class="logo-icon">🛠️</div> ToolBox
+        </a>
+        <p style="margin-top:12px;">Free, fast, privacy-friendly tools for everyday tasks.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Text Tools</h4>
+        <ul>
+          <li><a href="word-counter.html">Word Counter</a></li>
+          <li><a href="font-changer.html">Font Changer</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Converters</h4>
+        <ul>
+          <li><a href="unit-converter.html">Unit Converter</a></li>
+          <li><a href="qr-generator.html">QR Code Generator</a></li>
+          <li><a href="image-to-pdf.html">Image to PDF</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Other Tools</h4>
+        <ul>
+          <li><a href="password-generator.html">Password Generator</a></li>
+          <li><a href="image-compressor.html">Image Compressor</a></li>
+          <li><a href="pdf-compressor.html">PDF Compressor</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 ToolBox. All rights reserved.</span>
+      <div class="footer-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms</a>
+        <a href="#">Contact</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  let originalFile = null;
+  let originalImg  = null;
+  let compressedBlob = null;
+  let aspectRatio    = 1;
+
+  // Drag/drop
+  const dropZone = document.getElementById('dropZone');
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) loadImage(file);
+    else showToast('Please drop an image file.', 'warning');
+  });
+
+  function loadImage(file) {
+    if (!file) return;
+    originalFile = file;
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        originalImg = img;
+        aspectRatio = img.width / img.height;
+        document.getElementById('origPreview').src = e.target.result;
+        document.getElementById('origSize').textContent = formatBytes(file.size);
+        document.getElementById('origDim').textContent = `${img.width}×${img.height}px`;
+
+        // Auto-detect format
+        const fmt = document.getElementById('outputFormat');
+        if (file.type === 'image/png') fmt.value = 'image/png';
+        else if (file.type === 'image/webp') fmt.value = 'image/webp';
+        else fmt.value = 'image/jpeg';
+
+        document.getElementById('settingsSection').style.display = 'block';
+        dropZone.style.display = 'none';
+        compressImage();
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function compressImage() {
+    if (!originalImg) return;
+
+    const quality = parseInt(document.getElementById('qualityRange').value) / 100;
+    const format  = document.getElementById('outputFormat').value;
+    const wInput  = parseInt(document.getElementById('resizeW').value) || null;
+    const hInput  = parseInt(document.getElementById('resizeH').value) || null;
+
+    let w = originalImg.width;
+    let h = originalImg.height;
+    if (wInput)       { w = wInput; h = Math.round(wInput / aspectRatio); }
+    else if (hInput)  { h = hInput; w = Math.round(hInput * aspectRatio); }
+
+    const canvas = document.createElement('canvas');
+    canvas.width  = w;
+    canvas.height = h;
+    const ctx = canvas.getContext('2d');
+
+    // White background for JPEG (JPEG doesn't support alpha)
+    if (format === 'image/jpeg') {
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, w, h);
+    }
+
+    ctx.drawImage(originalImg, 0, 0, w, h);
+
+    canvas.toBlob(blob => {
+      if (!blob) { showToast('Compression failed.', 'error'); return; }
+      compressedBlob = blob;
+
+      const compUrl = URL.createObjectURL(blob);
+      document.getElementById('compPreview').src = compUrl;
+      document.getElementById('compSize').textContent = formatBytes(blob.size);
+      document.getElementById('compDim').textContent  = `${w}×${h}px`;
+
+      const saved     = originalFile.size - blob.size;
+      const savedPct  = ((saved / originalFile.size) * 100).toFixed(1);
+      const badge     = document.getElementById('savingsBadge');
+
+      if (saved > 0) {
+        badge.textContent = `✅ Saved ${formatBytes(saved)} (${savedPct}%)`;
+        badge.style.background = '#d1fae5';
+        badge.style.color = '#065f46';
+      } else {
+        badge.textContent = `⚠️ No reduction (${Math.abs(savedPct)}% larger)`;
+        badge.style.background = '#fef9c3';
+        badge.style.color = '#92400e';
+      }
+
+      document.getElementById('resultSection').style.display = 'block';
+    }, format, quality);
+  }
+
+  function downloadCompressed() {
+    if (!compressedBlob) { showToast('Compress an image first!', 'warning'); return; }
+    const ext = compressedBlob.type.split('/')[1].replace('jpeg', 'jpg');
+    const name = (originalFile?.name.replace(/\.[^.]+$/, '') || 'compressed') + '-toolbox.' + ext;
+    downloadBlob(compressedBlob, name);
+    showToast('Image downloaded!');
+  }
+
+  function applyPreset(q, fmt) {
+    if (!originalImg) { showToast('Upload an image first!', 'warning'); return; }
+    document.getElementById('qualityRange').value  = q;
+    document.getElementById('outputFormat').value  = fmt;
+    document.getElementById('qualityVal').textContent = q;
+    updateQualityLabel();
+    compressImage();
+  }
+
+  function updateQualityLabel() {
+    const q = parseInt(document.getElementById('qualityRange').value);
+    document.getElementById('qualityVal').textContent = q;
+    const hints = q >= 90 ? 'High quality' : q >= 75 ? 'Good balance' : q >= 50 ? 'Smaller file' : 'Smallest file';
+    document.getElementById('qualityHint').textContent = hints;
+  }
+
+  function onResizeInput(side) {
+    if (!originalImg) return;
+    const wInput = document.getElementById('resizeW');
+    const hInput = document.getElementById('resizeH');
+    if (side === 'w' && wInput.value) {
+      hInput.value = Math.round(parseInt(wInput.value) / aspectRatio);
+    } else if (side === 'h' && hInput.value) {
+      wInput.value = Math.round(parseInt(hInput.value) * aspectRatio);
+    }
+  }
+
+  function resetTool() {
+    originalFile = originalImg = compressedBlob = null;
+    document.getElementById('fileInput').value = '';
+    document.getElementById('settingsSection').style.display = 'none';
+    document.getElementById('resultSection').style.display   = 'none';
+    dropZone.style.display = '';
+    document.getElementById('resizeW').value = '';
+    document.getElementById('resizeH').value = '';
+  }
+</script>
+
+</body>
+</html>

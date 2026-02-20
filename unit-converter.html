@@ -3,96 +3,121 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Unit Converter - Length, Weight &amp; Temperature - ToolBox</title>
-  <meta name="description" content="Free online unit converter. Convert length (km, miles, feet), weight (kg, lb, oz), and temperature (Celsius, Fahrenheit, Kelvin) instantly." />
+  <title>Unit Converter — Length, Weight & Temperature — ToolBox</title>
+  <meta name="description" content="Free online unit converter. Convert length, weight, temperature, speed, area and volume between all common units instantly." />
   <link rel="stylesheet" href="style.css" />
-
-  <!-- Google AdSense — replace ca-pub-XXXXXXXXXXXXXXXXX with your Publisher ID -->
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXXX"
-     crossorigin="anonymous"></script>
+  <script src="utils.js" defer></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
 </head>
 <body>
 
-  <!-- HEADER -->
-  <header>
-    <div class="header-inner">
-      <a href="index.html" class="logo">
-        <div class="logo-icon">&#9874;</div>
-        ToolBox
-      </a>
-      <nav>
-        <a href="index.html">Home</a>
-        <a href="word-counter.html">Word Counter</a>
-        <a href="password-generator.html">Password</a>
-        <a href="unit-converter.html" class="active">Unit Converter</a>
-      </nav>
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a href="index.html" class="logo">
+      <div class="logo-icon">🛠️</div>
+      ToolBox
+    </a>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="word-counter.html">Word Counter</a>
+      <a href="font-changer.html">Font Changer</a>
+      <a href="password-generator.html">Password</a>
+      <a href="qr-generator.html">QR Code</a>
+      <a href="image-compressor.html">Image Tools</a>
+      <a href="unit-converter.html" class="active">Converter</a>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-btn" id="darkToggle" onclick="toggleDarkMode()" title="Toggle dark mode">🌙</button>
+      <button class="icon-btn nav-toggle" onclick="openMobileNav()">☰</button>
     </div>
-  </header>
+  </div>
+</header>
 
-  <!-- MAIN -->
-  <main>
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobileNav">
+  <div class="mobile-nav-backdrop" onclick="closeMobileNav()"></div>
+  <div class="mobile-nav-drawer">
+    <button class="mobile-nav-close" onclick="closeMobileNav()">✕</button>
+    <a href="index.html">🏠 Home</a>
+    <a href="word-counter.html">📄 Word Counter</a>
+    <a href="font-changer.html">✍️ Font Changer</a>
+    <a href="unit-converter.html" class="active">📐 Unit Converter</a>
+    <a href="password-generator.html">🔒 Password Generator</a>
+    <a href="qr-generator.html">📱 QR Code Generator</a>
+    <a href="image-to-pdf.html">🖼️ Image to PDF</a>
+    <a href="image-compressor.html">🗜️ Image Compressor</a>
+    <a href="pdf-compressor.html">📋 PDF Compressor</a>
+  </div>
+</div>
 
-    <!-- TOP AD -->
-    <div class="ad-unit ad-horizontal">
-      <span class="ad-unit-label">Advertisement</span>
-      <ins class="adsbygoogle"
-           style="display:block;width:100%;min-height:90px"
-           data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX"
-           data-ad-slot="4444444444"
-           data-ad-format="horizontal"
-           data-full-width-responsive="true"></ins>
-      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-    </div>
+<!-- MAIN -->
+<main>
 
-    <!-- BREADCRUMB -->
-    <div class="breadcrumb">
-      <a href="index.html">&#127968; Home</a>
-      <span>&rsaquo;</span>
-      <span>Unit Converter</span>
-    </div>
+  <!-- TOP AD -->
+  <div class="ad-unit ad-top">
+    <span class="ad-label">Advertisement</span>
+    <ins class="adsbygoogle" style="display:block;width:100%;min-height:90px"
+         data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX" data-ad-slot="4444444444"
+         data-ad-format="horizontal" data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
 
-    <!-- TOOL + SIDEBAR LAYOUT -->
-    <div class="tool-page-layout">
+  <!-- BREADCRUMB -->
+  <div class="breadcrumb">
+    <a href="index.html">🏠 Home</a>
+    <span>›</span>
+    <span>Unit Converter</span>
+  </div>
 
-      <!-- MAIN TOOL -->
-      <div>
-        <div class="tool-box">
-          <h1>&#128207; Unit Converter</h1>
-          <p class="subtitle">Convert between common units of length, weight, and temperature.</p>
+  <!-- TOOL LAYOUT -->
+  <div class="tool-layout">
 
-          <!-- Tabs -->
-          <div class="tabs" id="tabs">
-            <button class="tab-btn active" onclick="switchTab('length', this)">&#128205; Length</button>
-            <button class="tab-btn" onclick="switchTab('weight', this)">&#9878;&#65039; Weight</button>
-            <button class="tab-btn" onclick="switchTab('temp', this)">&#127777;&#65039; Temperature</button>
-          </div>
+    <!-- LEFT: TOOL -->
+    <div>
+      <div class="tool-box">
+        <div class="tool-box-header">
+          <h1>📐 Unit Converter</h1>
+          <p>Convert between units of length, weight, temperature, speed, area and volume.</p>
+        </div>
 
-          <!-- ===================== LENGTH TAB ===================== -->
-          <div class="tab-panel active" id="tab-length">
-            <div class="converter-row">
-              <div>
-                <label for="lenValue">Value</label>
-                <input type="number" id="lenValue" value="1" oninput="convertLength()" placeholder="Enter value" />
-              </div>
-              <div class="converter-arrow">&#8594;</div>
-              <div>
-                <label for="lenFrom">From</label>
-                <select id="lenFrom" onchange="convertLength()">
-                  <option value="m">Meter (m)</option>
-                  <option value="km">Kilometer (km)</option>
-                  <option value="cm">Centimeter (cm)</option>
-                  <option value="mm">Millimeter (mm)</option>
-                  <option value="mi">Mile (mi)</option>
-                  <option value="yd">Yard (yd)</option>
-                  <option value="ft">Foot (ft)</option>
-                  <option value="in">Inch (in)</option>
-                  <option value="nm">Nautical Mile (nm)</option>
-                </select>
-              </div>
+        <!-- Category tabs -->
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchCat('length', this)">📏 Length</button>
+          <button class="tab-btn" onclick="switchCat('weight', this)">⚖️ Weight</button>
+          <button class="tab-btn" onclick="switchCat('temp', this)">🌡️ Temp</button>
+          <button class="tab-btn" onclick="switchCat('speed', this)">💨 Speed</button>
+          <button class="tab-btn" onclick="switchCat('area', this)">🔲 Area</button>
+          <button class="tab-btn" onclick="switchCat('volume', this)">🧊 Volume</button>
+        </div>
+
+        <!-- ===== LENGTH ===== -->
+        <div class="tab-panel active" id="cat-length">
+          <div class="converter-row">
+            <div class="form-group" style="margin:0;">
+              <label for="lenVal">Value</label>
+              <input type="number" id="lenVal" value="1" oninput="convert('length')" placeholder="Enter value" />
             </div>
-
+            <button class="converter-arrow-btn" onclick="swapUnits('lenFrom','lenTo','length')" title="Swap">⇄</button>
+            <div class="form-group" style="margin:0;">
+              <label for="lenFrom">From</label>
+              <select id="lenFrom" onchange="convert('length')">
+                <option value="m">Meter (m)</option>
+                <option value="km">Kilometer (km)</option>
+                <option value="cm">Centimeter (cm)</option>
+                <option value="mm">Millimeter (mm)</option>
+                <option value="mi">Mile (mi)</option>
+                <option value="yd">Yard (yd)</option>
+                <option value="ft">Foot (ft)</option>
+                <option value="in">Inch (in)</option>
+                <option value="nm">Nautical Mile</option>
+                <option value="ly">Light Year</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
             <label for="lenTo">To</label>
-            <select id="lenTo" onchange="convertLength()" style="margin-bottom:12px;">
+            <select id="lenTo" onchange="convert('length')">
               <option value="km">Kilometer (km)</option>
               <option value="m">Meter (m)</option>
               <option value="cm">Centimeter (cm)</option>
@@ -101,48 +126,38 @@
               <option value="yd">Yard (yd)</option>
               <option value="ft">Foot (ft)</option>
               <option value="in">Inch (in)</option>
-              <option value="nm">Nautical Mile (nm)</option>
+              <option value="nm">Nautical Mile</option>
+              <option value="ly">Light Year</option>
             </select>
+          </div>
+          <div class="result-box" id="lenResult">Enter a value to convert</div>
+          <div id="lenGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin-top:16px;"></div>
+        </div>
 
-            <div class="result-box" id="lenResult">—</div>
-            <div class="btn-group">
-              <button class="btn btn-primary" onclick="convertLength()">&#128207; Convert</button>
-              <button class="btn btn-outline" onclick="swapLength()">&#8646; Swap Units</button>
-              <button class="btn btn-danger btn-sm" onclick="resetLength()">&#8635; Reset</button>
+        <!-- ===== WEIGHT ===== -->
+        <div class="tab-panel" id="cat-weight">
+          <div class="converter-row">
+            <div class="form-group" style="margin:0;">
+              <label for="wgtVal">Value</label>
+              <input type="number" id="wgtVal" value="1" oninput="convert('weight')" placeholder="Enter value" />
             </div>
-
-            <!-- Length quick reference table -->
-            <div style="margin-top:24px;">
-              <h3 style="font-size:.95rem;font-weight:600;margin-bottom:12px;color:var(--text);">&#128204; Common Conversions</h3>
-              <div id="lenTable" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;font-size:.82rem;">
-              </div>
+            <button class="converter-arrow-btn" onclick="swapUnits('wgtFrom','wgtTo','weight')" title="Swap">⇄</button>
+            <div class="form-group" style="margin:0;">
+              <label for="wgtFrom">From</label>
+              <select id="wgtFrom" onchange="convert('weight')">
+                <option value="kg">Kilogram (kg)</option>
+                <option value="g">Gram (g)</option>
+                <option value="mg">Milligram (mg)</option>
+                <option value="lb">Pound (lb)</option>
+                <option value="oz">Ounce (oz)</option>
+                <option value="t">Metric Ton (t)</option>
+                <option value="st">Stone (st)</option>
+              </select>
             </div>
           </div>
-
-          <!-- ===================== WEIGHT TAB ===================== -->
-          <div class="tab-panel" id="tab-weight">
-            <div class="converter-row">
-              <div>
-                <label for="wgtValue">Value</label>
-                <input type="number" id="wgtValue" value="1" oninput="convertWeight()" placeholder="Enter value" />
-              </div>
-              <div class="converter-arrow">&#8594;</div>
-              <div>
-                <label for="wgtFrom">From</label>
-                <select id="wgtFrom" onchange="convertWeight()">
-                  <option value="kg">Kilogram (kg)</option>
-                  <option value="g">Gram (g)</option>
-                  <option value="mg">Milligram (mg)</option>
-                  <option value="lb">Pound (lb)</option>
-                  <option value="oz">Ounce (oz)</option>
-                  <option value="t">Metric Ton (t)</option>
-                  <option value="st">Stone (st)</option>
-                </select>
-              </div>
-            </div>
-
+          <div class="form-group">
             <label for="wgtTo">To</label>
-            <select id="wgtTo" onchange="convertWeight()" style="margin-bottom:12px;">
+            <select id="wgtTo" onchange="convert('weight')">
               <option value="lb">Pound (lb)</option>
               <option value="kg">Kilogram (kg)</option>
               <option value="g">Gram (g)</option>
@@ -151,389 +166,417 @@
               <option value="t">Metric Ton (t)</option>
               <option value="st">Stone (st)</option>
             </select>
+          </div>
+          <div class="result-box" id="wgtResult">Enter a value to convert</div>
+          <div id="wgtGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin-top:16px;"></div>
+        </div>
 
-            <div class="result-box" id="wgtResult">—</div>
-            <div class="btn-group">
-              <button class="btn btn-primary" onclick="convertWeight()">&#9878;&#65039; Convert</button>
-              <button class="btn btn-outline" onclick="swapWeight()">&#8646; Swap Units</button>
-              <button class="btn btn-danger btn-sm" onclick="resetWeight()">&#8635; Reset</button>
+        <!-- ===== TEMPERATURE ===== -->
+        <div class="tab-panel" id="cat-temp">
+          <div class="converter-row">
+            <div class="form-group" style="margin:0;">
+              <label for="tmpVal">Value</label>
+              <input type="number" id="tmpVal" value="100" oninput="convert('temp')" placeholder="Enter value" />
             </div>
-
-            <div style="margin-top:24px;">
-              <h3 style="font-size:.95rem;font-weight:600;margin-bottom:12px;">&#128204; Common Conversions</h3>
-              <div id="wgtTable" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;font-size:.82rem;"></div>
+            <button class="converter-arrow-btn" onclick="swapUnits('tmpFrom','tmpTo','temp')" title="Swap">⇄</button>
+            <div class="form-group" style="margin:0;">
+              <label for="tmpFrom">From</label>
+              <select id="tmpFrom" onchange="convert('temp')">
+                <option value="c">Celsius (°C)</option>
+                <option value="f">Fahrenheit (°F)</option>
+                <option value="k">Kelvin (K)</option>
+              </select>
             </div>
           </div>
-
-          <!-- ===================== TEMPERATURE TAB ===================== -->
-          <div class="tab-panel" id="tab-temp">
-            <div class="converter-row">
-              <div>
-                <label for="tmpValue">Value</label>
-                <input type="number" id="tmpValue" value="100" oninput="convertTemp()" placeholder="Enter value" />
-              </div>
-              <div class="converter-arrow">&#8594;</div>
-              <div>
-                <label for="tmpFrom">From</label>
-                <select id="tmpFrom" onchange="convertTemp()">
-                  <option value="c">Celsius (°C)</option>
-                  <option value="f">Fahrenheit (°F)</option>
-                  <option value="k">Kelvin (K)</option>
-                </select>
-              </div>
-            </div>
-
+          <div class="form-group">
             <label for="tmpTo">To</label>
-            <select id="tmpTo" onchange="convertTemp()" style="margin-bottom:12px;">
+            <select id="tmpTo" onchange="convert('temp')">
               <option value="f">Fahrenheit (°F)</option>
               <option value="c">Celsius (°C)</option>
               <option value="k">Kelvin (K)</option>
             </select>
+          </div>
+          <div class="result-box" id="tmpResult">Enter a value to convert</div>
+          <div id="tmpAllGrid" style="margin-top:16px;"></div>
+        </div>
 
-            <div class="result-box" id="tmpResult">—</div>
-            <div class="btn-group">
-              <button class="btn btn-primary" onclick="convertTemp()">&#127777;&#65039; Convert</button>
-              <button class="btn btn-outline" onclick="swapTemp()">&#8646; Swap Units</button>
-              <button class="btn btn-danger btn-sm" onclick="resetTemp()">&#8635; Reset</button>
+        <!-- ===== SPEED ===== -->
+        <div class="tab-panel" id="cat-speed">
+          <div class="converter-row">
+            <div class="form-group" style="margin:0;">
+              <label for="spdVal">Value</label>
+              <input type="number" id="spdVal" value="100" oninput="convert('speed')" placeholder="Enter value" />
             </div>
-
-            <!-- Temperature all-in-one table -->
-            <div style="margin-top:24px;">
-              <h3 style="font-size:.95rem;font-weight:600;margin-bottom:12px;">&#127777;&#65039; All Conversions at Once</h3>
-              <div id="tmpAllTable"></div>
+            <button class="converter-arrow-btn" onclick="swapUnits('spdFrom','spdTo','speed')" title="Swap">⇄</button>
+            <div class="form-group" style="margin:0;">
+              <label for="spdFrom">From</label>
+              <select id="spdFrom" onchange="convert('speed')">
+                <option value="kph">km/h</option>
+                <option value="mph">mph</option>
+                <option value="ms">m/s</option>
+                <option value="kn">Knots</option>
+                <option value="fts">ft/s</option>
+              </select>
             </div>
           </div>
-
+          <div class="form-group">
+            <label for="spdTo">To</label>
+            <select id="spdTo" onchange="convert('speed')">
+              <option value="mph">mph</option>
+              <option value="kph">km/h</option>
+              <option value="ms">m/s</option>
+              <option value="kn">Knots</option>
+              <option value="fts">ft/s</option>
+            </select>
+          </div>
+          <div class="result-box" id="spdResult">Enter a value to convert</div>
+          <div id="spdGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin-top:16px;"></div>
         </div>
 
-        <!-- MID AD -->
-        <div class="ad-unit ad-horizontal-mid">
-          <span class="ad-unit-label">Advertisement</span>
-          <ins class="adsbygoogle"
-               style="display:block;width:100%;min-height:90px"
-               data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX"
-               data-ad-slot="5555555555"
-               data-ad-format="horizontal"
-               data-full-width-responsive="true"></ins>
-          <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+        <!-- ===== AREA ===== -->
+        <div class="tab-panel" id="cat-area">
+          <div class="converter-row">
+            <div class="form-group" style="margin:0;">
+              <label for="areaVal">Value</label>
+              <input type="number" id="areaVal" value="1" oninput="convert('area')" placeholder="Enter value" />
+            </div>
+            <button class="converter-arrow-btn" onclick="swapUnits('areaFrom','areaTo','area')" title="Swap">⇄</button>
+            <div class="form-group" style="margin:0;">
+              <label for="areaFrom">From</label>
+              <select id="areaFrom" onchange="convert('area')">
+                <option value="m2">Square Meter (m²)</option>
+                <option value="km2">Square Kilometer (km²)</option>
+                <option value="cm2">Square Centimeter</option>
+                <option value="ha">Hectare (ha)</option>
+                <option value="ac">Acre</option>
+                <option value="ft2">Square Foot</option>
+                <option value="in2">Square Inch</option>
+                <option value="mi2">Square Mile</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="areaTo">To</label>
+            <select id="areaTo" onchange="convert('area')">
+              <option value="ha">Hectare (ha)</option>
+              <option value="m2">Square Meter (m²)</option>
+              <option value="km2">Square Kilometer (km²)</option>
+              <option value="cm2">Square Centimeter</option>
+              <option value="ac">Acre</option>
+              <option value="ft2">Square Foot</option>
+              <option value="in2">Square Inch</option>
+              <option value="mi2">Square Mile</option>
+            </select>
+          </div>
+          <div class="result-box" id="areaResult">Enter a value to convert</div>
+          <div id="areaGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin-top:16px;"></div>
         </div>
 
-        <!-- Tips -->
-        <div class="tool-box">
-          <h2 style="font-size:1.15rem;margin-bottom:12px;">&#128161; Quick Reference Facts</h2>
-          <ul style="padding-left:20px;color:var(--text-muted);font-size:.9rem;line-height:2;">
-            <li><strong>1 mile</strong> = 1.60934 kilometers</li>
-            <li><strong>1 kilogram</strong> = 2.20462 pounds</li>
-            <li><strong>0°C</strong> = 32°F (water freezing point)</li>
-            <li><strong>100°C</strong> = 212°F (water boiling point)</li>
-            <li><strong>1 foot</strong> = 12 inches = 30.48 cm</li>
-            <li><strong>1 stone</strong> = 14 pounds = 6.35 kg</li>
-          </ul>
+        <!-- ===== VOLUME ===== -->
+        <div class="tab-panel" id="cat-volume">
+          <div class="converter-row">
+            <div class="form-group" style="margin:0;">
+              <label for="volVal">Value</label>
+              <input type="number" id="volVal" value="1" oninput="convert('volume')" placeholder="Enter value" />
+            </div>
+            <button class="converter-arrow-btn" onclick="swapUnits('volFrom','volTo','volume')" title="Swap">⇄</button>
+            <div class="form-group" style="margin:0;">
+              <label for="volFrom">From</label>
+              <select id="volFrom" onchange="convert('volume')">
+                <option value="l">Liter (L)</option>
+                <option value="ml">Milliliter (mL)</option>
+                <option value="m3">Cubic Meter (m³)</option>
+                <option value="gal">US Gallon</option>
+                <option value="qt">US Quart</option>
+                <option value="pt">US Pint</option>
+                <option value="cup">Cup</option>
+                <option value="floz">Fluid Ounce</option>
+                <option value="tbsp">Tablespoon</option>
+                <option value="tsp">Teaspoon</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="volTo">To</label>
+            <select id="volTo" onchange="convert('volume')">
+              <option value="ml">Milliliter (mL)</option>
+              <option value="l">Liter (L)</option>
+              <option value="m3">Cubic Meter (m³)</option>
+              <option value="gal">US Gallon</option>
+              <option value="qt">US Quart</option>
+              <option value="pt">US Pint</option>
+              <option value="cup">Cup</option>
+              <option value="floz">Fluid Ounce</option>
+              <option value="tbsp">Tablespoon</option>
+              <option value="tsp">Teaspoon</option>
+            </select>
+          </div>
+          <div class="result-box" id="volResult">Enter a value to convert</div>
+          <div id="volGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin-top:16px;"></div>
+        </div>
+
+      </div>
+
+      <!-- MID AD -->
+      <div class="ad-unit ad-mid">
+        <span class="ad-label">Advertisement</span>
+        <ins class="adsbygoogle" style="display:block;width:100%;min-height:90px"
+             data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX" data-ad-slot="5555555555"
+             data-ad-format="horizontal" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </div>
+
+      <!-- Quick Facts -->
+      <div class="tool-box">
+        <h2>📌 Quick Reference Facts</h2>
+        <ul class="tips-list">
+          <li><strong>1 mile</strong> = 1.60934 km | <strong>1 km</strong> = 0.62137 miles</li>
+          <li><strong>1 kg</strong> = 2.20462 lb | <strong>1 lb</strong> = 0.453592 kg</li>
+          <li><strong>0°C</strong> = 32°F (freezing) | <strong>100°C</strong> = 212°F (boiling)</li>
+          <li><strong>1 inch</strong> = 2.54 cm | <strong>1 foot</strong> = 30.48 cm</li>
+          <li><strong>1 gallon (US)</strong> = 3.78541 liters</li>
+          <li><strong>1 stone</strong> = 14 pounds = 6.35 kg</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- RIGHT: SIDEBAR -->
+    <aside class="sidebar">
+
+      <!-- Sidebar Ad -->
+      <div class="ad-unit ad-rect">
+        <span class="ad-label">Advertisement</span>
+        <ins class="adsbygoogle" style="display:block;width:100%;min-height:250px"
+             data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX" data-ad-slot="6666666666"
+             data-ad-format="rectangle" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </div>
+
+      <!-- Quick Convert -->
+      <div class="tool-box">
+        <h3>⚡ Quick Conversions</h3>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <button class="btn btn-ghost btn-sm" style="justify-content:flex-start;" onclick="quickConv('length','1','mi','km')">1 Mile → KM</button>
+          <button class="btn btn-ghost btn-sm" style="justify-content:flex-start;" onclick="quickConv('length','1','km','mi')">1 KM → Miles</button>
+          <button class="btn btn-ghost btn-sm" style="justify-content:flex-start;" onclick="quickConv('weight','1','kg','lb')">1 KG → Pounds</button>
+          <button class="btn btn-ghost btn-sm" style="justify-content:flex-start;" onclick="quickConv('weight','1','lb','kg')">1 Pound → KG</button>
+          <button class="btn btn-ghost btn-sm" style="justify-content:flex-start;" onclick="quickConv('temp','100','c','f')">100°C → °F</button>
+          <button class="btn btn-ghost btn-sm" style="justify-content:flex-start;" onclick="quickConv('temp','0','c','f')">0°C → °F</button>
+          <button class="btn btn-ghost btn-sm" style="justify-content:flex-start;" onclick="quickConv('temp','98.6','f','c')">98.6°F → °C</button>
+          <button class="btn btn-ghost btn-sm" style="justify-content:flex-start;" onclick="quickConv('speed','100','kph','mph')">100 km/h → mph</button>
         </div>
       </div>
 
-      <!-- SIDEBAR -->
-      <aside class="sidebar">
-
-        <!-- Sidebar Ad 1 -->
-        <div class="ad-unit ad-rectangle">
-          <span class="ad-unit-label">Advertisement</span>
-          <ins class="adsbygoogle"
-               style="display:block;width:100%;min-height:250px"
-               data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX"
-               data-ad-slot="8888888888"
-               data-ad-format="rectangle"
-               data-full-width-responsive="true"></ins>
-          <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-        </div>
-
-        <!-- Popular conversions shortcuts -->
-        <div class="tool-box">
-          <h3 style="font-size:1rem;margin-bottom:14px;">&#9889; Quick Convert</h3>
-          <div style="display:flex;flex-direction:column;gap:8px;">
-            <button class="btn btn-outline btn-sm" onclick="quickConvert('length','1','mi','km')">1 Mile &#8594; KM</button>
-            <button class="btn btn-outline btn-sm" onclick="quickConvert('length','1','km','mi')">1 KM &#8594; Mile</button>
-            <button class="btn btn-outline btn-sm" onclick="quickConvert('weight','1','kg','lb')">1 KG &#8594; Pounds</button>
-            <button class="btn btn-outline btn-sm" onclick="quickConvert('weight','1','lb','kg')">1 Pound &#8594; KG</button>
-            <button class="btn btn-outline btn-sm" onclick="quickConvert('temp','100','c','f')">100°C &#8594; °F</button>
-            <button class="btn btn-outline btn-sm" onclick="quickConvert('temp','0','c','f')">0°C &#8594; °F</button>
-            <button class="btn btn-outline btn-sm" onclick="quickConvert('temp','98.6','f','c')">98.6°F &#8594; °C</button>
-          </div>
-        </div>
-
-        <!-- Related -->
-        <div class="tool-box">
-          <h3 style="font-size:1rem;margin-bottom:14px;">&#128279; Related Tools</h3>
-          <div style="display:flex;flex-direction:column;gap:10px;">
-            <a href="word-counter.html" class="tool-card" style="padding:14px;gap:8px;">
-              <div class="tool-icon" style="background:#ede9fe;width:36px;height:36px;font-size:1rem;">&#128203;</div>
-              <div>
-                <div style="font-size:.9rem;font-weight:600;">Word Counter</div>
-                <div style="font-size:.8rem;color:var(--text-muted);">Count words &amp; chars</div>
-              </div>
-            </a>
-            <a href="password-generator.html" class="tool-card" style="padding:14px;gap:8px;">
-              <div class="tool-icon" style="background:#dcfce7;width:36px;height:36px;font-size:1rem;">&#128272;</div>
-              <div>
-                <div style="font-size:.9rem;font-weight:600;">Password Generator</div>
-                <div style="font-size:.8rem;color:var(--text-muted);">Create strong passwords</div>
-              </div>
-            </a>
-          </div>
-        </div>
-
-        <!-- Sidebar Ad 2 -->
-        <div class="ad-unit ad-rectangle">
-          <span class="ad-unit-label">Advertisement</span>
-          <ins class="adsbygoogle"
-               style="display:block;width:100%;min-height:250px"
-               data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX"
-               data-ad-slot="9999999999"
-               data-ad-format="rectangle"
-               data-full-width-responsive="true"></ins>
-          <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-        </div>
-
-      </aside>
-    </div>
-
-  </main>
-
-  <!-- FOOTER -->
-  <footer>
-    <div class="footer-inner">
-      <div class="footer-top">
-        <div class="footer-brand">
-          <a href="index.html" class="logo" style="color:#fff;margin-bottom:10px;">
-            <div class="logo-icon">&#9874;</div>
-            ToolBox
+      <!-- Related Tools -->
+      <div class="tool-box">
+        <h3>Related Tools</h3>
+        <div class="related-tools">
+          <a href="word-counter.html" class="related-item">
+            <div class="related-icon" style="background:#ede9fe;">📄</div>
+            <div class="related-item-text">
+              <strong>Word Counter</strong>
+              <span>Count words & chars</span>
+            </div>
           </a>
-          <p>Free, fast, and privacy-friendly online tools for everyday tasks.</p>
-        </div>
-        <div class="footer-col">
-          <h4>Text Tools</h4>
-          <ul>
-            <li><a href="word-counter.html">Word Counter</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4>Other Tools</h4>
-          <ul>
-            <li><a href="password-generator.html">Password Generator</a></li>
-            <li><a href="unit-converter.html">Unit Converter</a></li>
-          </ul>
+          <a href="qr-generator.html" class="related-item">
+            <div class="related-icon" style="background:#fff7ed;">📱</div>
+            <div class="related-item-text">
+              <strong>QR Code Generator</strong>
+              <span>Create QR codes</span>
+            </div>
+          </a>
+          <a href="password-generator.html" class="related-item">
+            <div class="related-icon" style="background:#dcfce7;">🔒</div>
+            <div class="related-item-text">
+              <strong>Password Generator</strong>
+              <span>Secure passwords</span>
+            </div>
+          </a>
         </div>
       </div>
-      <div class="footer-bottom">
-        <span>&copy; 2026 ToolBox. All rights reserved.</span>
-        <span>
-          <a href="#" style="color:#94a3b8;text-decoration:none;margin-left:16px;">Privacy Policy</a>
-          <a href="#" style="color:#94a3b8;text-decoration:none;margin-left:16px;">Contact</a>
-        </span>
+
+      <!-- Sidebar Ad 2 -->
+      <div class="ad-unit ad-rect">
+        <span class="ad-label">Advertisement</span>
+        <ins class="adsbygoogle" style="display:block;width:100%;min-height:250px"
+             data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX" data-ad-slot="7777777777"
+             data-ad-format="rectangle" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </div>
+
+    </aside>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="index.html" class="logo" style="color:#fff;">
+          <div class="logo-icon">🛠️</div> ToolBox
+        </a>
+        <p style="margin-top:12px;">Free, fast, privacy-friendly tools for everyday tasks.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Text Tools</h4>
+        <ul>
+          <li><a href="word-counter.html">Word Counter</a></li>
+          <li><a href="font-changer.html">Font Changer</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Converters</h4>
+        <ul>
+          <li><a href="unit-converter.html">Unit Converter</a></li>
+          <li><a href="qr-generator.html">QR Code Generator</a></li>
+          <li><a href="image-to-pdf.html">Image to PDF</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Other Tools</h4>
+        <ul>
+          <li><a href="password-generator.html">Password Generator</a></li>
+          <li><a href="image-compressor.html">Image Compressor</a></li>
+          <li><a href="pdf-compressor.html">PDF Compressor</a></li>
+        </ul>
       </div>
     </div>
-  </footer>
+    <div class="footer-bottom">
+      <span>© 2026 ToolBox. All rights reserved.</span>
+      <div class="footer-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms</a>
+        <a href="#">Contact</a>
+      </div>
+    </div>
+  </div>
+</footer>
 
-  <script>
-    // ===========================
-    // TAB SWITCHER
-    // ===========================
-    function switchTab(name, btn) {
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-      btn.classList.add('active');
-      document.getElementById('tab-' + name).classList.add('active');
-      if (name === 'length') convertLength();
-      if (name === 'weight') convertWeight();
-      if (name === 'temp')   convertTemp();
+<script>
+  // ===== Conversion tables (base unit in brackets) =====
+  const LEN  = { m:1, km:1e3, cm:.01, mm:.001, mi:1609.344, yd:.9144, ft:.3048, in:.0254, nm:1852, ly:9.461e15 };
+  const WGT  = { kg:1, g:.001, mg:1e-6, lb:.45359237, oz:.02834952, t:1000, st:6.35029 };
+  const SPD  = { kph:1, mph:1.60934, ms:3.6, kn:1.852, fts:.3048*3.6 };
+  const AREA = { m2:1, km2:1e6, cm2:1e-4, ha:1e4, ac:4046.856, ft2:.092903, in2:.000645, mi2:2589988 };
+  const VOL  = { l:1, ml:.001, m3:1000, gal:3.78541, qt:.946353, pt:.473176, cup:.236588, floz:.029574, tbsp:.014787, tsp:.004929 };
+  const TMP_LBL = { c:'°C', f:'°F', k:'K' };
+  const TMP_NAME = { c:'Celsius', f:'Fahrenheit', k:'Kelvin' };
+
+  const CONFIG = {
+    length: { table: LEN, valId:'lenVal', fromId:'lenFrom', toId:'lenTo', resId:'lenResult', gridId:'lenGrid',
+      labels: { m:'Meter',km:'Kilometer',cm:'Centimeter',mm:'Millimeter',mi:'Mile',yd:'Yard',ft:'Foot',in:'Inch',nm:'Nautical Mile',ly:'Light Year' }},
+    weight: { table: WGT, valId:'wgtVal', fromId:'wgtFrom', toId:'wgtTo', resId:'wgtResult', gridId:'wgtGrid',
+      labels: { kg:'Kilogram',g:'Gram',mg:'Milligram',lb:'Pound',oz:'Ounce',t:'Metric Ton',st:'Stone' }},
+    speed:  { table: SPD, valId:'spdVal', fromId:'spdFrom', toId:'spdTo', resId:'spdResult', gridId:'spdGrid',
+      labels: { kph:'km/h', mph:'mph', ms:'m/s', kn:'Knots', fts:'ft/s' }},
+    area:   { table: AREA, valId:'areaVal', fromId:'areaFrom', toId:'areaTo', resId:'areaResult', gridId:'areaGrid',
+      labels: { m2:'m²',km2:'km²',cm2:'cm²',ha:'Hectare',ac:'Acre',ft2:'ft²',in2:'in²',mi2:'mi²' }},
+    volume: { table: VOL, valId:'volVal', fromId:'volFrom', toId:'volTo', resId:'volResult', gridId:'volGrid',
+      labels: { l:'Liter',ml:'Milliliter',m3:'m³',gal:'US Gallon',qt:'Quart',pt:'Pint',cup:'Cup',floz:'Fl. Oz',tbsp:'Tablespoon',tsp:'Teaspoon' }},
+  };
+
+  function fmt(n) {
+    if (n === 0) return '0';
+    if (Math.abs(n) >= 0.0001 && Math.abs(n) < 1e12) {
+      return parseFloat(n.toPrecision(7)).toLocaleString('en-US', { maximumSignificantDigits: 7 });
     }
+    return n.toExponential(4);
+  }
 
-    // ===========================
-    // LENGTH CONVERSION
-    // ===========================
-    const LEN_TO_M = { m:1, km:1000, cm:.01, mm:.001, mi:1609.344, yd:.9144, ft:.3048, in:.0254, nm:1852 };
+  function convert(cat) {
+    if (cat === 'temp') { convertTemp(); return; }
+    const c    = CONFIG[cat];
+    const val  = parseFloat(document.getElementById(c.valId).value);
+    const from = document.getElementById(c.fromId).value;
+    const to   = document.getElementById(c.toId).value;
+    if (isNaN(val)) { document.getElementById(c.resId).textContent = 'Enter a value'; return; }
 
-    function convertLength() {
-      const val  = parseFloat(document.getElementById('lenValue').value);
-      const from = document.getElementById('lenFrom').value;
-      const to   = document.getElementById('lenTo').value;
-      if (isNaN(val)) { document.getElementById('lenResult').textContent = '—'; return; }
-      const metres = val * LEN_TO_M[from];
-      const result = metres / LEN_TO_M[to];
-      document.getElementById('lenResult').textContent = `${val} ${from.toUpperCase()} = ${fmt(result)} ${to.toUpperCase()}`;
-      renderLenTable(val, from);
+    const base   = val * c.table[from];
+    const result = base / c.table[to];
+    document.getElementById(c.resId).textContent = `${val} ${from} = ${fmt(result)} ${to}`;
+
+    // Fill all-units grid
+    const gridEl = document.getElementById(c.gridId);
+    if (gridEl) {
+      gridEl.innerHTML = Object.entries(c.table).map(([unit, factor]) => `
+        <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-xs);padding:10px;">
+          <div style="font-size:1rem;font-weight:800;color:var(--clr-primary);">${fmt(base / factor)}</div>
+          <div style="font-size:.72rem;color:var(--text-3);margin-top:2px;">${c.labels[unit] || unit}</div>
+        </div>`).join('');
     }
+  }
 
-    function renderLenTable(val, from) {
-      const metres = val * LEN_TO_M[from];
-      const units  = ['m','km','cm','mm','mi','yd','ft','in'];
-      const labels = {m:'Meter',km:'Kilometer',cm:'Centimeter',mm:'Millimeter',mi:'Mile',yd:'Yard',ft:'Foot',in:'Inch'};
-      document.getElementById('lenTable').innerHTML = units.map(u => `
-        <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:10px;">
-          <div style="font-weight:700;font-size:.95rem;color:var(--primary);">${fmt(metres/LEN_TO_M[u])} ${u}</div>
-          <div style="color:var(--text-muted);font-size:.75rem;">${labels[u]}</div>
-        </div>
-      `).join('');
+  function convertTemp() {
+    const val  = parseFloat(document.getElementById('tmpVal').value);
+    const from = document.getElementById('tmpFrom').value;
+    const to   = document.getElementById('tmpTo').value;
+    if (isNaN(val)) { document.getElementById('tmpResult').textContent = 'Enter a value'; return; }
+
+    const toC = v => from === 'c' ? v : from === 'f' ? (v-32)*5/9 : v-273.15;
+    const fromC = (c, t) => t === 'c' ? c : t === 'f' ? c*9/5+32 : c+273.15;
+
+    const c = toC(val);
+    const res = fromC(c, to);
+    document.getElementById('tmpResult').textContent = `${val}${TMP_LBL[from]} = ${fmt(res)}${TMP_LBL[to]}`;
+
+    document.getElementById('tmpAllGrid').innerHTML = `
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+        ${['c','f','k'].map(u => `
+          <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-xs);padding:14px;text-align:center;">
+            <div style="font-size:1.3rem;font-weight:800;color:var(--clr-primary);">${fmt(fromC(c,u))}${TMP_LBL[u]}</div>
+            <div style="font-size:.72rem;color:var(--text-3);margin-top:4px;">${TMP_NAME[u]}</div>
+          </div>`).join('')}
+      </div>`;
+  }
+
+  function swapUnits(fromId, toId, cat) {
+    const a = document.getElementById(fromId).value;
+    const b = document.getElementById(toId).value;
+    document.getElementById(fromId).value = b;
+    document.getElementById(toId).value   = a;
+    convert(cat);
+  }
+
+  function switchCat(cat, btn) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('cat-' + cat).classList.add('active');
+    convert(cat);
+  }
+
+  function quickConv(cat, val, from, to) {
+    // Find the correct tab button
+    const tabs = document.querySelectorAll('.tab-btn');
+    const catNames = ['length','weight','temp','speed','area','volume'];
+    const idx = catNames.indexOf(cat);
+    if (idx >= 0 && tabs[idx]) switchCat(cat, tabs[idx]);
+
+    const c = CONFIG[cat];
+    if (c) {
+      document.getElementById(c.valId).value  = val;
+      document.getElementById(c.fromId).value = from;
+      document.getElementById(c.toId).value   = to;
+    } else if (cat === 'temp') {
+      document.getElementById('tmpVal').value  = val;
+      document.getElementById('tmpFrom').value = from;
+      document.getElementById('tmpTo').value   = to;
     }
+    convert(cat);
+  }
 
-    function swapLength() {
-      const a = document.getElementById('lenFrom').value;
-      const b = document.getElementById('lenTo').value;
-      document.getElementById('lenFrom').value = b;
-      document.getElementById('lenTo').value   = a;
-      convertLength();
-    }
-
-    function resetLength() {
-      document.getElementById('lenValue').value = '1';
-      document.getElementById('lenFrom').value  = 'm';
-      document.getElementById('lenTo').value    = 'km';
-      convertLength();
-    }
-
-    // ===========================
-    // WEIGHT CONVERSION
-    // ===========================
-    const WGT_TO_KG = { kg:1, g:.001, mg:.000001, lb:0.45359237, oz:0.028349523, t:1000, st:6.35029318 };
-
-    function convertWeight() {
-      const val  = parseFloat(document.getElementById('wgtValue').value);
-      const from = document.getElementById('wgtFrom').value;
-      const to   = document.getElementById('wgtTo').value;
-      if (isNaN(val)) { document.getElementById('wgtResult').textContent = '—'; return; }
-      const kg     = val * WGT_TO_KG[from];
-      const result = kg / WGT_TO_KG[to];
-      document.getElementById('wgtResult').textContent = `${val} ${from} = ${fmt(result)} ${to}`;
-      renderWgtTable(val, from);
-    }
-
-    function renderWgtTable(val, from) {
-      const kg    = val * WGT_TO_KG[from];
-      const units = ['kg','g','mg','lb','oz','t','st'];
-      const labels= {kg:'Kilogram',g:'Gram',mg:'Milligram',lb:'Pound',oz:'Ounce',t:'Metric Ton',st:'Stone'};
-      document.getElementById('wgtTable').innerHTML = units.map(u => `
-        <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:10px;">
-          <div style="font-weight:700;font-size:.95rem;color:var(--primary);">${fmt(kg/WGT_TO_KG[u])} ${u}</div>
-          <div style="color:var(--text-muted);font-size:.75rem;">${labels[u]}</div>
-        </div>
-      `).join('');
-    }
-
-    function swapWeight() {
-      const a = document.getElementById('wgtFrom').value;
-      const b = document.getElementById('wgtTo').value;
-      document.getElementById('wgtFrom').value = b;
-      document.getElementById('wgtTo').value   = a;
-      convertWeight();
-    }
-
-    function resetWeight() {
-      document.getElementById('wgtValue').value = '1';
-      document.getElementById('wgtFrom').value  = 'kg';
-      document.getElementById('wgtTo').value    = 'lb';
-      convertWeight();
-    }
-
-    // ===========================
-    // TEMPERATURE CONVERSION
-    // ===========================
-    function toC(val, from) {
-      if (from === 'c') return val;
-      if (from === 'f') return (val - 32) * 5/9;
-      if (from === 'k') return val - 273.15;
-    }
-
-    function fromC(c, to) {
-      if (to === 'c') return c;
-      if (to === 'f') return c * 9/5 + 32;
-      if (to === 'k') return c + 273.15;
-    }
-
-    const TMP_LABEL = { c: '°C', f: '°F', k: 'K' };
-    const TMP_NAME  = { c: 'Celsius', f: 'Fahrenheit', k: 'Kelvin' };
-
-    function convertTemp() {
-      const val  = parseFloat(document.getElementById('tmpValue').value);
-      const from = document.getElementById('tmpFrom').value;
-      const to   = document.getElementById('tmpTo').value;
-      if (isNaN(val)) { document.getElementById('tmpResult').textContent = '—'; return; }
-      const c      = toC(val, from);
-      const result = fromC(c, to);
-      document.getElementById('tmpResult').textContent = `${val}${TMP_LABEL[from]} = ${fmt(result)}${TMP_LABEL[to]}`;
-      renderTmpAllTable(val, from);
-    }
-
-    function renderTmpAllTable(val, from) {
-      const c = toC(val, from);
-      const units = ['c','f','k'];
-      document.getElementById('tmpAllTable').innerHTML = `
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
-          ${units.map(u => `
-            <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:14px;text-align:center;">
-              <div style="font-size:1.2rem;font-weight:800;color:var(--primary);">${fmt(fromC(c,u))}${TMP_LABEL[u]}</div>
-              <div style="font-size:.75rem;color:var(--text-muted);margin-top:4px;">${TMP_NAME[u]}</div>
-            </div>
-          `).join('')}
-        </div>`;
-    }
-
-    function swapTemp() {
-      const a = document.getElementById('tmpFrom').value;
-      const b = document.getElementById('tmpTo').value;
-      document.getElementById('tmpFrom').value = b;
-      document.getElementById('tmpTo').value   = a;
-      convertTemp();
-    }
-
-    function resetTemp() {
-      document.getElementById('tmpValue').value = '100';
-      document.getElementById('tmpFrom').value  = 'c';
-      document.getElementById('tmpTo').value    = 'f';
-      convertTemp();
-    }
-
-    // ===========================
-    // QUICK CONVERT SHORTCUTS
-    // ===========================
-    function quickConvert(type, val, from, to) {
-      // Switch to correct tab
-      const tabBtn = document.querySelector(`.tab-btn[onclick*="${type}"]`) ||
-                     document.querySelectorAll('.tab-btn')[['length','weight','temp'].indexOf(type)];
-      if (tabBtn) switchTab(type, tabBtn);
-
-      if (type === 'length') {
-        document.getElementById('lenValue').value = val;
-        document.getElementById('lenFrom').value  = from;
-        document.getElementById('lenTo').value    = to;
-        convertLength();
-      } else if (type === 'weight') {
-        document.getElementById('wgtValue').value = val;
-        document.getElementById('wgtFrom').value  = from;
-        document.getElementById('wgtTo').value    = to;
-        convertWeight();
-      } else {
-        document.getElementById('tmpValue').value = val;
-        document.getElementById('tmpFrom').value  = from;
-        document.getElementById('tmpTo').value    = to;
-        convertTemp();
-      }
-    }
-
-    // ===========================
-    // FORMAT NUMBER
-    // ===========================
-    function fmt(n) {
-      if (Math.abs(n) >= 0.001 && Math.abs(n) < 1e9) {
-        return parseFloat(n.toPrecision(8)).toLocaleString('en-US', { maximumSignificantDigits: 8 });
-      }
-      return n.toExponential(4);
-    }
-
-    // Init on load
-    convertLength();
-    convertWeight();
-    convertTemp();
-  </script>
+  // Init
+  window.addEventListener('DOMContentLoaded', () => {
+    convert('length');
+    convert('weight');
+    convert('temp');
+    convert('speed');
+    convert('area');
+    convert('volume');
+  });
+</script>
 
 </body>
 </html>
