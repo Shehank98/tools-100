@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Base64 Encoder / Decoder — Free Online Tool — ToolBox</title>
+  <meta name="description" content="Free online Base64 encoder and decoder. Encode text or files to Base64 and decode Base64 strings instantly in your browser — nothing is uploaded to a server." />
+  <link rel="stylesheet" href="style.css" />
+  <script src="utils.js" defer></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+  <style>
+    /* Mode tabs */
+    .mode-tabs { display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap; }
+    .mode-tab  { flex:1; min-width:120px; }
+
+    /* textarea pair */
+    .io-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media(max-width:640px){ .io-grid{ grid-template-columns:1fr; } }
+
+    .io-pane {}
+    .io-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+    .io-label span { font-size:.75rem; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--text-3); }
+    .copy-link { font-size:.78rem; color:var(--clr-primary); cursor:pointer; font-weight:600; }
+    .copy-link:hover { text-decoration:underline; }
+
+    textarea {
+      width:100%; box-sizing:border-box;
+      min-height:200px; resize:vertical;
+      font-family: 'Courier New', monospace;
+      font-size:.82rem;
+      padding:12px;
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      background:var(--surface-1);
+      color:var(--text-1);
+      line-height:1.55;
+      transition:border-color .15s;
+    }
+    textarea:focus { outline:none; border-color:var(--clr-primary); }
+
+    /* char/byte counter */
+    .counter { font-size:.72rem; color:var(--text-3); margin-top:4px; text-align:right; }
+
+    /* file mode */
+    .file-drop {
+      border:2px dashed var(--border);
+      border-radius:var(--radius);
+      padding:40px 20px;
+      text-align:center;
+      cursor:pointer;
+      background:var(--surface-1);
+      transition:border-color .2s, background .2s;
+    }
+    .file-drop:hover,.file-drop.drag-over{ border-color:var(--clr-primary); background:#ede9fe22; }
+    .file-drop-icon { font-size:2.4rem; margin-bottom:10px; }
+    .file-drop p { color:var(--text-2); font-size:.85rem; margin:4px 0; }
+    .file-drop strong { color:var(--text-1); }
+
+    /* result box */
+    .result-box {
+      margin-top:16px;
+      background:var(--surface-1);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      padding:14px 16px;
+    }
+    .result-box pre {
+      white-space:pre-wrap; word-break:break-all;
+      font-family:'Courier New',monospace;
+      font-size:.8rem; color:var(--text-1);
+      max-height:200px; overflow-y:auto;
+      margin:0;
+    }
+
+    /* info row */
+    .info-row {
+      display:flex; gap:16px; flex-wrap:wrap;
+      margin-top:10px;
+      font-size:.78rem; color:var(--text-2);
+    }
+    .info-row strong { color:var(--text-1); display:block; font-size:.9rem; }
+
+    /* validity badge */
+    .badge-valid   { color:#16a34a; font-weight:700; font-size:.82rem; }
+    .badge-invalid { color:#dc2626; font-weight:700; font-size:.82rem; }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a href="index.html" class="logo">
+      <div class="logo-icon">🛠️</div>
+      ToolBox
+    </a>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="word-counter.html">Word Counter</a>
+      <a href="password-generator.html">Password</a>
+      <a href="qr-generator.html">QR Code</a>
+      <a href="image-compressor.html">Image Tools</a>
+      <a href="unit-converter.html">Converter</a>
+      <a href="finance-tools.html">Finance</a>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-btn" id="darkToggle" onclick="toggleDarkMode()" title="Toggle dark mode">🌙</button>
+      <button class="icon-btn nav-toggle" onclick="openMobileNav()">☰</button>
+    </div>
+  </div>
+</header>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobileNav">
+  <div class="mobile-nav-backdrop" onclick="closeMobileNav()"></div>
+  <div class="mobile-nav-drawer">
+    <button class="mobile-nav-close" onclick="closeMobileNav()">✕</button>
+    <a href="index.html">🏠 Home</a>
+    <a href="word-counter.html">📄 Word Counter</a>
+    <a href="font-changer.html">✍️ Font Changer</a>
+    <a href="unit-converter.html">📐 Unit Converter</a>
+    <a href="password-generator.html">🔒 Password Generator</a>
+    <a href="qr-generator.html">📱 QR Code Generator</a>
+    <a href="image-to-pdf.html">🖼️ Image to PDF</a>
+    <a href="image-compressor.html">🗜️ Image Compressor</a>
+    <a href="image-resizer.html">↔️ Image Resizer</a>
+    <a href="base64-encoder.html" class="active">🔡 Base64 Encoder</a>
+    <a href="pdf-compressor.html">📋 PDF Compressor</a>
+    <a href="finance-tools.html">💰 Finance Tools</a>
+    <a href="background-remover.html">✂️ Background Remover</a>
+    <a href="color-palette.html">🎨 Color Palette</a>
+    <a href="json-formatter.html">🔧 JSON Formatter</a>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main>
+
+  <!-- TOP AD -->
+  <div class="ad-unit ad-top">
+    <span class="ad-label">Advertisement</span>
+    <ins class="adsbygoogle" style="display:block;width:100%;min-height:90px"
+         data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX" data-ad-slot="1111111110"
+         data-ad-format="horizontal" data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+
+  <!-- BREADCRUMB -->
+  <div class="breadcrumb">
+    <a href="index.html">🏠 Home</a>
+    <span>›</span>
+    <span>Base64 Encoder / Decoder</span>
+  </div>
+
+  <!-- TOOL LAYOUT -->
+  <div class="tool-layout">
+
+    <!-- LEFT: TOOL -->
+    <div>
+      <div class="tool-box">
+        <div class="tool-box-header">
+          <h1>🔡 Base64 Encoder / Decoder</h1>
+          <p>Encode text or files to Base64, or decode Base64 strings back to text. Everything runs in your browser — no data is sent to any server.</p>
+        </div>
+
+        <!-- Mode tabs -->
+        <div class="mode-tabs">
+          <button class="btn btn-primary mode-tab" id="tabText" onclick="setMode('text')">📝 Text</button>
+          <button class="btn btn-ghost  mode-tab" id="tabFile" onclick="setMode('file')">📁 File</button>
+        </div>
+
+        <!-- ───── TEXT MODE ───── -->
+        <div id="modeText">
+
+          <!-- Encode / Decode sub-tabs -->
+          <div style="display:flex;gap:8px;margin-bottom:16px;">
+            <button class="btn btn-primary" id="subEncode" onclick="setSubMode('encode')" style="flex:1;">🔒 Encode</button>
+            <button class="btn btn-ghost"   id="subDecode" onclick="setSubMode('decode')" style="flex:1;">🔓 Decode</button>
+          </div>
+
+          <!-- Encode pane -->
+          <div id="paneEncode">
+            <div class="io-grid">
+              <div class="io-pane">
+                <div class="io-label">
+                  <span>Plain Text</span>
+                  <span class="copy-link" onclick="clearField('inputText')">Clear</span>
+                </div>
+                <textarea id="inputText" placeholder="Type or paste text to encode…" oninput="autoEncode()"></textarea>
+                <div class="counter" id="inputCounter">0 chars</div>
+              </div>
+              <div class="io-pane">
+                <div class="io-label">
+                  <span>Base64 Output</span>
+                  <span class="copy-link" onclick="copyField('outputEncode')">Copy</span>
+                </div>
+                <textarea id="outputEncode" placeholder="Base64 encoded output will appear here…" readonly></textarea>
+                <div class="counter" id="outputCounter">0 chars</div>
+              </div>
+            </div>
+
+            <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;align-items:center;">
+              <label style="display:flex;align-items:center;gap:6px;font-size:.85rem;cursor:pointer;">
+                <input type="checkbox" id="urlSafeEncode" onchange="autoEncode()"> URL-safe (replace <code>+/</code> with <code>-_</code>)
+              </label>
+              <div style="margin-left:auto;display:flex;gap:8px;">
+                <button class="btn btn-primary" onclick="doEncode()">🔒 Encode</button>
+                <button class="btn btn-ghost"   onclick="downloadText('outputEncode', 'encoded.b64')">⬇️ Download</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Decode pane -->
+          <div id="paneDecode" style="display:none;">
+            <div class="io-grid">
+              <div class="io-pane">
+                <div class="io-label">
+                  <span>Base64 Input</span>
+                  <span class="copy-link" onclick="clearField('inputDecode')">Clear</span>
+                </div>
+                <textarea id="inputDecode" placeholder="Paste Base64 string to decode…" oninput="autoDecode()"></textarea>
+                <div class="counter" id="inputDecodeCounter">0 chars</div>
+              </div>
+              <div class="io-pane">
+                <div class="io-label">
+                  <span>Decoded Text</span>
+                  <span class="copy-link" onclick="copyField('outputDecode')">Copy</span>
+                </div>
+                <textarea id="outputDecode" placeholder="Decoded plain text will appear here…" readonly></textarea>
+                <div id="decodeValidity" style="margin-top:6px;font-size:.82rem;"></div>
+              </div>
+            </div>
+
+            <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;align-items:center;">
+              <label style="display:flex;align-items:center;gap:6px;font-size:.85rem;cursor:pointer;">
+                <input type="checkbox" id="urlSafeDecode" onchange="autoDecode()"> URL-safe input (<code>-_</code> instead of <code>+/</code>)
+              </label>
+              <div style="margin-left:auto;display:flex;gap:8px;">
+                <button class="btn btn-primary" onclick="doDecode()">🔓 Decode</button>
+                <button class="btn btn-ghost"   onclick="downloadText('outputDecode', 'decoded.txt')">⬇️ Download</button>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /modeText -->
+
+        <!-- ───── FILE MODE ───── -->
+        <div id="modeFile" style="display:none;">
+          <div class="file-drop" id="fileDrop" onclick="document.getElementById('fileInput').click()">
+            <div class="file-drop-icon">📁</div>
+            <strong>Click to upload or drag &amp; drop</strong>
+            <p>Any file type — up to 10 MB</p>
+          </div>
+          <input type="file" id="fileInput" style="display:none" onchange="loadFile(this.files[0])">
+
+          <div id="fileResult" style="display:none;">
+            <div class="info-row" style="margin-top:16px;">
+              <div><strong id="fileNameOut">—</strong>File name</div>
+              <div><strong id="fileSizeOut">—</strong>File size</div>
+              <div><strong id="fileTypeOut">—</strong>MIME type</div>
+              <div><strong id="fileB64Size">—</strong>Base64 size</div>
+            </div>
+
+            <div class="result-box" style="margin-top:16px;">
+              <div class="io-label" style="margin-bottom:8px;">
+                <span style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);">Base64 Output</span>
+                <span class="copy-link" onclick="copyText(fileB64Result)">Copy all</span>
+              </div>
+              <pre id="fileB64Preview"></pre>
+            </div>
+
+            <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;align-items:center;">
+              <label style="display:flex;align-items:center;gap:6px;font-size:.85rem;cursor:pointer;">
+                <input type="checkbox" id="includeDataUri"> Include data URI prefix (<code>data:…;base64,</code>)
+              </label>
+              <div style="margin-left:auto;display:flex;gap:8px;">
+                <button class="btn btn-primary" onclick="downloadFileB64()">⬇️ Download .b64</button>
+                <button class="btn btn-ghost"   onclick="resetFile()">🗑️ Reset</button>
+              </div>
+            </div>
+          </div>
+        </div><!-- /modeFile -->
+
+      </div><!-- /tool-box -->
+
+      <!-- MID AD -->
+      <div class="ad-unit ad-mid">
+        <span class="ad-label">Advertisement</span>
+        <ins class="adsbygoogle" style="display:block;width:100%;min-height:90px"
+             data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX" data-ad-slot="2222222220"
+             data-ad-format="horizontal" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </div>
+
+      <!-- What is Base64 -->
+      <div class="tool-box">
+        <h2>What is Base64?</h2>
+        <p style="color:var(--text-2);font-size:.9rem;line-height:1.7;margin-bottom:12px;">
+          Base64 is an encoding scheme that converts binary data into an ASCII text string using 64 printable characters (A–Z, a–z, 0–9, <code>+</code>, <code>/</code>). It is widely used to embed binary data—images, fonts, files—inside JSON, HTML, CSS, XML, and email payloads.
+        </p>
+        <ul class="tips-list">
+          <li><strong>Encoding</strong> makes binary data safe to transmit over text-only channels.</li>
+          <li><strong>URL-safe Base64</strong> replaces <code>+</code> with <code>-</code> and <code>/</code> with <code>_</code> so the string is safe in URLs without percent-encoding.</li>
+          <li>Base64 output is approximately <strong>33% larger</strong> than the original input.</li>
+          <li>Base64 is <em>not</em> encryption — it is easily reversible by anyone.</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: SIDEBAR -->
+    <aside class="sidebar">
+
+      <!-- Sidebar Ad -->
+      <div class="ad-unit ad-rect">
+        <span class="ad-label">Advertisement</span>
+        <ins class="adsbygoogle" style="display:block;width:100%;min-height:250px"
+             data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX" data-ad-slot="3333333330"
+             data-ad-format="rectangle" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </div>
+
+      <!-- Quick reference -->
+      <div class="tool-box">
+        <h3>📋 Quick Reference</h3>
+        <ul class="tips-list" style="font-size:.82rem;">
+          <li><code>btoa(str)</code> — encode in JS</li>
+          <li><code>atob(b64)</code> — decode in JS</li>
+          <li><code>base64 -e file</code> — encode on macOS</li>
+          <li><code>base64 -d file</code> — decode on macOS</li>
+          <li><code>base64 file</code> — encode on Linux</li>
+          <li><code>base64 -d file</code> — decode on Linux</li>
+          <li><code>certutil -encode f out</code> — Windows</li>
+        </ul>
+      </div>
+
+      <!-- Common use-cases -->
+      <div class="tool-box">
+        <h3>🔧 Common Use Cases</h3>
+        <ul class="tips-list" style="font-size:.82rem;">
+          <li>Embed images in HTML / CSS as data URIs</li>
+          <li>Send binary files through JSON APIs</li>
+          <li>Encode credentials in HTTP Basic Auth headers</li>
+          <li>Store small files in environment variables</li>
+          <li>Encode JWT payloads (URL-safe Base64)</li>
+          <li>Embed fonts in CSS <code>@font-face</code></li>
+        </ul>
+      </div>
+
+      <!-- Related tools -->
+      <div class="tool-box">
+        <h3>Related Tools</h3>
+        <div class="related-tools">
+          <a href="json-formatter.html" class="related-item">
+            <div class="related-icon" style="background:#e0f2fe;">🔧</div>
+            <div class="related-item-text">
+              <strong>JSON Formatter</strong>
+              <span>Prettify &amp; validate JSON</span>
+            </div>
+          </a>
+          <a href="password-generator.html" class="related-item">
+            <div class="related-icon" style="background:#dcfce7;">🔒</div>
+            <div class="related-item-text">
+              <strong>Password Generator</strong>
+              <span>Secure random passwords</span>
+            </div>
+          </a>
+          <a href="qr-generator.html" class="related-item">
+            <div class="related-icon" style="background:#fef9c3;">📱</div>
+            <div class="related-item-text">
+              <strong>QR Code Generator</strong>
+              <span>Encode text to QR</span>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- Sidebar Ad 2 -->
+      <div class="ad-unit ad-rect">
+        <span class="ad-label">Advertisement</span>
+        <ins class="adsbygoogle" style="display:block;width:100%;min-height:250px"
+             data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX" data-ad-slot="4444444440"
+             data-ad-format="rectangle" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </div>
+
+    </aside>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="index.html" class="logo" style="color:#fff;">
+          <div class="logo-icon">🛠️</div> ToolBox
+        </a>
+        <p style="margin-top:12px;">Free, fast, privacy-friendly tools for everyday tasks.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Developer Tools</h4>
+        <ul>
+          <li><a href="base64-encoder.html">Base64 Encoder</a></li>
+          <li><a href="json-formatter.html">JSON Formatter</a></li>
+          <li><a href="qr-generator.html">QR Code Generator</a></li>
+          <li><a href="password-generator.html">Password Generator</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Other Tools</h4>
+        <ul>
+          <li><a href="word-counter.html">Word Counter</a></li>
+          <li><a href="image-resizer.html">Image Resizer</a></li>
+          <li><a href="image-compressor.html">Image Compressor</a></li>
+          <li><a href="unit-converter.html">Unit Converter</a></li>
+          <li><a href="finance-tools.html">Finance Tools</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 ToolBox. All rights reserved.</span>
+      <div class="footer-links">
+        <a href="privacy-policy.html">Privacy Policy</a>
+        <a href="terms.html">Terms</a>
+        <a href="contact.html">Contact</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  /* ── State ── */
+  let currentMainMode = 'text';   // 'text' | 'file'
+  let currentSubMode  = 'encode'; // 'encode' | 'decode'
+  let fileB64Result   = '';
+
+  /* ── Main mode ── */
+  function setMode(m) {
+    currentMainMode = m;
+    document.getElementById('modeText').style.display = m === 'text' ? '' : 'none';
+    document.getElementById('modeFile').style.display = m === 'file' ? '' : 'none';
+    document.getElementById('tabText').className = m === 'text' ? 'btn btn-primary mode-tab' : 'btn btn-ghost mode-tab';
+    document.getElementById('tabFile').className = m === 'file' ? 'btn btn-primary mode-tab' : 'btn btn-ghost mode-tab';
+  }
+
+  /* ── Sub mode (encode / decode) ── */
+  function setSubMode(s) {
+    currentSubMode = s;
+    document.getElementById('paneEncode').style.display  = s === 'encode' ? '' : 'none';
+    document.getElementById('paneDecode').style.display  = s === 'decode' ? '' : 'none';
+    document.getElementById('subEncode').className = s === 'encode' ? 'btn btn-primary' : 'btn btn-ghost';
+    document.getElementById('subDecode').className = s === 'decode' ? 'btn btn-primary' : 'btn btn-ghost';
+  }
+
+  /* ── Encode helpers ── */
+  function toB64(str, urlSafe) {
+    // Encode as UTF-8 bytes, then btoa
+    const bytes = new TextEncoder().encode(str);
+    let binary  = '';
+    bytes.forEach(b => binary += String.fromCharCode(b));
+    let b64 = btoa(binary);
+    if (urlSafe) b64 = b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+    return b64;
+  }
+
+  function fromB64(b64, urlSafe) {
+    if (urlSafe) {
+      b64 = b64.replace(/-/g, '+').replace(/_/g, '/');
+      // Re-pad
+      const pad = b64.length % 4;
+      if (pad) b64 += '='.repeat(4 - pad);
+    }
+    const binary = atob(b64);
+    const bytes  = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+    return new TextDecoder().decode(bytes);
+  }
+
+  /* ── Encode ── */
+  function doEncode() {
+    const input   = document.getElementById('inputText').value;
+    const urlSafe = document.getElementById('urlSafeEncode').checked;
+    if (!input) { showToast('Enter text to encode', 'warning'); return; }
+    try {
+      const result = toB64(input, urlSafe);
+      document.getElementById('outputEncode').value = result;
+      document.getElementById('outputCounter').textContent = result.length + ' chars';
+      showToast('Encoded!', 'success');
+    } catch(e) {
+      showToast('Encoding failed: ' + e.message, 'error');
+    }
+  }
+
+  function autoEncode() {
+    const input = document.getElementById('inputText').value;
+    document.getElementById('inputCounter').textContent = input.length + ' chars';
+    if (!input) { document.getElementById('outputEncode').value = ''; document.getElementById('outputCounter').textContent = '0 chars'; return; }
+    doEncode();
+  }
+
+  /* ── Decode ── */
+  function doDecode() {
+    let input   = document.getElementById('inputDecode').value.trim();
+    const urlSafe = document.getElementById('urlSafeDecode').checked;
+    if (!input) { showToast('Enter Base64 to decode', 'warning'); return; }
+    // Strip data URI prefix if present
+    const m = input.match(/^data:[^;]+;base64,(.+)$/s);
+    if (m) input = m[1];
+    try {
+      const result = fromB64(input, urlSafe);
+      document.getElementById('outputDecode').value = result;
+      document.getElementById('decodeValidity').innerHTML = '<span class="badge-valid">✔ Valid Base64</span>';
+      showToast('Decoded!', 'success');
+    } catch(e) {
+      document.getElementById('outputDecode').value = '';
+      document.getElementById('decodeValidity').innerHTML = '<span class="badge-invalid">✘ Invalid Base64 — check your input</span>';
+      showToast('Invalid Base64 input', 'error');
+    }
+  }
+
+  function autoDecode() {
+    const input = document.getElementById('inputDecode').value;
+    document.getElementById('inputDecodeCounter').textContent = input.length + ' chars';
+    if (!input) { document.getElementById('outputDecode').value = ''; document.getElementById('decodeValidity').innerHTML = ''; return; }
+    doDecode();
+  }
+
+  /* ── Utilities ── */
+  function clearField(id) {
+    document.getElementById(id).value = '';
+    if (id === 'inputText') { document.getElementById('outputEncode').value = ''; document.getElementById('inputCounter').textContent = '0 chars'; document.getElementById('outputCounter').textContent = '0 chars'; }
+    if (id === 'inputDecode') { document.getElementById('outputDecode').value = ''; document.getElementById('decodeValidity').innerHTML = ''; document.getElementById('inputDecodeCounter').textContent = '0 chars'; }
+  }
+
+  function copyField(id) {
+    const val = document.getElementById(id).value;
+    if (!val) { showToast('Nothing to copy', 'warning'); return; }
+    copyText(val);
+  }
+
+  function copyText(text) {
+    navigator.clipboard.writeText(text)
+      .then(() => showToast('Copied to clipboard!', 'success'))
+      .catch(() => showToast('Copy failed — please copy manually', 'error'));
+  }
+
+  function downloadText(id, filename) {
+    const val = document.getElementById(id).value;
+    if (!val) { showToast('Nothing to download', 'warning'); return; }
+    const blob = new Blob([val], { type: 'text/plain' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url; a.download = filename; a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  /* ── File mode ── */
+  const fd = document.getElementById('fileDrop');
+  fd.addEventListener('dragover',  e => { e.preventDefault(); fd.classList.add('drag-over'); });
+  fd.addEventListener('dragleave', () => fd.classList.remove('drag-over'));
+  fd.addEventListener('drop', e => {
+    e.preventDefault(); fd.classList.remove('drag-over');
+    const f = e.dataTransfer.files[0];
+    if (f) loadFile(f);
+  });
+
+  function loadFile(file) {
+    if (!file) return;
+    if (file.size > 10 * 1024 * 1024) { showToast('File too large (max 10 MB)', 'error'); return; }
+    const reader = new FileReader();
+    reader.onload = e => {
+      // e.target.result is already a data URL: data:<mime>;base64,<b64>
+      const dataUrl = e.target.result;
+      const b64Only = dataUrl.split(',')[1];
+      fileB64Result = b64Only;
+
+      document.getElementById('fileNameOut').textContent = file.name;
+      document.getElementById('fileSizeOut').textContent = formatBytes(file.size);
+      document.getElementById('fileTypeOut').textContent = file.type || 'unknown';
+      document.getElementById('fileB64Size').textContent = formatBytes(b64Only.length);
+
+      // Preview first 1000 chars
+      document.getElementById('fileB64Preview').textContent = b64Only.length > 1000 ? b64Only.slice(0, 1000) + '…' : b64Only;
+
+      document.getElementById('fileDrop').style.display   = 'none';
+      document.getElementById('fileResult').style.display = '';
+      showToast('File encoded!', 'success');
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function downloadFileB64() {
+    if (!fileB64Result) return;
+    const includeUri = document.getElementById('includeDataUri').checked;
+    let content = includeUri ? 'data:application/octet-stream;base64,' + fileB64Result : fileB64Result;
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url; a.download = 'file_encoded.b64'; a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function resetFile() {
+    fileB64Result = '';
+    document.getElementById('fileInput').value = '';
+    document.getElementById('fileDrop').style.display   = '';
+    document.getElementById('fileResult').style.display = 'none';
+    showToast('Reset', 'info');
+  }
+
+  /* ── formatBytes helper (fallback if utils.js missing) ── */
+  if (typeof formatBytes === 'undefined') {
+    window.formatBytes = function(bytes) {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+    };
+  }
+</script>
+
+</body>
+</html>
