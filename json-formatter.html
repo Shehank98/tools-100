@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JSON Formatter & Validator — Pretty Print & Minify JSON — ToolBox</title>
+  <meta name="description" content="Free online JSON formatter and validator. Pretty print, minify and validate JSON instantly in your browser. No data leaves your device." />
+  <link rel="stylesheet" href="style.css" />
+  <script src="utils.js" defer></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+  <style>
+    .json-io-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 680px) {
+      .json-io-grid { grid-template-columns: 1fr; }
+    }
+    .json-area {
+      font-family: 'Fira Mono', 'Cascadia Code', 'Consolas', monospace;
+      font-size: .85rem;
+      line-height: 1.6;
+      resize: vertical;
+      min-height: 260px;
+    }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: .78rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .status-badge.valid   { background: #dcfce7; color: #16a34a; }
+    .status-badge.invalid { background: #fee2e2; color: #dc2626; }
+    .status-badge.idle    { background: var(--surface-2); color: var(--text-3); }
+    .error-msg {
+      font-size: .82rem;
+      color: #dc2626;
+      background: #fee2e2;
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-top: 10px;
+      display: none;
+      word-break: break-word;
+    }
+    .col-label {
+      font-size: .78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--text-3);
+      margin-bottom: 6px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a href="index.html" class="logo">
+      <div class="logo-icon">🛠️</div>
+      ToolBox
+    </a>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="word-counter.html">Word Counter</a>
+      <a href="font-changer.html">Font Changer</a>
+      <a href="password-generator.html">Password</a>
+      <a href="qr-generator.html">QR Code</a>
+      <a href="image-compressor.html">Image Tools</a>
+      <a href="unit-converter.html">Converter</a>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-btn" id="darkToggle" onclick="toggleDarkMode()" title="Toggle dark mode">🌙</button>
+      <button class="icon-btn nav-toggle" onclick="openMobileNav()">☰</button>
+    </div>
+  </div>
+</header>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobileNav">
+  <div class="mobile-nav-backdrop" onclick="closeMobileNav()"></div>
+  <div class="mobile-nav-drawer">
+    <button class="mobile-nav-close" onclick="closeMobileNav()">✕</button>
+    <a href="index.html">🏠 Home</a>
+    <a href="word-counter.html">📄 Word Counter</a>
+    <a href="font-changer.html">✍️ Font Changer</a>
+    <a href="unit-converter.html">📐 Unit Converter</a>
+    <a href="password-generator.html">🔒 Password Generator</a>
+    <a href="qr-generator.html">📱 QR Code Generator</a>
+    <a href="image-to-pdf.html">🖼️ Image to PDF</a>
+    <a href="image-compressor.html">🗜️ Image Compressor</a>
+    <a href="pdf-compressor.html">📋 PDF Compressor</a>
+    <a href="finance-tools.html">💰 Finance Tools</a>
+    <a href="background-remover.html">✂️ Background Remover</a>
+    <a href="color-palette.html">🎨 Color Palette</a>
+    <a href="json-formatter.html" class="active">🔧 JSON Formatter</a>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main>
+
+  <!-- TOP AD -->
+  <div class="ad-unit ad-top">
+    <span class="ad-label">Advertisement</span>
+    <ins class="adsbygoogle" style="display:block;width:100%;min-height:90px"
+         data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX" data-ad-slot="4444444444"
+         data-ad-format="horizontal" data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+
+  <!-- BREADCRUMB -->
+  <div class="breadcrumb">
+    <a href="index.html">🏠 Home</a>
+    <span>›</span>
+    <span>JSON Formatter</span>
+  </div>
+
+  <!-- TOOL LAYOUT -->
+  <div class="tool-layout">
+
+    <!-- LEFT: TOOL -->
+    <div>
+
+      <!-- Main tool box -->
+      <div class="tool-box">
+        <div class="tool-box-header">
+          <h1>🔧 JSON Formatter & Validator</h1>
+          <p>Paste your JSON to validate, pretty-print or minify it — all processed locally in your browser.</p>
+        </div>
+
+        <!-- Status badge -->
+        <div id="statusBadge" class="status-badge idle">⬤ Waiting for input</div>
+
+        <!-- Input / Output grid -->
+        <div class="json-io-grid">
+          <div>
+            <div class="col-label">Input JSON</div>
+            <div class="form-group" style="margin-bottom:0;">
+              <textarea id="jsonInput"
+                class="json-area"
+                placeholder='Paste your JSON here, e.g.&#10;{"name":"Alice","age":30}'
+                oninput="onInputChange()"
+                spellcheck="false"></textarea>
+            </div>
+          </div>
+          <div>
+            <div class="col-label">Output</div>
+            <div class="form-group" style="margin-bottom:0;">
+              <textarea id="jsonOutput"
+                class="json-area"
+                placeholder="Formatted result will appear here..."
+                readonly
+                spellcheck="false"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Error message -->
+        <div id="errorMsg" class="error-msg"></div>
+
+        <!-- Indent option -->
+        <div style="display:flex;align-items:center;gap:12px;margin-top:14px;flex-wrap:wrap;">
+          <label style="font-size:.85rem;font-weight:600;color:var(--text-2);">Indent:</label>
+          <select id="indentSize" onchange="formatJSON()" style="padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--surface-1);color:var(--text-1);font-size:.85rem;">
+            <option value="2" selected>2 spaces</option>
+            <option value="4">4 spaces</option>
+            <option value="tab">Tab</option>
+          </select>
+        </div>
+
+        <!-- Action buttons -->
+        <div class="btn-group" style="margin-top:16px;">
+          <button class="btn btn-primary" onclick="formatJSON()">✨ Format / Pretty Print</button>
+          <button class="btn btn-ghost" onclick="minifyJSON()">📦 Minify</button>
+          <button class="btn btn-ghost" onclick="copyOutput()">📋 Copy Output</button>
+          <button class="btn btn-ghost" onclick="clearAll()">🗑️ Clear</button>
+          <button class="btn btn-ghost" onclick="loadSample()">📝 Sample</button>
+        </div>
+      </div>
+
+      <!-- MID AD -->
+      <div class="ad-unit ad-mid">
+        <span class="ad-label">Advertisement</span>
+        <ins class="adsbygoogle" style="display:block;width:100%;min-height:90px"
+             data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX" data-ad-slot="5555555555"
+             data-ad-format="horizontal" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </div>
+
+      <!-- How it works -->
+      <div class="tool-box">
+        <h2>💡 How It Works</h2>
+        <ul class="tips-list">
+          <li>Paste any JSON text and click <strong>Format</strong> to pretty-print it with indentation.</li>
+          <li>Use <strong>Minify</strong> to strip all whitespace for compact JSON ready for APIs.</li>
+          <li>The validator detects <strong>syntax errors</strong> and shows the exact position in the JSON.</li>
+          <li>Choose between <strong>2 spaces, 4 spaces, or tab</strong> indentation for formatted output.</li>
+          <li>All processing happens <strong>entirely in your browser</strong> — no data is ever sent to a server.</li>
+        </ul>
+      </div>
+
+      <!-- Common errors -->
+      <div class="tool-box">
+        <h2>🐛 Common JSON Errors</h2>
+        <ul class="tips-list">
+          <li><strong>Trailing commas</strong> — JSON does not allow a comma after the last item in an array or object.</li>
+          <li><strong>Single quotes</strong> — Keys and string values must use double quotes (<code>"</code>), not single quotes.</li>
+          <li><strong>Unquoted keys</strong> — All object keys must be quoted strings: <code>{"key": "value"}</code>.</li>
+          <li><strong>Comments</strong> — Standard JSON does not support comments (<code>// ...</code> or <code>/* ... */</code>).</li>
+          <li><strong>Undefined / NaN / Infinity</strong> — These JavaScript values are not valid in JSON.</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: SIDEBAR -->
+    <aside class="sidebar">
+
+      <!-- Sidebar Ad -->
+      <div class="ad-unit ad-rect">
+        <span class="ad-label">Advertisement</span>
+        <ins class="adsbygoogle" style="display:block;width:100%;min-height:250px"
+             data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX" data-ad-slot="6666666666"
+             data-ad-format="rectangle" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </div>
+
+      <!-- JSON Stats -->
+      <div class="tool-box">
+        <h3>📊 JSON Stats</h3>
+        <div id="jsonStats" style="font-size:.85rem;color:var(--text-2);">
+          <div style="color:var(--text-3);">Paste JSON to see stats...</div>
+        </div>
+      </div>
+
+      <!-- Quick Reference -->
+      <div class="tool-box">
+        <h3>📖 JSON Quick Reference</h3>
+        <ul class="tips-list" style="font-size:.82rem;">
+          <li><strong>Object:</strong> <code>{"key": value}</code></li>
+          <li><strong>Array:</strong> <code>[1, 2, 3]</code></li>
+          <li><strong>String:</strong> <code>"hello world"</code></li>
+          <li><strong>Number:</strong> <code>42</code> or <code>3.14</code></li>
+          <li><strong>Boolean:</strong> <code>true</code> / <code>false</code></li>
+          <li><strong>Null:</strong> <code>null</code></li>
+        </ul>
+      </div>
+
+      <!-- Related Tools -->
+      <div class="tool-box">
+        <h3>Related Tools</h3>
+        <div class="related-tools">
+          <a href="word-counter.html" class="related-item">
+            <div class="related-icon" style="background:#ede9fe;">📄</div>
+            <div class="related-item-text">
+              <strong>Word Counter</strong>
+              <span>Count words & characters</span>
+            </div>
+          </a>
+          <a href="password-generator.html" class="related-item">
+            <div class="related-icon" style="background:#dcfce7;">🔒</div>
+            <div class="related-item-text">
+              <strong>Password Generator</strong>
+              <span>Secure passwords</span>
+            </div>
+          </a>
+          <a href="unit-converter.html" class="related-item">
+            <div class="related-icon" style="background:#e0f2fe;">📐</div>
+            <div class="related-item-text">
+              <strong>Unit Converter</strong>
+              <span>Length, weight, temp</span>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- Sidebar Ad 2 -->
+      <div class="ad-unit ad-rect">
+        <span class="ad-label">Advertisement</span>
+        <ins class="adsbygoogle" style="display:block;width:100%;min-height:250px"
+             data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX" data-ad-slot="7777777777"
+             data-ad-format="rectangle" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </div>
+
+    </aside>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="index.html" class="logo" style="color:#fff;">
+          <div class="logo-icon">🛠️</div> ToolBox
+        </a>
+        <p style="margin-top:12px;">Free, fast, privacy-friendly tools for everyday tasks.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Text Tools</h4>
+        <ul>
+          <li><a href="word-counter.html">Word Counter</a></li>
+          <li><a href="font-changer.html">Font Changer</a></li>
+          <li><a href="json-formatter.html">JSON Formatter</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Converters</h4>
+        <ul>
+          <li><a href="unit-converter.html">Unit Converter</a></li>
+          <li><a href="qr-generator.html">QR Code Generator</a></li>
+          <li><a href="image-to-pdf.html">Image to PDF</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Other Tools</h4>
+        <ul>
+          <li><a href="password-generator.html">Password Generator</a></li>
+          <li><a href="image-compressor.html">Image Compressor</a></li>
+          <li><a href="pdf-compressor.html">PDF Compressor</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 ToolBox. All rights reserved.</span>
+      <div class="footer-links">
+        <a href="privacy-policy.html">Privacy Policy</a>
+        <a href="terms.html">Terms</a>
+        <a href="contact.html">Contact</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const SAMPLE_JSON = `{
+  "name": "Alice Johnson",
+  "age": 30,
+  "isActive": true,
+  "scores": [98, 87, 95, 100],
+  "address": {
+    "street": "123 Main St",
+    "city": "Springfield",
+    "zip": "12345"
+  },
+  "tags": ["developer", "designer", "open-source"],
+  "notes": null
+}`;
+
+  function getIndent() {
+    const v = document.getElementById('indentSize').value;
+    return v === 'tab' ? '\t' : parseInt(v, 10);
+  }
+
+  function setStatus(state, msg) {
+    const badge = document.getElementById('statusBadge');
+    badge.className = 'status-badge ' + state;
+    const icons = { valid: '✔', invalid: '✖', idle: '⬤' };
+    badge.textContent = (icons[state] || '⬤') + ' ' + msg;
+  }
+
+  function showError(msg) {
+    const el = document.getElementById('errorMsg');
+    el.textContent = msg;
+    el.style.display = 'block';
+  }
+
+  function hideError() {
+    document.getElementById('errorMsg').style.display = 'none';
+  }
+
+  function updateStats(parsed) {
+    if (parsed === null) {
+      document.getElementById('jsonStats').innerHTML = '<div style="color:var(--text-3);">Paste JSON to see stats...</div>';
+      return;
+    }
+
+    const raw = document.getElementById('jsonInput').value;
+    const minified = JSON.stringify(parsed);
+    const formatted = JSON.stringify(parsed, null, 2);
+
+    const type = Array.isArray(parsed) ? 'Array' : (typeof parsed === 'object' ? 'Object' : typeof parsed);
+    const topKeys = (type === 'Object') ? Object.keys(parsed).length : (type === 'Array' ? parsed.length : '—');
+    const labelKey = type === 'Array' ? 'Items' : 'Top-level keys';
+
+    document.getElementById('jsonStats').innerHTML = `
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="stat-card" style="padding:10px 12px;">
+          <span class="stat-val" style="font-size:1.1rem;">${type}</span>
+          <span class="stat-lbl">Root type</span>
+        </div>
+        <div class="stat-card" style="padding:10px 12px;">
+          <span class="stat-val" style="font-size:1.1rem;">${topKeys}</span>
+          <span class="stat-lbl">${labelKey}</span>
+        </div>
+        <div class="stat-card" style="padding:10px 12px;">
+          <span class="stat-val" style="font-size:1.1rem;">${formatBytes(new TextEncoder().encode(raw).length)}</span>
+          <span class="stat-lbl">Input size</span>
+        </div>
+        <div class="stat-card" style="padding:10px 12px;">
+          <span class="stat-val" style="font-size:1.1rem;">${formatBytes(new TextEncoder().encode(minified).length)}</span>
+          <span class="stat-lbl">Minified size</span>
+        </div>
+      </div>`;
+  }
+
+  function parseInput() {
+    const input = document.getElementById('jsonInput').value.trim();
+    if (!input) return { ok: false, parsed: null, empty: true };
+    try {
+      const parsed = JSON.parse(input);
+      return { ok: true, parsed };
+    } catch (e) {
+      return { ok: false, error: e.message, parsed: null };
+    }
+  }
+
+  function onInputChange() {
+    const input = document.getElementById('jsonInput').value.trim();
+    if (!input) {
+      setStatus('idle', 'Waiting for input');
+      hideError();
+      document.getElementById('jsonOutput').value = '';
+      updateStats(null);
+      return;
+    }
+    const result = parseInput();
+    if (result.ok) {
+      setStatus('valid', 'Valid JSON');
+      hideError();
+      updateStats(result.parsed);
+    } else {
+      setStatus('invalid', 'Invalid JSON');
+      showError('Syntax error: ' + result.error);
+      updateStats(null);
+      document.getElementById('jsonOutput').value = '';
+    }
+  }
+
+  function formatJSON() {
+    const result = parseInput();
+    if (result.empty) { showToast('Please paste some JSON first', 'warning'); return; }
+    if (!result.ok) {
+      setStatus('invalid', 'Invalid JSON');
+      showError('Cannot format — syntax error: ' + result.error);
+      return;
+    }
+    hideError();
+    setStatus('valid', 'Valid JSON');
+    document.getElementById('jsonOutput').value = JSON.stringify(result.parsed, null, getIndent());
+    updateStats(result.parsed);
+    showToast('JSON formatted!', 'success');
+  }
+
+  function minifyJSON() {
+    const result = parseInput();
+    if (result.empty) { showToast('Please paste some JSON first', 'warning'); return; }
+    if (!result.ok) {
+      setStatus('invalid', 'Invalid JSON');
+      showError('Cannot minify — syntax error: ' + result.error);
+      return;
+    }
+    hideError();
+    setStatus('valid', 'Valid JSON');
+    document.getElementById('jsonOutput').value = JSON.stringify(result.parsed);
+    updateStats(result.parsed);
+    showToast('JSON minified!', 'success');
+  }
+
+  async function copyOutput() {
+    const output = document.getElementById('jsonOutput').value;
+    if (!output.trim()) { showToast('Nothing to copy — format or minify first', 'warning'); return; }
+    await copyToClipboard(output);
+  }
+
+  function clearAll() {
+    document.getElementById('jsonInput').value = '';
+    document.getElementById('jsonOutput').value = '';
+    hideError();
+    setStatus('idle', 'Waiting for input');
+    updateStats(null);
+    showToast('Cleared', 'info');
+  }
+
+  function loadSample() {
+    document.getElementById('jsonInput').value = SAMPLE_JSON;
+    onInputChange();
+    formatJSON();
+  }
+</script>
+
+</body>
+</html>
