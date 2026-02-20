@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Background Remover — Free, No Quality Loss — ToolBox</title>
+  <meta name="description" content="Remove image backgrounds instantly with AI. No quality loss, fully in-browser, no upload to servers. Download as transparent PNG." />
+  <link rel="stylesheet" href="style.css" />
+  <script src="utils.js" defer></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+  <style>
+    /* ─── Hero ─── */
+    .bgr-hero {
+      background: linear-gradient(135deg, #1e1b4b 0%, #312e81 45%, #4c1d95 100%);
+      padding: 52px 20px 44px;
+      text-align: center;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+    .bgr-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 120%, rgba(139,92,246,.35) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .bgr-hero h1 { font-size: clamp(1.7rem, 4.5vw, 2.6rem); font-weight: 900; margin-bottom: 10px; position: relative; }
+    .bgr-hero p  { font-size: 1rem; opacity: .85; max-width: 540px; margin: 0 auto; position: relative; }
+    .bgr-hero-badges {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 18px;
+      position: relative;
+    }
+    .bgr-badge {
+      background: rgba(255,255,255,.15);
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255,255,255,.25);
+      border-radius: 20px;
+      padding: 5px 14px;
+      font-size: .78rem;
+      font-weight: 600;
+    }
+
+    /* ─── Floating particle dots behind hero ─── */
+    .hero-dot {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255,255,255,.18);
+      animation: floatDot linear infinite;
+      pointer-events: none;
+    }
+    @keyframes floatDot {
+      0%   { transform: translateY(0) scale(1);   opacity: .7; }
+      50%  { transform: translateY(-30px) scale(1.2); opacity: .3; }
+      100% { transform: translateY(0) scale(1);   opacity: .7; }
+    }
+
+    /* ─── Main tool wrapper ─── */
+    .bgr-tool { max-width: 900px; margin: 0 auto; }
+
+    /* ─── PHASE 1: Upload Zone ─── */
+    #phase-upload { animation: fadeIn .4s ease; }
+
+    .upload-zone {
+      position: relative;
+      border-radius: 20px;
+      padding: 60px 32px;
+      text-align: center;
+      cursor: pointer;
+      overflow: hidden;
+      background: var(--surface-1);
+      transition: transform .2s;
+    }
+    .upload-zone:hover { transform: translateY(-3px); }
+    .upload-zone:hover .uz-border { animation-duration: 1.5s; }
+
+    /* Animated conic-gradient border */
+    .uz-border {
+      position: absolute;
+      inset: -3px;
+      border-radius: 23px;
+      background: conic-gradient(
+        from 0deg,
+        #7c3aed, #a855f7, #ec4899, #f59e0b,
+        #10b981, #3b82f6, #7c3aed
+      );
+      animation: rotateBorder 3s linear infinite;
+      z-index: 0;
+    }
+    .uz-inner {
+      position: relative;
+      z-index: 1;
+      background: var(--surface-1);
+      border-radius: 18px;
+      padding: 52px 24px;
+      margin: 3px;
+    }
+    @keyframes rotateBorder {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Floating icons inside upload zone */
+    .uz-icons {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+    .uz-icon {
+      font-size: 2rem;
+      animation: floatIcon ease-in-out infinite;
+    }
+    .uz-icon:nth-child(1) { animation-duration: 3.0s; animation-delay: 0.0s; }
+    .uz-icon:nth-child(2) { animation-duration: 2.6s; animation-delay: 0.4s; }
+    .uz-icon:nth-child(3) { animation-duration: 3.4s; animation-delay: 0.8s; }
+    @keyframes floatIcon {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-14px); }
+    }
+
+    .uz-title { font-size: 1.25rem; font-weight: 800; color: var(--text-1); margin-bottom: 8px; }
+    .uz-sub   { font-size: .88rem; color: var(--text-2); margin-bottom: 20px; }
+    .uz-btn   {
+      display: inline-block;
+      padding: 12px 28px;
+      background: linear-gradient(135deg, #7c3aed, #a855f7);
+      color: #fff;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: .9rem;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 18px rgba(124,58,237,.4);
+      transition: transform .15s, box-shadow .15s;
+    }
+    .uz-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(124,58,237,.5); }
+    .uz-formats { font-size: .75rem; color: var(--text-3); margin-top: 16px; }
+
+    .upload-zone.dragover .uz-border { animation-duration: .6s; }
+    .upload-zone.dragover .uz-inner  { background: color-mix(in srgb, var(--clr-primary) 6%, var(--surface-1)); }
+
+    /* ─── PHASE 2: Processing ─── */
+    #phase-process { display: none; animation: fadeIn .4s ease; }
+
+    .process-card {
+      background: var(--surface-1);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 52px 32px;
+      text-align: center;
+    }
+
+    /* Circular progress ring */
+    .ring-wrap {
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 28px;
+      position: relative;
+    }
+    .ring-wrap svg { transform: rotate(-90deg); }
+    .ring-bg { fill: none; stroke: var(--border); stroke-width: 8; }
+    .ring-fg {
+      fill: none;
+      stroke: url(#ringGrad);
+      stroke-width: 8;
+      stroke-linecap: round;
+      stroke-dasharray: 320;
+      stroke-dashoffset: 320;
+      transition: stroke-dashoffset .4s ease;
+    }
+    .ring-icon {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.4rem;
+      animation: pulseSpin 2s ease-in-out infinite;
+    }
+    @keyframes pulseSpin {
+      0%, 100% { transform: scale(1)   rotate(0deg);   }
+      50%       { transform: scale(1.12) rotate(8deg);  }
+    }
+
+    .process-title { font-size: 1.2rem; font-weight: 800; color: var(--text-1); margin-bottom: 6px; }
+    .process-msg   { font-size: .88rem; color: var(--text-2); margin-bottom: 24px; min-height: 22px; }
+
+    /* Shimmer progress bar */
+    .shimmer-track {
+      height: 8px;
+      border-radius: 8px;
+      background: var(--surface-2);
+      overflow: hidden;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    .shimmer-fill {
+      height: 100%;
+      border-radius: 8px;
+      background: linear-gradient(90deg, #7c3aed, #a855f7, #ec4899);
+      background-size: 200% 100%;
+      animation: shimmerSlide 1.4s ease-in-out infinite;
+      transition: width .5s ease;
+      width: 0%;
+    }
+    @keyframes shimmerSlide {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    .process-pct { font-size: .78rem; color: var(--text-3); margin-top: 8px; }
+
+    /* Animated step dots */
+    .process-steps {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 28px;
+      flex-wrap: wrap;
+    }
+    .p-step {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: .78rem;
+      color: var(--text-3);
+      font-weight: 500;
+      transition: color .3s;
+    }
+    .p-step.done  { color: #22c55e; }
+    .p-step.active { color: var(--clr-primary); }
+    .p-step .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--border);
+      transition: background .3s;
+      flex-shrink: 0;
+    }
+    .p-step.done  .dot { background: #22c55e; }
+    .p-step.active .dot { background: var(--clr-primary); animation: dotPulse 1s ease-in-out infinite; }
+    @keyframes dotPulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50%       { transform: scale(1.7); opacity: .6; }
+    }
+
+    /* ─── PHASE 3: Result ─── */
+    #phase-result { display: none; animation: resultReveal .5s cubic-bezier(.34,1.56,.64,1); }
+    @keyframes resultReveal {
+      from { opacity: 0; transform: scale(.94) translateY(16px); }
+      to   { opacity: 1; transform: scale(1)   translateY(0); }
+    }
+
+    .result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .result-header h3 { font-size: 1rem; font-weight: 800; color: var(--text-1); }
+    .result-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+    .btn-dl {
+      padding: 10px 22px;
+      background: linear-gradient(135deg, #7c3aed, #a855f7);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: .875rem;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(124,58,237,.35);
+      transition: transform .15s, box-shadow .15s;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-dl::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,.18);
+      transform: translateX(-100%);
+      transition: transform .3s;
+    }
+    .btn-dl:hover::after { transform: translateX(100%); }
+    .btn-dl:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(124,58,237,.45); }
+
+    .btn-retry {
+      padding: 10px 18px;
+      background: var(--surface-2);
+      color: var(--text-2);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: .875rem;
+      cursor: pointer;
+      transition: border-color .18s, color .18s;
+    }
+    .btn-retry:hover { border-color: var(--clr-primary); color: var(--clr-primary); }
+
+    /* ─── Before / After Comparison Slider ─── */
+    .compare-wrap {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      cursor: ew-resize;
+      user-select: none;
+      touch-action: none;
+      background: var(--surface-2);
+      max-height: 520px;
+    }
+    .compare-wrap img {
+      display: block;
+      width: 100%;
+      max-height: 520px;
+      object-fit: contain;
+    }
+
+    /* Original (left/back layer) */
+    .cmp-original {
+      display: block;
+      width: 100%;
+    }
+    /* Result layer clipped by slider */
+    .cmp-result-layer {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+    .cmp-result-layer .cmp-canvas-wrap {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    /* The checker + result canvas */
+    .cmp-result-canvas {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .checker-bg {
+      background-image:
+        linear-gradient(45deg, #d1d5db 25%, transparent 25%),
+        linear-gradient(-45deg, #d1d5db 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #d1d5db 75%),
+        linear-gradient(-45deg, transparent 75%, #d1d5db 75%);
+      background-size: 20px 20px;
+      background-position: 0 0, 0 10px, 10px -10px, -10px 0;
+      background-color: #f9fafb;
+    }
+    [data-theme="dark"] .checker-bg {
+      background-image:
+        linear-gradient(45deg, #374151 25%, transparent 25%),
+        linear-gradient(-45deg, #374151 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #374151 75%),
+        linear-gradient(-45deg, transparent 75%, #374151 75%);
+      background-color: #1f2937;
+    }
+
+    /* Slider handle */
+    .cmp-handle {
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 3px;
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(124,58,237,.6), 0 0 20px rgba(124,58,237,.4);
+      animation: handleGlow 2s ease-in-out infinite;
+      cursor: ew-resize;
+      z-index: 10;
+    }
+    @keyframes handleGlow {
+      0%, 100% { box-shadow: 0 0 0 3px rgba(124,58,237,.5), 0 0 16px rgba(124,58,237,.3); }
+      50%       { box-shadow: 0 0 0 3px rgba(168,85,247,.9), 0 0 28px rgba(168,85,247,.6); }
+    }
+    .cmp-knob {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 42px; height: 42px;
+      background: linear-gradient(135deg, #7c3aed, #a855f7);
+      border-radius: 50%;
+      border: 3px solid #fff;
+      box-shadow: 0 2px 12px rgba(0,0,0,.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: .85rem;
+      font-weight: 700;
+    }
+    .cmp-label {
+      position: absolute;
+      top: 12px;
+      background: rgba(0,0,0,.55);
+      backdrop-filter: blur(4px);
+      color: #fff;
+      font-size: .72rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+      pointer-events: none;
+      letter-spacing: .04em;
+    }
+    .cmp-label.left-lbl  { left: 12px; }
+    .cmp-label.right-lbl { right: 12px; }
+
+    /* ─── Background Replace Panel ─── */
+    .bg-panel {
+      background: var(--surface-1);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px 20px;
+      margin-top: 18px;
+    }
+    .bg-panel-title { font-size: .85rem; font-weight: 700; color: var(--text-1); margin-bottom: 14px; }
+    .bg-swatches {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .swatch {
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      border: 2px solid var(--border);
+      cursor: pointer;
+      transition: transform .15s, border-color .15s;
+      flex-shrink: 0;
+    }
+    .swatch:hover { transform: scale(1.15); }
+    .swatch.active { border-color: var(--clr-primary); box-shadow: 0 0 0 2px var(--clr-primary); }
+    .swatch-checker {
+      background-image:
+        linear-gradient(45deg, #d1d5db 25%, transparent 25%),
+        linear-gradient(-45deg, #d1d5db 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #d1d5db 75%),
+        linear-gradient(-45deg, transparent 75%, #d1d5db 75%);
+      background-size: 10px 10px;
+      background-position: 0 0, 0 5px, 5px -5px, -5px 0;
+      background-color: #f9fafb;
+    }
+    .swatch-custom { position: relative; overflow: hidden; }
+    .swatch-custom input[type="color"] {
+      position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+    }
+    .swatch-custom::after { content: '🎨'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: .85rem; }
+
+    /* ─── Animations ─── */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── Error state ─── */
+    .error-box {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      color: #991b1b;
+      font-size: .88rem;
+    }
+    [data-theme="dark"] .error-box { background: #1c0a0a; border-color: #7f1d1d; color: #fca5a5; }
+    .error-box .e-icon { font-size: 2rem; margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a href="index.html" class="logo">
+      <div class="logo-icon">🛠️</div>
+      ToolBox
+    </a>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="image-compressor.html">Image Tools</a>
+      <a href="image-to-pdf.html">Image to PDF</a>
+      <a href="finance-tools.html">Finance</a>
+      <a href="background-remover.html" class="active">BG Remover</a>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-btn" id="darkToggle" onclick="toggleDarkMode()" title="Toggle dark mode">🌙</button>
+      <button class="icon-btn nav-toggle" onclick="openMobileNav()">☰</button>
+    </div>
+  </div>
+</header>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobileNav">
+  <div class="mobile-nav-backdrop" onclick="closeMobileNav()"></div>
+  <div class="mobile-nav-drawer">
+    <button class="mobile-nav-close" onclick="closeMobileNav()">✕</button>
+    <a href="index.html">🏠 Home</a>
+    <a href="word-counter.html">📄 Word Counter</a>
+    <a href="font-changer.html">✍️ Font Changer</a>
+    <a href="unit-converter.html">📐 Unit Converter</a>
+    <a href="password-generator.html">🔒 Password Generator</a>
+    <a href="qr-generator.html">📱 QR Code Generator</a>
+    <a href="image-to-pdf.html">🖼️ Image to PDF</a>
+    <a href="image-compressor.html">🗜️ Image Compressor</a>
+    <a href="pdf-compressor.html">📋 PDF Compressor</a>
+    <a href="finance-tools.html">💰 Finance Tools</a>
+    <a href="background-remover.html" class="active">✂️ Background Remover</a>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="bgr-hero">
+  <!-- Floating dots -->
+  <div class="hero-dot" style="width:12px;height:12px;top:18%;left:12%;animation-duration:3.2s;animation-delay:0s;"></div>
+  <div class="hero-dot" style="width:8px;height:8px;top:60%;left:8%;animation-duration:2.6s;animation-delay:.5s;"></div>
+  <div class="hero-dot" style="width:16px;height:16px;top:25%;right:10%;animation-duration:3.8s;animation-delay:1s;"></div>
+  <div class="hero-dot" style="width:10px;height:10px;top:70%;right:15%;animation-duration:2.9s;animation-delay:.3s;"></div>
+  <div class="hero-dot" style="width:6px;height:6px;top:45%;left:20%;animation-duration:4s;animation-delay:.8s;"></div>
+
+  <h1>✂️ AI Background Remover</h1>
+  <p>Remove backgrounds from any image in seconds — powered by AI, runs entirely in your browser, zero quality loss.</p>
+  <div class="bgr-hero-badges">
+    <span class="bgr-badge">🤖 AI-Powered</span>
+    <span class="bgr-badge">🔒 100% Private</span>
+    <span class="bgr-badge">🖼️ Transparent PNG</span>
+    <span class="bgr-badge">⚡ No Upload Needed</span>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main>
+  <!-- TOP AD -->
+  <div class="ad-unit ad-top">
+    <span class="ad-label">Advertisement</span>
+    <ins class="adsbygoogle" style="display:block;width:100%;min-height:90px"
+         data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX"
+         data-ad-slot="7777777777"
+         data-ad-format="horizontal"
+         data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+
+  <div class="bgr-tool">
+
+    <!-- ═══════ PHASE 1: UPLOAD ═══════ -->
+    <div id="phase-upload">
+      <div class="upload-zone" id="uploadZone"
+           ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event)"
+           onclick="document.getElementById('fileInput').click()">
+        <div class="uz-border"></div>
+        <div class="uz-inner">
+          <div class="uz-icons">
+            <span class="uz-icon">🖼️</span>
+            <span class="uz-icon">✂️</span>
+            <span class="uz-icon">🤖</span>
+          </div>
+          <div class="uz-title">Drop your image here</div>
+          <div class="uz-sub">or click to browse from your device</div>
+          <button class="uz-btn" type="button">Choose Image</button>
+          <div class="uz-formats">Supports JPG, PNG, WebP, BMP &mdash; Max 20 MB</div>
+        </div>
+      </div>
+      <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp,image/bmp" style="display:none" onchange="onFileSelect(event)" />
+    </div>
+
+    <!-- ═══════ PHASE 2: PROCESSING ═══════ -->
+    <div id="phase-process">
+      <div class="process-card">
+
+        <!-- SVG ring with gradient -->
+        <div class="ring-wrap">
+          <svg width="120" height="120" viewBox="0 0 120 120">
+            <defs>
+              <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%"   stop-color="#7c3aed"/>
+                <stop offset="50%"  stop-color="#a855f7"/>
+                <stop offset="100%" stop-color="#ec4899"/>
+              </linearGradient>
+            </defs>
+            <circle class="ring-bg" cx="60" cy="60" r="51"/>
+            <circle class="ring-fg" id="ringFg" cx="60" cy="60" r="51"/>
+          </svg>
+          <div class="ring-icon">🤖</div>
+        </div>
+
+        <div class="process-title">AI is removing the background…</div>
+        <div class="process-msg" id="processMsg">Loading AI model…</div>
+
+        <div class="shimmer-track">
+          <div class="shimmer-fill" id="shimmerFill"></div>
+        </div>
+        <div class="process-pct" id="processPct">0%</div>
+
+        <div class="process-steps">
+          <div class="p-step" id="step0"><div class="dot"></div>Loading model</div>
+          <div class="p-step" id="step1"><div class="dot"></div>Analysing image</div>
+          <div class="p-step" id="step2"><div class="dot"></div>Detecting edges</div>
+          <div class="p-step" id="step3"><div class="dot"></div>Removing background</div>
+          <div class="p-step" id="step4"><div class="dot"></div>Finalising</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════ PHASE 3: RESULT ═══════ -->
+    <div id="phase-result">
+      <div class="result-header">
+        <h3>✅ Background Removed Successfully!</h3>
+        <div class="result-actions">
+          <button class="btn-retry" onclick="resetTool()">🔄 Try Another</button>
+          <button class="btn-dl" onclick="downloadResult('png')">⬇ Download PNG</button>
+        </div>
+      </div>
+
+      <!-- Before / After Comparison -->
+      <div class="compare-wrap" id="compareWrap">
+        <img id="cmpOriginal" class="cmp-original" alt="Original" />
+
+        <div class="cmp-result-layer" id="cmpResultLayer">
+          <div class="cmp-canvas-wrap checker-bg">
+            <canvas id="cmpCanvas" class="cmp-result-canvas"></canvas>
+          </div>
+        </div>
+
+        <div class="cmp-handle" id="cmpHandle">
+          <div class="cmp-knob">◀▶</div>
+        </div>
+
+        <span class="cmp-label left-lbl">ORIGINAL</span>
+        <span class="cmp-label right-lbl">NO BG</span>
+      </div>
+      <p style="text-align:center;font-size:.75rem;color:var(--text-3);margin-top:8px;">← Drag the slider to compare →</p>
+
+      <!-- Background replacement -->
+      <div class="bg-panel">
+        <div class="bg-panel-title">🎨 Replace Background (optional)</div>
+        <div class="bg-swatches">
+          <div class="swatch swatch-checker active" title="Transparent" onclick="setBg('transparent', this)"></div>
+          <div class="swatch" style="background:#ffffff;" title="White"  onclick="setBg('#ffffff', this)"></div>
+          <div class="swatch" style="background:#000000;" title="Black"  onclick="setBg('#000000', this)"></div>
+          <div class="swatch" style="background:#ef4444;" title="Red"    onclick="setBg('#ef4444', this)"></div>
+          <div class="swatch" style="background:#3b82f6;" title="Blue"   onclick="setBg('#3b82f6', this)"></div>
+          <div class="swatch" style="background:#22c55e;" title="Green"  onclick="setBg('#22c55e', this)"></div>
+          <div class="swatch" style="background:#f59e0b;" title="Yellow" onclick="setBg('#f59e0b', this)"></div>
+          <div class="swatch" style="background:linear-gradient(135deg,#7c3aed,#ec4899);" title="Gradient" onclick="setBg('gradient', this)"></div>
+          <div class="swatch swatch-custom" title="Custom color">
+            <input type="color" id="customColorPicker" value="#8b5cf6" onchange="setBg(this.value, null)" oninput="setBg(this.value, null)" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Hidden canvas for download -->
+      <canvas id="downloadCanvas" style="display:none;"></canvas>
+    </div>
+
+  </div><!-- /bgr-tool -->
+
+  <!-- MID AD -->
+  <div class="ad-unit ad-mid" style="margin-top:36px;">
+    <span class="ad-label">Advertisement</span>
+    <ins class="adsbygoogle" style="display:block;width:100%;min-height:90px"
+         data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX"
+         data-ad-slot="8888888888"
+         data-ad-format="horizontal"
+         data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+
+  <!-- RELATED TOOLS -->
+  <div style="margin-top:8px;">
+    <h3 style="font-size:1rem;font-weight:700;margin-bottom:14px;color:var(--text-1);">More Image Tools</h3>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;">
+      <a href="image-compressor.html"  class="related-item">🗜️ Image Compressor</a>
+      <a href="image-to-pdf.html"      class="related-item">🖼️ Image to PDF</a>
+      <a href="qr-generator.html"      class="related-item">📱 QR Code Generator</a>
+      <a href="pdf-compressor.html"    class="related-item">📋 PDF Compressor</a>
+    </div>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="index.html" class="logo" style="color:#fff;">
+          <div class="logo-icon">🛠️</div> ToolBox
+        </a>
+        <p style="margin-top:12px;">Free, fast, privacy-friendly tools for everyday tasks. No account, no cost — just open and use.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Image Tools</h4>
+        <ul>
+          <li><a href="background-remover.html">Background Remover</a></li>
+          <li><a href="image-compressor.html">Image Compressor</a></li>
+          <li><a href="image-to-pdf.html">Image to PDF</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Other Tools</h4>
+        <ul>
+          <li><a href="word-counter.html">Word Counter</a></li>
+          <li><a href="password-generator.html">Password Generator</a></li>
+          <li><a href="finance-tools.html">Finance Tools</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="privacy-policy.html">Privacy Policy</a></li>
+          <li><a href="terms.html">Terms &amp; Conditions</a></li>
+          <li><a href="disclaimer.html">Disclaimer</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 ToolBox. All rights reserved.</span>
+      <div class="footer-links">
+        <a href="about.html">About</a>
+        <a href="privacy-policy.html">Privacy Policy</a>
+        <a href="terms.html">Terms</a>
+        <a href="disclaimer.html">Disclaimer</a>
+        <a href="contact.html">Contact</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════════════════════════ -->
+<script type="module">
+  /* ── CDN import for @imgly/background-removal ── */
+  const CDN_BASE = 'https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.4.5/dist/';
+  let removeBackground;
+
+  async function loadLibrary() {
+    try {
+      const mod = await import(CDN_BASE + 'browser.mjs');
+      removeBackground = mod.removeBackground;
+    } catch (e) {
+      console.error('Failed to load AI library:', e);
+      removeBackground = null;
+    }
+  }
+
+  /* Preload library in the background */
+  loadLibrary();
+
+  /* ── State ── */
+  let originalFile = null;
+  let resultBlob   = null;
+  let resultImg    = null;   // HTMLImageElement of result
+  let currentBg    = 'transparent';
+
+  /* ── Phase helpers ── */
+  function showPhase(name) {
+    ['upload','process','result'].forEach(p => {
+      document.getElementById('phase-' + p).style.display = p === name ? '' : 'none';
+    });
+  }
+
+  /* ── Drag & Drop ── */
+  window.onDragOver = function(e) {
+    e.preventDefault();
+    document.getElementById('uploadZone').classList.add('dragover');
+  };
+  window.onDragLeave = function() {
+    document.getElementById('uploadZone').classList.remove('dragover');
+  };
+  window.onDrop = function(e) {
+    e.preventDefault();
+    document.getElementById('uploadZone').classList.remove('dragover');
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) startProcess(file);
+    else showToast('Please drop a valid image file.', 'error');
+  };
+  window.onFileSelect = function(e) {
+    const file = e.target.files[0];
+    if (file) startProcess(file);
+  };
+
+  /* ── Main process ── */
+  async function startProcess(file) {
+    if (file.size > 20 * 1024 * 1024) {
+      showToast('Image is too large. Please use an image under 20 MB.', 'error');
+      return;
+    }
+    originalFile = file;
+    showPhase('process');
+    setProgress(0, 'Loading AI model…', 0);
+
+    /* If library not loaded yet, wait */
+    if (!removeBackground) {
+      await loadLibrary();
+    }
+    if (!removeBackground) {
+      showError('Could not load the AI library. Please check your internet connection and try again.');
+      return;
+    }
+
+    try {
+      const resultBlob_ = await removeBackground(file, {
+        publicPath: CDN_BASE,
+        debug: false,
+        model: 'medium',
+        progress: (key, current, total) => {
+          const pct = total > 0 ? Math.round((current / total) * 100) : 0;
+          updateProgress(key, pct);
+        }
+      });
+
+      resultBlob = resultBlob_;
+      await showResult();
+    } catch (err) {
+      console.error(err);
+      showError('Background removal failed. The image may be unsupported or too complex. Please try another image.');
+    }
+  }
+
+  /* ── Progress tracking ── */
+  const STEPS = [
+    { key: 'model',    label: 'Loading model',       msg: 'Downloading AI model weights…',   idx: 0 },
+    { key: 'fetch',    label: 'Analysing image',      msg: 'Analysing image content…',        idx: 1 },
+    { key: 'compute',  label: 'Detecting edges',      msg: 'Detecting object edges…',         idx: 2 },
+    { key: 'mask',     label: 'Removing background',  msg: 'Removing the background…',        idx: 3 },
+    { key: 'encode',   label: 'Finalising',           msg: 'Generating transparent PNG…',     idx: 4 },
+  ];
+  let globalPct = 0;
+
+  function updateProgress(key, pct) {
+    /* Map library keys to our step stages */
+    let stepIdx = 0;
+    if (key.includes('fetch') || key.includes('load'))   stepIdx = 0;
+    else if (key.includes('infer') || key.includes('run')) stepIdx = 2;
+    else if (key.includes('mask'))                         stepIdx = 3;
+    else if (key.includes('encode') || key.includes('post')) stepIdx = 4;
+
+    /* Overall progress: spread steps across 0–100 */
+    const base = (stepIdx / 5) * 100;
+    const span = 20;
+    const overall = Math.min(98, Math.round(base + (pct / 100) * span));
+    globalPct = Math.max(globalPct, overall);
+
+    const msgs = ['Downloading AI model…', 'Analysing your image…', 'Detecting object edges…', 'Removing background…', 'Generating PNG…'];
+    setProgress(globalPct, msgs[stepIdx] || 'Processing…', stepIdx);
+  }
+
+  function setProgress(pct, msg, activeStep) {
+    /* Ring */
+    const circumference = 2 * Math.PI * 51; // 320.4
+    const dashOffset = circumference - (pct / 100) * circumference;
+    document.getElementById('ringFg').style.strokeDashoffset = dashOffset;
+    document.getElementById('ringFg').style.strokeDasharray  = circumference;
+
+    /* Bar + pct */
+    document.getElementById('shimmerFill').style.width = pct + '%';
+    document.getElementById('processPct').textContent  = pct + '%';
+    document.getElementById('processMsg').textContent  = msg;
+
+    /* Step dots */
+    for (let i = 0; i < 5; i++) {
+      const el = document.getElementById('step' + i);
+      el.className = 'p-step' + (i < activeStep ? ' done' : i === activeStep ? ' active' : '');
+    }
+  }
+
+  /* ── Show result ── */
+  async function showResult() {
+    setProgress(100, 'Done!', 5);
+
+    /* Build result image from blob */
+    const url = URL.createObjectURL(resultBlob);
+    resultImg = new Image();
+    await new Promise((res, rej) => { resultImg.onload = res; resultImg.onerror = rej; resultImg.src = url; });
+
+    /* Set original image */
+    const origUrl = URL.createObjectURL(originalFile);
+    const origEl = document.getElementById('cmpOriginal');
+    origEl.src = origUrl;
+    await new Promise(res => { origEl.onload = res; });
+
+    /* Render result to comparison canvas */
+    renderResultCanvas();
+
+    showPhase('result');
+    initSlider();
+  }
+
+  /* ── Render result onto #cmpCanvas ── */
+  function renderResultCanvas() {
+    const canvas = document.getElementById('cmpCanvas');
+    const wrap   = document.getElementById('compareWrap');
+    const origEl = document.getElementById('cmpOriginal');
+
+    canvas.width  = resultImg.naturalWidth;
+    canvas.height = resultImg.naturalHeight;
+    canvas.style.width  = origEl.offsetWidth  + 'px';
+    canvas.style.height = origEl.offsetHeight + 'px';
+
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (currentBg !== 'transparent') {
+      if (currentBg === 'gradient') {
+        const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+        grad.addColorStop(0, '#7c3aed');
+        grad.addColorStop(1, '#ec4899');
+        ctx.fillStyle = grad;
+      } else {
+        ctx.fillStyle = currentBg;
+      }
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+    ctx.drawImage(resultImg, 0, 0);
+  }
+
+  /* ── Build download canvas with chosen bg ── */
+  function buildDownloadCanvas() {
+    const dc = document.getElementById('downloadCanvas');
+    dc.width  = resultImg.naturalWidth;
+    dc.height = resultImg.naturalHeight;
+    const ctx = dc.getContext('2d');
+    ctx.clearRect(0, 0, dc.width, dc.height);
+
+    if (currentBg !== 'transparent') {
+      if (currentBg === 'gradient') {
+        const grad = ctx.createLinearGradient(0, 0, dc.width, dc.height);
+        grad.addColorStop(0, '#7c3aed');
+        grad.addColorStop(1, '#ec4899');
+        ctx.fillStyle = grad;
+      } else {
+        ctx.fillStyle = currentBg;
+      }
+      ctx.fillRect(0, 0, dc.width, dc.height);
+    }
+    ctx.drawImage(resultImg, 0, 0);
+    return dc;
+  }
+
+  /* ── Download ── */
+  window.downloadResult = function() {
+    if (!resultImg) return;
+    const dc  = buildDownloadCanvas();
+    const ext = currentBg === 'transparent' ? 'png' : 'png';
+    dc.toBlob(blob => {
+      const a   = document.createElement('a');
+      const name = (originalFile?.name.replace(/\.[^.]+$/, '') || 'image') + '_no_bg.' + ext;
+      a.href = URL.createObjectURL(blob);
+      a.download = name;
+      a.click();
+      showToast('Image downloaded!');
+    }, 'image/png');
+  };
+
+  /* ── Background swap ── */
+  window.setBg = function(color, swatchEl) {
+    currentBg = color;
+    document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
+    if (swatchEl) swatchEl.classList.add('active');
+    if (resultImg) renderResultCanvas();
+  };
+
+  /* ── Comparison Slider ── */
+  function initSlider() {
+    const wrap   = document.getElementById('compareWrap');
+    const handle = document.getElementById('cmpHandle');
+    const layer  = document.getElementById('cmpResultLayer');
+    let dragging = false;
+    let pct = 50;
+
+    function applyPct(p) {
+      pct = Math.max(0, Math.min(100, p));
+      handle.style.left = pct + '%';
+      layer.style.clipPath = `inset(0 0 0 ${pct}%)`;
+    }
+
+    applyPct(50);
+
+    function startDrag(e) { dragging = true; e.preventDefault(); }
+    function stopDrag()   { dragging = false; }
+    function moveDrag(e) {
+      if (!dragging) return;
+      const rect = wrap.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      applyPct(((clientX - rect.left) / rect.width) * 100);
+    }
+
+    handle.addEventListener('mousedown',  startDrag);
+    wrap.addEventListener('mousedown',    e => { dragging = true; moveDrag(e); });
+    window.addEventListener('mouseup',    stopDrag);
+    window.addEventListener('mousemove',  moveDrag);
+    handle.addEventListener('touchstart', startDrag, { passive: false });
+    window.addEventListener('touchend',   stopDrag);
+    window.addEventListener('touchmove',  moveDrag,  { passive: false });
+  }
+
+  /* ── Reset ── */
+  window.resetTool = function() {
+    originalFile = null;
+    resultBlob   = null;
+    resultImg    = null;
+    currentBg    = 'transparent';
+    globalPct    = 0;
+    document.getElementById('fileInput').value = '';
+    setProgress(0, 'Loading AI model…', 0);
+    showPhase('upload');
+    /* reset active swatch */
+    document.querySelectorAll('.swatch').forEach((s, i) => s.classList.toggle('active', i === 0));
+  };
+
+  /* ── Error display ── */
+  function showError(msg) {
+    document.getElementById('phase-process').innerHTML = `
+      <div class="error-box">
+        <div class="e-icon">❌</div>
+        <strong>Something went wrong</strong><br>${msg}
+        <br><br>
+        <button class="calc-btn" style="max-width:200px;margin:0 auto;" onclick="window.resetTool()">← Try Again</button>
+      </div>`;
+  }
+</script>
+
+</body>
+</html>
