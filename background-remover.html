@@ -526,12 +526,13 @@
   <div class="hero-dot" style="width:6px;height:6px;top:45%;left:20%;animation-duration:4s;animation-delay:.8s;"></div>
 
   <h1>✂️ AI Background Remover</h1>
-  <p>Remove backgrounds from any image in seconds — powered by AI, runs entirely in your browser, zero quality loss.</p>
+  <p>Remove backgrounds from portraits &amp; photos in seconds — powered by Google MediaPipe AI, runs entirely in your browser, zero quality loss.</p>
   <div class="bgr-hero-badges">
-    <span class="bgr-badge">🤖 AI-Powered</span>
+    <span class="bgr-badge">🤖 Google MediaPipe</span>
     <span class="bgr-badge">🔒 100% Private</span>
     <span class="bgr-badge">🖼️ Transparent PNG</span>
     <span class="bgr-badge">⚡ No Upload Needed</span>
+    <span class="bgr-badge">👤 Best for Portraits</span>
   </div>
 </div>
 
@@ -737,56 +738,46 @@
 </footer>
 
 <!-- ═══════════════════════════════════════════════════════
-     JAVASCRIPT
+     JAVASCRIPT — MediaPipe Tasks Vision (Google CDN, CORS-safe)
+     Library: jsdelivr.net/@mediapipe/tasks-vision  ~5 MB WASM
+     Model:   storage.googleapis.com — selfie multiclass 256×256
 ════════════════════════════════════════════════════════ -->
 <script type="module">
-  /* ── CDN sources for @imgly/background-removal (tried in order) ──
-     Version 1.7.0 is pinned directly to avoid CORS-breaking redirects.
-     jsdelivr always sets Access-Control-Allow-Origin: * so it goes first. ── */
-  const CDN_SOURCES = [
-    {
-      url:        'https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.7.0/dist/browser.mjs',
-      publicPath: 'https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.7.0/dist/',
-    },
-    {
-      url:        'https://unpkg.com/@imgly/background-removal@1.7.0/dist/browser.mjs',
-      publicPath: 'https://unpkg.com/@imgly/background-removal@1.7.0/dist/',
-    },
-  ];
+  const MEDIAPIPE_URL = 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/vision_bundle.mjs';
+  const WASM_URL      = 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm';
+  const MODEL_URL     = 'https://storage.googleapis.com/mediapipe-models/image_segmenter/selfie_multiclass_256x256/float32/latest/selfie_multiclass_256x256.tflite';
 
-  let removeBackground = null;
-  let activePublicPath = CDN_SOURCES[0].publicPath;
-  let loadPromise      = null;   // prevents concurrent duplicate loads
+  /* ── Library state ── */
+  let segmenter   = null;
+  let loadPromise = null;
 
   function loadLibrary() {
-    if (loadPromise) return loadPromise;  // return in-flight promise if already loading
+    if (loadPromise) return loadPromise;
     loadPromise = (async () => {
-      for (const src of CDN_SOURCES) {
-        try {
-          const mod = await import(src.url);
-          if (typeof mod.removeBackground === 'function') {
-            removeBackground = mod.removeBackground;
-            activePublicPath = src.publicPath;
-            console.log('AI library loaded from:', src.url);
-            return;
-          }
-        } catch (e) {
-          console.warn('CDN source failed, trying next…', src.url, e.message);
-        }
+      try {
+        const { ImageSegmenter, FilesetResolver } = await import(MEDIAPIPE_URL);
+        const vision = await FilesetResolver.forVisionTasks(WASM_URL);
+        segmenter = await ImageSegmenter.createFromOptions(vision, {
+          baseOptions: { modelAssetPath: MODEL_URL, delegate: 'GPU' },
+          outputCategoryMask:     true,
+          outputConfidenceMasks:  false,
+          runningMode:            'IMAGE',
+        });
+        console.log('MediaPipe segmenter ready');
+      } catch (e) {
+        console.error('Failed to load MediaPipe:', e);
+        segmenter = null;
       }
-      console.error('All CDN sources failed — background removal unavailable.');
-      removeBackground = null;
     })();
     return loadPromise;
   }
 
-  /* Preload library in the background */
+  /* Pre-load on page open */
   loadLibrary();
 
-  /* ── State ── */
+  /* ── App state ── */
   let originalFile = null;
-  let resultBlob   = null;
-  let resultImg    = null;   // HTMLImageElement of result
+  let resultImg    = null;
   let currentBg    = 'transparent';
 
   /* ── Phase helpers ── */
@@ -826,148 +817,128 @@
     showPhase('process');
     setProgress(0, 'Loading AI model…', 0);
 
-    /* If library not loaded yet, wait */
-    if (!removeBackground) {
-      await loadLibrary();
-    }
-    if (!removeBackground) {
-      showError('Could not load the AI library. Please check your internet connection and try again.<br><small style="opacity:.75">Open browser console (F12) for details.</small>');
+    await loadLibrary();
+
+    if (!segmenter) {
+      showError('Could not load the AI model. Please check your internet connection and reload the page.<br><small style="opacity:.75">Open browser console (F12) for details.</small>');
       return;
     }
 
     try {
-      const resultBlob_ = await removeBackground(file, {
-        publicPath: activePublicPath,
-        debug: false,
-        model: 'medium',
-        progress: (key, current, total) => {
-          const pct = total > 0 ? Math.round((current / total) * 100) : 0;
-          updateProgress(key, pct);
-        }
-      });
+      setProgress(25, 'Analysing image…', 1);
+      const img = new Image();
+      const objectUrl = URL.createObjectURL(file);
+      await new Promise((res, rej) => { img.onload = res; img.onerror = rej; img.src = objectUrl; });
 
-      resultBlob = resultBlob_;
-      await showResult();
+      setProgress(55, 'Detecting subject edges…', 2);
+      const resultBlob = await applySegmentation(img);
+      URL.revokeObjectURL(objectUrl);
+
+      setProgress(80, 'Generating transparent PNG…', 3);
+      resultImg = new Image();
+      const resultUrl = URL.createObjectURL(resultBlob);
+      await new Promise((res, rej) => { resultImg.onload = res; resultImg.onerror = rej; resultImg.src = resultUrl; });
+
+      /* Set original for comparison */
+      const origEl = document.getElementById('cmpOriginal');
+      origEl.src = URL.createObjectURL(file);
+      await new Promise(res => { origEl.onload = res; });
+
+      setProgress(100, 'Done!', 5);
+      renderResultCanvas();
+      showPhase('result');
+      initSlider();
     } catch (err) {
       console.error(err);
-      showError('Background removal failed. The image may be unsupported or too complex. Please try another image.');
+      showError('Processing failed — try a well-lit portrait photo against a contrasting background.');
     }
   }
 
-  /* ── Progress tracking ── */
-  const STEPS = [
-    { key: 'model',    label: 'Loading model',       msg: 'Downloading AI model weights…',   idx: 0 },
-    { key: 'fetch',    label: 'Analysing image',      msg: 'Analysing image content…',        idx: 1 },
-    { key: 'compute',  label: 'Detecting edges',      msg: 'Detecting object edges…',         idx: 2 },
-    { key: 'mask',     label: 'Removing background',  msg: 'Removing the background…',        idx: 3 },
-    { key: 'encode',   label: 'Finalising',           msg: 'Generating transparent PNG…',     idx: 4 },
-  ];
-  let globalPct = 0;
+  /* ── MediaPipe segmentation → transparent PNG blob ── */
+  async function applySegmentation(img) {
+    const result   = segmenter.segment(img);
+    const maskData = result.categoryMask.getAsUint8Array();
+    const maskW    = result.categoryMask.width;
+    const maskH    = result.categoryMask.height;
 
-  function updateProgress(key, pct) {
-    /* Map library keys to our step stages */
-    let stepIdx = 0;
-    if (key.includes('fetch') || key.includes('load'))   stepIdx = 0;
-    else if (key.includes('infer') || key.includes('run')) stepIdx = 2;
-    else if (key.includes('mask'))                         stepIdx = 3;
-    else if (key.includes('encode') || key.includes('post')) stepIdx = 4;
+    /* Build alpha mask at model resolution (256×256) */
+    const tmp     = document.createElement('canvas');
+    tmp.width     = maskW;
+    tmp.height    = maskH;
+    const tCtx    = tmp.getContext('2d');
+    const tData   = tCtx.createImageData(maskW, maskH);
+    for (let i = 0; i < maskData.length; i++) {
+      /* 0 = background → transparent; >0 = hair/body/face/clothes → keep */
+      const a = maskData[i] === 0 ? 0 : 255;
+      tData.data[i * 4]     = 255;
+      tData.data[i * 4 + 1] = 255;
+      tData.data[i * 4 + 2] = 255;
+      tData.data[i * 4 + 3] = a;
+    }
+    tCtx.putImageData(tData, 0, 0);
+    result.categoryMask.close();
 
-    /* Overall progress: spread steps across 0–100 */
-    const base = (stepIdx / 5) * 100;
-    const span = 20;
-    const overall = Math.min(98, Math.round(base + (pct / 100) * span));
-    globalPct = Math.max(globalPct, overall);
+    /* Composite at full original resolution */
+    const out  = document.createElement('canvas');
+    out.width  = img.naturalWidth;
+    out.height = img.naturalHeight;
+    const ctx  = out.getContext('2d');
+    ctx.drawImage(img, 0, 0);
+    /* destination-in: keeps original pixels only where mask is opaque */
+    ctx.globalCompositeOperation = 'destination-in';
+    ctx.drawImage(tmp, 0, 0, img.naturalWidth, img.naturalHeight);
 
-    const msgs = ['Downloading AI model…', 'Analysing your image…', 'Detecting object edges…', 'Removing background…', 'Generating PNG…'];
-    setProgress(globalPct, msgs[stepIdx] || 'Processing…', stepIdx);
+    return new Promise(resolve => out.toBlob(resolve, 'image/png'));
   }
 
+  /* ── Progress ── */
   function setProgress(pct, msg, activeStep) {
-    /* Ring */
-    const circumference = 2 * Math.PI * 51; // 320.4
-    const dashOffset = circumference - (pct / 100) * circumference;
-    document.getElementById('ringFg').style.strokeDashoffset = dashOffset;
-    document.getElementById('ringFg').style.strokeDasharray  = circumference;
-
-    /* Bar + pct */
+    const C = 2 * Math.PI * 51;
+    document.getElementById('ringFg').style.strokeDasharray  = C;
+    document.getElementById('ringFg').style.strokeDashoffset = C - (pct / 100) * C;
     document.getElementById('shimmerFill').style.width = pct + '%';
     document.getElementById('processPct').textContent  = pct + '%';
     document.getElementById('processMsg').textContent  = msg;
-
-    /* Step dots */
     for (let i = 0; i < 5; i++) {
       const el = document.getElementById('step' + i);
       el.className = 'p-step' + (i < activeStep ? ' done' : i === activeStep ? ' active' : '');
     }
   }
 
-  /* ── Show result ── */
-  async function showResult() {
-    setProgress(100, 'Done!', 5);
-
-    /* Build result image from blob */
-    const url = URL.createObjectURL(resultBlob);
-    resultImg = new Image();
-    await new Promise((res, rej) => { resultImg.onload = res; resultImg.onerror = rej; resultImg.src = url; });
-
-    /* Set original image */
-    const origUrl = URL.createObjectURL(originalFile);
-    const origEl = document.getElementById('cmpOriginal');
-    origEl.src = origUrl;
-    await new Promise(res => { origEl.onload = res; });
-
-    /* Render result to comparison canvas */
-    renderResultCanvas();
-
-    showPhase('result');
-    initSlider();
-  }
-
-  /* ── Render result onto #cmpCanvas ── */
+  /* ── Render result canvas ── */
   function renderResultCanvas() {
     const canvas = document.getElementById('cmpCanvas');
-    const wrap   = document.getElementById('compareWrap');
     const origEl = document.getElementById('cmpOriginal');
-
     canvas.width  = resultImg.naturalWidth;
     canvas.height = resultImg.naturalHeight;
     canvas.style.width  = origEl.offsetWidth  + 'px';
     canvas.style.height = origEl.offsetHeight + 'px';
-
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
     if (currentBg !== 'transparent') {
       if (currentBg === 'gradient') {
-        const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-        grad.addColorStop(0, '#7c3aed');
-        grad.addColorStop(1, '#ec4899');
-        ctx.fillStyle = grad;
-      } else {
-        ctx.fillStyle = currentBg;
-      }
+        const g = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+        g.addColorStop(0, '#7c3aed'); g.addColorStop(1, '#ec4899');
+        ctx.fillStyle = g;
+      } else { ctx.fillStyle = currentBg; }
       ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
     ctx.drawImage(resultImg, 0, 0);
   }
 
-  /* ── Build download canvas with chosen bg ── */
+  /* ── Download canvas ── */
   function buildDownloadCanvas() {
     const dc = document.getElementById('downloadCanvas');
     dc.width  = resultImg.naturalWidth;
     dc.height = resultImg.naturalHeight;
     const ctx = dc.getContext('2d');
     ctx.clearRect(0, 0, dc.width, dc.height);
-
     if (currentBg !== 'transparent') {
       if (currentBg === 'gradient') {
-        const grad = ctx.createLinearGradient(0, 0, dc.width, dc.height);
-        grad.addColorStop(0, '#7c3aed');
-        grad.addColorStop(1, '#ec4899');
-        ctx.fillStyle = grad;
-      } else {
-        ctx.fillStyle = currentBg;
-      }
+        const g = ctx.createLinearGradient(0, 0, dc.width, dc.height);
+        g.addColorStop(0, '#7c3aed'); g.addColorStop(1, '#ec4899');
+        ctx.fillStyle = g;
+      } else { ctx.fillStyle = currentBg; }
       ctx.fillRect(0, 0, dc.width, dc.height);
     }
     ctx.drawImage(resultImg, 0, 0);
@@ -977,13 +948,10 @@
   /* ── Download ── */
   window.downloadResult = function() {
     if (!resultImg) return;
-    const dc  = buildDownloadCanvas();
-    const ext = currentBg === 'transparent' ? 'png' : 'png';
-    dc.toBlob(blob => {
-      const a   = document.createElement('a');
-      const name = (originalFile?.name.replace(/\.[^.]+$/, '') || 'image') + '_no_bg.' + ext;
-      a.href = URL.createObjectURL(blob);
-      a.download = name;
+    buildDownloadCanvas().toBlob(blob => {
+      const a    = document.createElement('a');
+      a.href     = URL.createObjectURL(blob);
+      a.download = (originalFile?.name.replace(/\.[^.]+$/, '') || 'image') + '_no_bg.png';
       a.click();
       showToast('Image downloaded!');
     }, 'image/png');
@@ -997,31 +965,28 @@
     if (resultImg) renderResultCanvas();
   };
 
-  /* ── Comparison Slider ── */
+  /* ── Comparison slider ── */
   function initSlider() {
     const wrap   = document.getElementById('compareWrap');
     const handle = document.getElementById('cmpHandle');
     const layer  = document.getElementById('cmpResultLayer');
     let dragging = false;
-    let pct = 50;
 
     function applyPct(p) {
-      pct = Math.max(0, Math.min(100, p));
-      handle.style.left = pct + '%';
-      layer.style.clipPath = `inset(0 0 0 ${pct}%)`;
+      p = Math.max(0, Math.min(100, p));
+      handle.style.left        = p + '%';
+      layer.style.clipPath     = `inset(0 0 0 ${p}%)`;
     }
-
     applyPct(50);
 
     function startDrag(e) { dragging = true; e.preventDefault(); }
     function stopDrag()   { dragging = false; }
     function moveDrag(e) {
       if (!dragging) return;
-      const rect = wrap.getBoundingClientRect();
+      const rect   = wrap.getBoundingClientRect();
       const clientX = e.touches ? e.touches[0].clientX : e.clientX;
       applyPct(((clientX - rect.left) / rect.width) * 100);
     }
-
     handle.addEventListener('mousedown',  startDrag);
     wrap.addEventListener('mousedown',    e => { dragging = true; moveDrag(e); });
     window.addEventListener('mouseup',    stopDrag);
@@ -1034,14 +999,11 @@
   /* ── Reset ── */
   window.resetTool = function() {
     originalFile = null;
-    resultBlob   = null;
     resultImg    = null;
     currentBg    = 'transparent';
-    globalPct    = 0;
     document.getElementById('fileInput').value = '';
-    setProgress(0, 'Loading AI model…', 0);
+    setProgress(0, 'Ready…', 0);
     showPhase('upload');
-    /* reset active swatch */
     document.querySelectorAll('.swatch').forEach((s, i) => s.classList.toggle('active', i === 0));
   };
 
