@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Money & Finance Calculators — Compound Interest, Budget, Loan & More — ToolBox</title>
+  <meta name="description" content="Free online finance calculators: compound interest, savings goal, debt payoff, loan affordability, salary converter, freelance rate, commission, sales tax, inflation & budget split." />
+  <link rel="stylesheet" href="style.css" />
+  <script src="utils.js" defer></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+  <style>
+    /* ── Finance-specific styles ── */
+    .finance-hero {
+      background: linear-gradient(135deg, #064e3b 0%, #065f46 40%, #047857 100%);
+      padding: 48px 20px 40px;
+      text-align: center;
+      color: #fff;
+    }
+    .finance-hero h1 { font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 900; margin-bottom: 10px; }
+    .finance-hero p { font-size: 1rem; opacity: .85; max-width: 560px; margin: 0 auto; }
+
+    .fin-disclaimer {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-radius: var(--radius);
+      padding: 14px 18px;
+      font-size: .82rem;
+      color: #92400e;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      margin-bottom: 28px;
+    }
+    [data-theme="dark"] .fin-disclaimer {
+      background: #1c1810;
+      border-color: #78350f;
+      color: #fcd34d;
+    }
+    .fin-disclaimer .disc-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+
+    /* Scrollable tab bar for 10 tabs */
+    .fin-tabs {
+      display: flex;
+      overflow-x: auto;
+      gap: 6px;
+      padding: 4px 0 10px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+      margin-bottom: 28px;
+    }
+    .fin-tabs::-webkit-scrollbar { height: 4px; }
+    .fin-tabs::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+    .fin-tab {
+      flex-shrink: 0;
+      padding: 9px 16px;
+      border-radius: 8px;
+      border: 1.5px solid var(--border);
+      background: var(--surface-1);
+      color: var(--text-2);
+      font-size: .82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .18s;
+      white-space: nowrap;
+    }
+    .fin-tab:hover { border-color: var(--clr-primary); color: var(--clr-primary); }
+    .fin-tab.active {
+      background: var(--clr-primary);
+      border-color: var(--clr-primary);
+      color: #fff;
+    }
+
+    .fin-panel { display: none; }
+    .fin-panel.active { display: block; }
+
+    /* Calculator card layout */
+    .calc-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+    @media (max-width: 680px) { .calc-grid { grid-template-columns: 1fr; } }
+
+    .calc-inputs, .calc-results {
+      background: var(--surface-1);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+    }
+    .calc-inputs h3, .calc-results h3 {
+      font-size: .95rem;
+      font-weight: 700;
+      margin-bottom: 18px;
+      color: var(--text-1);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .field { margin-bottom: 16px; }
+    .field label {
+      display: block;
+      font-size: .8rem;
+      font-weight: 600;
+      color: var(--text-2);
+      margin-bottom: 6px;
+    }
+    .field input, .field select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface-2);
+      color: var(--text-1);
+      font-size: .9rem;
+      transition: border-color .18s;
+      box-sizing: border-box;
+    }
+    .field input:focus, .field select:focus {
+      outline: none;
+      border-color: var(--clr-primary);
+    }
+    .field .hint { font-size: .75rem; color: var(--text-3); margin-top: 4px; }
+
+    .calc-btn {
+      width: 100%;
+      padding: 12px;
+      background: var(--clr-primary);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: .95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity .18s;
+      margin-top: 8px;
+    }
+    .calc-btn:hover { opacity: .88; }
+
+    /* Result rows */
+    .result-rows { display: flex; flex-direction: column; gap: 10px; }
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 14px;
+      background: var(--surface-2);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    .result-row .r-label { font-size: .82rem; color: var(--text-2); font-weight: 500; }
+    .result-row .r-val { font-size: .95rem; font-weight: 700; color: var(--text-1); }
+    .result-row.highlight { border-color: var(--clr-primary); background: color-mix(in srgb, var(--clr-primary) 8%, var(--surface-2)); }
+    .result-row.highlight .r-val { color: var(--clr-primary); font-size: 1.1rem; }
+
+    /* Budget split visual */
+    .budget-bar {
+      height: 20px;
+      border-radius: 10px;
+      overflow: hidden;
+      display: flex;
+      margin: 16px 0 8px;
+    }
+    .budget-bar .seg { height: 100%; transition: width .4s; }
+    .budget-legend { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+    .budget-legend .leg { font-size: .78rem; display: flex; align-items: center; gap: 5px; color: var(--text-2); }
+    .budget-legend .leg-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+    /* Inflation direction toggle */
+    .toggle-row { display: flex; gap: 8px; margin-bottom: 16px; }
+    .toggle-btn {
+      flex: 1;
+      padding: 9px;
+      border-radius: 8px;
+      border: 1.5px solid var(--border);
+      background: var(--surface-2);
+      color: var(--text-2);
+      font-size: .82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .18s;
+    }
+    .toggle-btn.active { background: var(--clr-primary); border-color: var(--clr-primary); color: #fff; }
+
+    .empty-result {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-3);
+      font-size: .88rem;
+    }
+    .empty-result .e-icon { font-size: 2.2rem; margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a href="index.html" class="logo">
+      <div class="logo-icon">🛠️</div>
+      ToolBox
+    </a>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="word-counter.html">Word Counter</a>
+      <a href="password-generator.html">Password</a>
+      <a href="qr-generator.html">QR Code</a>
+      <a href="unit-converter.html">Converter</a>
+      <a href="finance-tools.html" class="active">Finance</a>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-btn" id="darkToggle" onclick="toggleDarkMode()" title="Toggle dark mode">🌙</button>
+      <button class="icon-btn nav-toggle" onclick="openMobileNav()">☰</button>
+    </div>
+  </div>
+</header>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobileNav">
+  <div class="mobile-nav-backdrop" onclick="closeMobileNav()"></div>
+  <div class="mobile-nav-drawer">
+    <button class="mobile-nav-close" onclick="closeMobileNav()">✕</button>
+    <a href="index.html">🏠 Home</a>
+    <a href="word-counter.html">📄 Word Counter</a>
+    <a href="font-changer.html">✍️ Font Changer</a>
+    <a href="unit-converter.html">📐 Unit Converter</a>
+    <a href="password-generator.html">🔒 Password Generator</a>
+    <a href="qr-generator.html">📱 QR Code Generator</a>
+    <a href="image-to-pdf.html">🖼️ Image to PDF</a>
+    <a href="image-compressor.html">🗜️ Image Compressor</a>
+    <a href="pdf-compressor.html">📋 PDF Compressor</a>
+    <a href="finance-tools.html" class="active">💰 Finance Tools</a>
+  </div>
+</div>
+
+<!-- FINANCE HERO -->
+<div class="finance-hero">
+  <h1>💰 Money &amp; Finance Tools</h1>
+  <p>10 free calculators to plan your savings, budget, loans, and more — all in your browser.</p>
+</div>
+
+<!-- MAIN -->
+<main>
+
+  <!-- TOP AD -->
+  <div class="ad-unit ad-top">
+    <span class="ad-label">Advertisement</span>
+    <ins class="adsbygoogle" style="display:block;width:100%;min-height:90px"
+         data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX"
+         data-ad-slot="5555555555"
+         data-ad-format="horizontal"
+         data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+
+  <!-- DISCLAIMER -->
+  <div class="fin-disclaimer">
+    <span class="disc-icon">⚠️</span>
+    <span><strong>For informational purposes only.</strong> These calculators provide estimates based on the values you enter. They are not financial advice. Always consult a qualified financial advisor before making investment or financial decisions.</span>
+  </div>
+
+  <!-- TAB BAR -->
+  <div class="fin-tabs" id="finTabs">
+    <button class="fin-tab active" onclick="switchTab(0, this)">📈 Compound Interest</button>
+    <button class="fin-tab" onclick="switchTab(1, this)">🎯 Savings Goal</button>
+    <button class="fin-tab" onclick="switchTab(2, this)">💳 Debt Payoff</button>
+    <button class="fin-tab" onclick="switchTab(3, this)">🏠 Loan Affordability</button>
+    <button class="fin-tab" onclick="switchTab(4, this)">⏱️ Hourly ↔ Salary</button>
+    <button class="fin-tab" onclick="switchTab(5, this)">💼 Freelance Rate</button>
+    <button class="fin-tab" onclick="switchTab(6, this)">💸 Commission</button>
+    <button class="fin-tab" onclick="switchTab(7, this)">🏷️ Sales Tax Reverse</button>
+    <button class="fin-tab" onclick="switchTab(8, this)">📉 Inflation</button>
+    <button class="fin-tab" onclick="switchTab(9, this)">📊 Budget Split</button>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- TAB 0: COMPOUND INTEREST                               -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="fin-panel active" id="panel-0">
+    <div class="calc-grid">
+      <div class="calc-inputs">
+        <h3>📈 Compound Interest</h3>
+        <div class="field">
+          <label>Principal Amount ($)</label>
+          <input type="number" id="ci-principal" placeholder="e.g. 5000" min="0" />
+        </div>
+        <div class="field">
+          <label>Annual Interest Rate (%)</label>
+          <input type="number" id="ci-rate" placeholder="e.g. 7" min="0" max="100" step="0.01" />
+        </div>
+        <div class="field">
+          <label>Compound Frequency</label>
+          <select id="ci-freq">
+            <option value="1">Annually (1×/year)</option>
+            <option value="2">Semi-annually (2×/year)</option>
+            <option value="4">Quarterly (4×/year)</option>
+            <option value="12" selected>Monthly (12×/year)</option>
+            <option value="365">Daily (365×/year)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Time Period (years)</label>
+          <input type="number" id="ci-years" placeholder="e.g. 10" min="0" max="100" />
+        </div>
+        <div class="field">
+          <label>Additional Monthly Contribution ($)</label>
+          <input type="number" id="ci-monthly" placeholder="0 (optional)" min="0" />
+          <div class="hint">Leave blank or 0 for lump-sum only</div>
+        </div>
+        <button class="calc-btn" onclick="calcCompoundInterest()">Calculate →</button>
+      </div>
+      <div class="calc-results">
+        <h3>📊 Results</h3>
+        <div id="ci-results">
+          <div class="empty-result"><div class="e-icon">📈</div>Fill in the details and click Calculate</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- TAB 1: SAVINGS GOAL                                    -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="fin-panel" id="panel-1">
+    <div class="calc-grid">
+      <div class="calc-inputs">
+        <h3>🎯 Savings Goal</h3>
+        <div class="field">
+          <label>Savings Goal ($)</label>
+          <input type="number" id="sg-goal" placeholder="e.g. 20000" min="0" />
+        </div>
+        <div class="field">
+          <label>Current Savings ($)</label>
+          <input type="number" id="sg-current" placeholder="e.g. 1000" min="0" />
+        </div>
+        <div class="field">
+          <label>Annual Interest Rate (%)</label>
+          <input type="number" id="sg-rate" placeholder="e.g. 5" min="0" max="100" step="0.01" />
+        </div>
+        <div class="field">
+          <label>Time to Reach Goal (years)</label>
+          <input type="number" id="sg-years" placeholder="e.g. 5" min="0" max="100" />
+        </div>
+        <button class="calc-btn" onclick="calcSavingsGoal()">Calculate →</button>
+      </div>
+      <div class="calc-results">
+        <h3>📊 Results</h3>
+        <div id="sg-results">
+          <div class="empty-result"><div class="e-icon">🎯</div>Fill in the details and click Calculate</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- TAB 2: DEBT PAYOFF                                     -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="fin-panel" id="panel-2">
+    <div class="calc-grid">
+      <div class="calc-inputs">
+        <h3>💳 Debt Payoff</h3>
+        <div class="field">
+          <label>Current Debt Balance ($)</label>
+          <input type="number" id="dp-balance" placeholder="e.g. 8000" min="0" />
+        </div>
+        <div class="field">
+          <label>Annual Interest Rate (%)</label>
+          <input type="number" id="dp-rate" placeholder="e.g. 18" min="0" max="100" step="0.01" />
+        </div>
+        <div class="field">
+          <label>Monthly Payment ($)</label>
+          <input type="number" id="dp-payment" placeholder="e.g. 300" min="0" />
+        </div>
+        <button class="calc-btn" onclick="calcDebtPayoff()">Calculate →</button>
+      </div>
+      <div class="calc-results">
+        <h3>📊 Results</h3>
+        <div id="dp-results">
+          <div class="empty-result"><div class="e-icon">💳</div>Fill in the details and click Calculate</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- TAB 3: LOAN AFFORDABILITY                              -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="fin-panel" id="panel-3">
+    <div class="calc-grid">
+      <div class="calc-inputs">
+        <h3>🏠 Loan Affordability</h3>
+        <div class="field">
+          <label>Gross Monthly Income ($)</label>
+          <input type="number" id="la-income" placeholder="e.g. 5000" min="0" />
+        </div>
+        <div class="field">
+          <label>Monthly Expenses / Debts ($)</label>
+          <input type="number" id="la-expenses" placeholder="e.g. 800" min="0" />
+          <div class="hint">Existing loan payments, credit cards, etc.</div>
+        </div>
+        <div class="field">
+          <label>Annual Interest Rate (%)</label>
+          <input type="number" id="la-rate" placeholder="e.g. 6.5" min="0" max="100" step="0.01" />
+        </div>
+        <div class="field">
+          <label>Loan Term (years)</label>
+          <input type="number" id="la-years" placeholder="e.g. 30" min="1" max="50" />
+        </div>
+        <div class="field">
+          <label>Max Debt-to-Income Ratio (%)</label>
+          <select id="la-dti">
+            <option value="28">28% — Conservative (housing only)</option>
+            <option value="36" selected>36% — Standard</option>
+            <option value="43">43% — Maximum (most lenders)</option>
+            <option value="50">50% — Aggressive</option>
+          </select>
+        </div>
+        <button class="calc-btn" onclick="calcLoanAffordability()">Calculate →</button>
+      </div>
+      <div class="calc-results">
+        <h3>📊 Results</h3>
+        <div id="la-results">
+          <div class="empty-result"><div class="e-icon">🏠</div>Fill in the details and click Calculate</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- TAB 4: HOURLY ↔ SALARY                                -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="fin-panel" id="panel-4">
+    <div class="calc-grid">
+      <div class="calc-inputs">
+        <h3>⏱️ Hourly ↔ Salary Converter</h3>
+        <div class="toggle-row">
+          <button class="toggle-btn active" id="hs-mode-hourly" onclick="setHsMode('hourly')">Enter Hourly Rate</button>
+          <button class="toggle-btn" id="hs-mode-annual" onclick="setHsMode('annual')">Enter Annual Salary</button>
+        </div>
+        <div class="field" id="hs-hourly-field">
+          <label>Hourly Rate ($)</label>
+          <input type="number" id="hs-hourly" placeholder="e.g. 25" min="0" step="0.01" />
+        </div>
+        <div class="field" id="hs-annual-field" style="display:none;">
+          <label>Annual Salary ($)</label>
+          <input type="number" id="hs-annual" placeholder="e.g. 52000" min="0" />
+        </div>
+        <div class="field">
+          <label>Hours Worked Per Week</label>
+          <input type="number" id="hs-hours" placeholder="40" min="1" max="168" value="40" />
+        </div>
+        <div class="field">
+          <label>Weeks Worked Per Year</label>
+          <input type="number" id="hs-weeks" placeholder="52" min="1" max="52" value="52" />
+          <div class="hint">Use 50 if you take 2 weeks vacation</div>
+        </div>
+        <button class="calc-btn" onclick="calcHourlySalary()">Calculate →</button>
+      </div>
+      <div class="calc-results">
+        <h3>📊 Full Breakdown</h3>
+        <div id="hs-results">
+          <div class="empty-result"><div class="e-icon">⏱️</div>Fill in the details and click Calculate</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- TAB 5: FREELANCE RATE                                  -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="fin-panel" id="panel-5">
+    <div class="calc-grid">
+      <div class="calc-inputs">
+        <h3>💼 Freelance Rate Calculator</h3>
+        <div class="field">
+          <label>Desired Annual Take-home Income ($)</label>
+          <input type="number" id="fr-income" placeholder="e.g. 60000" min="0" />
+        </div>
+        <div class="field">
+          <label>Annual Business Expenses ($)</label>
+          <input type="number" id="fr-expenses" placeholder="e.g. 5000" min="0" />
+          <div class="hint">Software, equipment, insurance, etc.</div>
+        </div>
+        <div class="field">
+          <label>Self-Employment Tax Rate (%)</label>
+          <input type="number" id="fr-tax" placeholder="e.g. 25" min="0" max="100" step="0.1" value="25" />
+          <div class="hint">Include income + self-employment tax</div>
+        </div>
+        <div class="field">
+          <label>Billable Hours Per Week</label>
+          <input type="number" id="fr-hours" placeholder="e.g. 30" min="1" max="80" />
+          <div class="hint">Not all working hours are billable</div>
+        </div>
+        <div class="field">
+          <label>Weeks Worked Per Year</label>
+          <input type="number" id="fr-weeks" placeholder="48" min="1" max="52" value="48" />
+        </div>
+        <button class="calc-btn" onclick="calcFreelanceRate()">Calculate →</button>
+      </div>
+      <div class="calc-results">
+        <h3>📊 Results</h3>
+        <div id="fr-results">
+          <div class="empty-result"><div class="e-icon">💼</div>Fill in the details and click Calculate</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- TAB 6: COMMISSION CALCULATOR                           -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="fin-panel" id="panel-6">
+    <div class="calc-grid">
+      <div class="calc-inputs">
+        <h3>💸 Commission Calculator</h3>
+        <div class="field">
+          <label>Sale Amount ($)</label>
+          <input type="number" id="cm-sale" placeholder="e.g. 15000" min="0" step="0.01" />
+        </div>
+        <div class="field">
+          <label>Commission Rate (%)</label>
+          <input type="number" id="cm-rate" placeholder="e.g. 5" min="0" max="100" step="0.01" />
+        </div>
+        <div class="field">
+          <label>Number of Sales (optional)</label>
+          <input type="number" id="cm-count" placeholder="1" min="1" value="1" />
+        </div>
+        <div class="field">
+          <label>Base Salary / Pay ($, optional)</label>
+          <input type="number" id="cm-base" placeholder="0" min="0" />
+        </div>
+        <button class="calc-btn" onclick="calcCommission()">Calculate →</button>
+      </div>
+      <div class="calc-results">
+        <h3>📊 Results</h3>
+        <div id="cm-results">
+          <div class="empty-result"><div class="e-icon">💸</div>Fill in the details and click Calculate</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- TAB 7: SALES TAX REVERSE CALCULATOR                    -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="fin-panel" id="panel-7">
+    <div class="calc-grid">
+      <div class="calc-inputs">
+        <h3>🏷️ Sales Tax Reverse Calculator</h3>
+        <div class="toggle-row">
+          <button class="toggle-btn active" id="st-mode-reverse" onclick="setStMode('reverse')">Total → Pre-tax</button>
+          <button class="toggle-btn" id="st-mode-forward" onclick="setStMode('forward')">Pre-tax → Total</button>
+        </div>
+        <div class="field">
+          <label id="st-amount-label">Total Price Paid (tax included) ($)</label>
+          <input type="number" id="st-amount" placeholder="e.g. 108.50" min="0" step="0.01" />
+        </div>
+        <div class="field">
+          <label>Sales Tax Rate (%)</label>
+          <input type="number" id="st-rate" placeholder="e.g. 8.5" min="0" max="100" step="0.01" />
+        </div>
+        <button class="calc-btn" onclick="calcSalesTax()">Calculate →</button>
+      </div>
+      <div class="calc-results">
+        <h3>📊 Results</h3>
+        <div id="st-results">
+          <div class="empty-result"><div class="e-icon">🏷️</div>Fill in the details and click Calculate</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- TAB 8: INFLATION CALCULATOR                            -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="fin-panel" id="panel-8">
+    <div class="calc-grid">
+      <div class="calc-inputs">
+        <h3>📉 Inflation Calculator</h3>
+        <div class="toggle-row">
+          <button class="toggle-btn active" id="inf-mode-future" onclick="setInfMode('future')">Future Value</button>
+          <button class="toggle-btn" id="inf-mode-past" onclick="setInfMode('past')">Past Value</button>
+        </div>
+        <div class="field">
+          <label id="inf-amount-label">Amount Today ($)</label>
+          <input type="number" id="inf-amount" placeholder="e.g. 1000" min="0" step="0.01" />
+        </div>
+        <div class="field">
+          <label>Annual Inflation Rate (%)</label>
+          <input type="number" id="inf-rate" placeholder="e.g. 3" min="0" max="100" step="0.01" />
+          <div class="hint">US avg. ~3%; check current CPI for accuracy</div>
+        </div>
+        <div class="field">
+          <label>Number of Years</label>
+          <input type="number" id="inf-years" placeholder="e.g. 10" min="1" max="100" />
+        </div>
+        <button class="calc-btn" onclick="calcInflation()">Calculate →</button>
+      </div>
+      <div class="calc-results">
+        <h3>📊 Results</h3>
+        <div id="inf-results">
+          <div class="empty-result"><div class="e-icon">📉</div>Fill in the details and click Calculate</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- TAB 9: BUDGET SPLIT (50/30/20)                         -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="fin-panel" id="panel-9">
+    <div class="calc-grid">
+      <div class="calc-inputs">
+        <h3>📊 Budget Split Calculator</h3>
+        <div class="field">
+          <label>Monthly Take-home Income ($)</label>
+          <input type="number" id="bs-income" placeholder="e.g. 4000" min="0" />
+          <div class="hint">After-tax (net) income</div>
+        </div>
+        <div class="field">
+          <label>Needs % <span style="font-weight:400;color:var(--text-3)">(default 50)</span></label>
+          <input type="number" id="bs-needs" value="50" min="0" max="100" />
+          <div class="hint">Housing, food, utilities, transport, insurance</div>
+        </div>
+        <div class="field">
+          <label>Wants % <span style="font-weight:400;color:var(--text-3)">(default 30)</span></label>
+          <input type="number" id="bs-wants" value="30" min="0" max="100" />
+          <div class="hint">Dining out, entertainment, hobbies, subscriptions</div>
+        </div>
+        <div class="field">
+          <label>Savings / Debt Repayment % <span style="font-weight:400;color:var(--text-3)">(default 20)</span></label>
+          <input type="number" id="bs-save" value="20" min="0" max="100" />
+          <div class="hint">Emergency fund, retirement, extra debt payments</div>
+        </div>
+        <button class="calc-btn" onclick="calcBudgetSplit()">Calculate →</button>
+      </div>
+      <div class="calc-results">
+        <h3>📊 Your Budget Breakdown</h3>
+        <div id="bs-results">
+          <div class="empty-result"><div class="e-icon">📊</div>Fill in the details and click Calculate</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MID AD -->
+  <div class="ad-unit ad-mid" style="margin-top:36px;">
+    <span class="ad-label">Advertisement</span>
+    <ins class="adsbygoogle" style="display:block;width:100%;min-height:90px"
+         data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX"
+         data-ad-slot="6666666666"
+         data-ad-format="horizontal"
+         data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+
+  <!-- RELATED TOOLS -->
+  <div style="margin-top:8px;">
+    <h3 style="font-size:1rem;font-weight:700;margin-bottom:14px;color:var(--text-1);">More Tools You Might Like</h3>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;">
+      <a href="unit-converter.html" class="related-item">📐 Unit Converter</a>
+      <a href="password-generator.html" class="related-item">🔒 Password Generator</a>
+      <a href="word-counter.html" class="related-item">📄 Word Counter</a>
+      <a href="qr-generator.html" class="related-item">📱 QR Code Generator</a>
+    </div>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="index.html" class="logo" style="color:#fff;">
+          <div class="logo-icon">🛠️</div> ToolBox
+        </a>
+        <p style="margin-top:12px;">Free, fast, privacy-friendly tools for everyday tasks. No account, no cost — just open and use.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Text Tools</h4>
+        <ul>
+          <li><a href="word-counter.html">Word Counter</a></li>
+          <li><a href="font-changer.html">Font Changer</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Converters</h4>
+        <ul>
+          <li><a href="unit-converter.html">Unit Converter</a></li>
+          <li><a href="qr-generator.html">QR Code Generator</a></li>
+          <li><a href="image-to-pdf.html">Image to PDF</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Finance</h4>
+        <ul>
+          <li><a href="finance-tools.html">Compound Interest</a></li>
+          <li><a href="finance-tools.html">Savings Goal</a></li>
+          <li><a href="finance-tools.html">Budget Split</a></li>
+          <li><a href="finance-tools.html">All Finance Tools</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="privacy-policy.html">Privacy Policy</a></li>
+          <li><a href="terms.html">Terms &amp; Conditions</a></li>
+          <li><a href="disclaimer.html">Disclaimer</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 ToolBox. All rights reserved.</span>
+      <div class="footer-links">
+        <a href="about.html">About</a>
+        <a href="privacy-policy.html">Privacy Policy</a>
+        <a href="terms.html">Terms</a>
+        <a href="disclaimer.html">Disclaimer</a>
+        <a href="contact.html">Contact</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ═══════════════════════════════════════════════════
+   TAB SWITCHING
+═══════════════════════════════════════════════════ */
+function switchTab(idx, btn) {
+  document.querySelectorAll('.fin-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.fin-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('panel-' + idx).classList.add('active');
+}
+
+/* ═══════════════════════════════════════════════════
+   HELPERS
+═══════════════════════════════════════════════════ */
+function fmt(n, decimals = 2) {
+  return '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+}
+function fmtN(n, decimals = 2) {
+  return Number(n).toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+}
+function row(label, val, highlight = false) {
+  return `<div class="result-row${highlight ? ' highlight' : ''}">
+    <span class="r-label">${label}</span>
+    <span class="r-val">${val}</span>
+  </div>`;
+}
+function getVal(id) { return parseFloat(document.getElementById(id).value) || 0; }
+
+/* ═══════════════════════════════════════════════════
+   0. COMPOUND INTEREST
+═══════════════════════════════════════════════════ */
+function calcCompoundInterest() {
+  const P = getVal('ci-principal');
+  const r = getVal('ci-rate') / 100;
+  const n = parseInt(document.getElementById('ci-freq').value);
+  const t = getVal('ci-years');
+  const monthly = getVal('ci-monthly');
+
+  if (!P || !r || !t) { showToast('Please fill in all required fields.', 'error'); return; }
+
+  // Lump sum future value
+  const A_lump = P * Math.pow(1 + r / n, n * t);
+
+  // Future value of recurring monthly contributions
+  const rMonthly = r / 12;
+  const months = t * 12;
+  const A_contrib = monthly > 0
+    ? monthly * (Math.pow(1 + rMonthly, months) - 1) / rMonthly
+    : 0;
+
+  const A_total = A_lump + A_contrib;
+  const totalContributed = P + monthly * months;
+  const interestEarned = A_total - totalContributed;
+
+  document.getElementById('ci-results').innerHTML = `<div class="result-rows">
+    ${row('Starting Principal', fmt(P))}
+    ${monthly > 0 ? row('Total Monthly Contributions', fmt(monthly * months)) : ''}
+    ${row('Total Amount Invested', fmt(totalContributed))}
+    ${row('Interest Earned', fmt(interestEarned))}
+    ${row('Final Balance', fmt(A_total), true)}
+    ${row('Return on Investment', fmtN((interestEarned / totalContributed) * 100, 1) + '%')}
+  </div>`;
+}
+
+/* ═══════════════════════════════════════════════════
+   1. SAVINGS GOAL
+═══════════════════════════════════════════════════ */
+function calcSavingsGoal() {
+  const goal = getVal('sg-goal');
+  const current = getVal('sg-current');
+  const r = getVal('sg-rate') / 100;
+  const t = getVal('sg-years');
+
+  if (!goal || !t) { showToast('Please fill in all required fields.', 'error'); return; }
+
+  const n = 12; // monthly compounding
+  const rM = r / n;
+  const months = t * n;
+  const FV_current = current * Math.pow(1 + rM, months);
+  const remaining = goal - FV_current;
+
+  let PMT = 0;
+  if (remaining > 0) {
+    if (r === 0) {
+      PMT = remaining / months;
+    } else {
+      PMT = remaining * rM / (Math.pow(1 + rM, months) - 1);
+    }
+  }
+
+  const totalSaved = PMT * months + current;
+  const interestEarned = goal - totalSaved;
+
+  document.getElementById('sg-results').innerHTML = `<div class="result-rows">
+    ${row('Savings Goal', fmt(goal))}
+    ${row('Starting Balance', fmt(current))}
+    ${row('Time Frame', t + ' year' + (t !== 1 ? 's' : '') + ' (' + months + ' months)')}
+    ${remaining <= 0
+      ? row('Monthly Contribution Needed', '$0 (current savings will reach your goal!)', true)
+      : row('Monthly Contribution Needed', fmt(PMT), true)
+    }
+    ${interestEarned > 0 ? row('Interest Earned', fmt(interestEarned)) : ''}
+    ${row('Total You Save', fmt(Math.max(totalSaved, current)))}
+  </div>`;
+}
+
+/* ═══════════════════════════════════════════════════
+   2. DEBT PAYOFF
+═══════════════════════════════════════════════════ */
+function calcDebtPayoff() {
+  const balance = getVal('dp-balance');
+  const annualRate = getVal('dp-rate');
+  const payment = getVal('dp-payment');
+
+  if (!balance || !payment) { showToast('Please fill in all required fields.', 'error'); return; }
+
+  const r = annualRate / 100 / 12;
+
+  // Minimum payment check
+  const minPayment = balance * r;
+  if (payment <= minPayment && annualRate > 0) {
+    document.getElementById('dp-results').innerHTML = `<div class="result-rows">
+      ${row('Problem', '⚠️ Monthly payment is too low to cover interest')}
+      ${row('Minimum Payment to Make Progress', fmt(minPayment + 0.01))}
+    </div>`;
+    return;
+  }
+
+  let months, totalInterest;
+  if (annualRate === 0) {
+    months = Math.ceil(balance / payment);
+    totalInterest = 0;
+  } else {
+    months = Math.ceil(-Math.log(1 - (r * balance) / payment) / Math.log(1 + r));
+    totalInterest = payment * months - balance;
+  }
+
+  const years = Math.floor(months / 12);
+  const remMonths = months % 12;
+  const timeStr = (years > 0 ? years + ' yr ' : '') + (remMonths > 0 ? remMonths + ' mo' : '');
+
+  document.getElementById('dp-results').innerHTML = `<div class="result-rows">
+    ${row('Current Balance', fmt(balance))}
+    ${row('Monthly Payment', fmt(payment))}
+    ${row('Time to Pay Off', timeStr, true)}
+    ${row('Total Months', months)}
+    ${row('Total Interest Paid', fmt(totalInterest))}
+    ${row('Total Amount Paid', fmt(totalInterest + balance))}
+  </div>`;
+}
+
+/* ═══════════════════════════════════════════════════
+   3. LOAN AFFORDABILITY
+═══════════════════════════════════════════════════ */
+function calcLoanAffordability() {
+  const income = getVal('la-income');
+  const expenses = getVal('la-expenses');
+  const annualRate = getVal('la-rate');
+  const years = getVal('la-years');
+  const dtiPct = parseInt(document.getElementById('la-dti').value);
+
+  if (!income || !annualRate || !years) { showToast('Please fill in all required fields.', 'error'); return; }
+
+  const r = annualRate / 100 / 12;
+  const n = years * 12;
+  const maxTotalDebt = income * (dtiPct / 100);
+  const maxNewPayment = Math.max(0, maxTotalDebt - expenses);
+
+  // Max loan = PMT * ((1-(1+r)^-n)/r)
+  let maxLoan;
+  if (r === 0) {
+    maxLoan = maxNewPayment * n;
+  } else {
+    maxLoan = maxNewPayment * (1 - Math.pow(1 + r, -n)) / r;
+  }
+
+  const totalPaid = maxNewPayment * n;
+  const totalInterest = totalPaid - maxLoan;
+
+  document.getElementById('la-results').innerHTML = `<div class="result-rows">
+    ${row('Max Monthly Payment Available', fmt(maxNewPayment))}
+    ${row('Maximum Loan Amount', fmt(maxLoan), true)}
+    ${row('Loan Term', years + ' years')}
+    ${row('Interest Rate', fmtN(annualRate, 2) + '%')}
+    ${row('Total Interest Paid', fmt(totalInterest))}
+    ${row('Total Paid Over Life of Loan', fmt(totalPaid))}
+    ${row('DTI Ratio Used', dtiPct + '%')}
+  </div>`;
+}
+
+/* ═══════════════════════════════════════════════════
+   4. HOURLY ↔ SALARY
+═══════════════════════════════════════════════════ */
+let hsModeValue = 'hourly';
+
+function setHsMode(mode) {
+  hsModeValue = mode;
+  document.getElementById('hs-mode-hourly').classList.toggle('active', mode === 'hourly');
+  document.getElementById('hs-mode-annual').classList.toggle('active', mode === 'annual');
+  document.getElementById('hs-hourly-field').style.display = mode === 'hourly' ? '' : 'none';
+  document.getElementById('hs-annual-field').style.display = mode === 'annual' ? '' : 'none';
+}
+
+function calcHourlySalary() {
+  const hoursPerWeek = getVal('hs-hours') || 40;
+  const weeksPerYear = getVal('hs-weeks') || 52;
+
+  let hourly;
+  if (hsModeValue === 'hourly') {
+    hourly = getVal('hs-hourly');
+    if (!hourly) { showToast('Please enter an hourly rate.', 'error'); return; }
+  } else {
+    const annual = getVal('hs-annual');
+    if (!annual) { showToast('Please enter an annual salary.', 'error'); return; }
+    hourly = annual / (hoursPerWeek * weeksPerYear);
+  }
+
+  const daily = hourly * 8;
+  const weekly = hourly * hoursPerWeek;
+  const biweekly = weekly * 2;
+  const semiMonthly = weekly * weeksPerYear / 24;
+  const monthly = weekly * weeksPerYear / 12;
+  const annual = weekly * weeksPerYear;
+
+  document.getElementById('hs-results').innerHTML = `<div class="result-rows">
+    ${row('Hourly', fmt(hourly), true)}
+    ${row('Daily (8 hrs)', fmt(daily))}
+    ${row('Weekly (' + hoursPerWeek + ' hrs)', fmt(weekly))}
+    ${row('Bi-weekly', fmt(biweekly))}
+    ${row('Semi-monthly', fmt(semiMonthly))}
+    ${row('Monthly', fmt(monthly))}
+    ${row('Annual', fmt(annual), true)}
+  </div>`;
+}
+
+/* ═══════════════════════════════════════════════════
+   5. FREELANCE RATE
+═══════════════════════════════════════════════════ */
+function calcFreelanceRate() {
+  const income = getVal('fr-income');
+  const expenses = getVal('fr-expenses');
+  const taxRate = getVal('fr-tax') / 100;
+  const hoursPerWeek = getVal('fr-hours');
+  const weeksPerYear = getVal('fr-weeks') || 48;
+
+  if (!income || !hoursPerWeek) { showToast('Please fill in all required fields.', 'error'); return; }
+
+  const totalBillableHours = hoursPerWeek * weeksPerYear;
+  // Gross needed = (desired take-home + expenses) / (1 - tax rate)
+  const grossNeeded = (income + expenses) / (1 - taxRate);
+  const hourlyRate = grossNeeded / totalBillableHours;
+  const taxes = grossNeeded - income - expenses;
+
+  document.getElementById('fr-results').innerHTML = `<div class="result-rows">
+    ${row('Desired Take-home', fmt(income))}
+    ${row('Business Expenses', fmt(expenses))}
+    ${row('Est. Taxes (' + fmtN(getVal('fr-tax'), 0) + '%)', fmt(taxes))}
+    ${row('Gross Revenue Needed', fmt(grossNeeded))}
+    ${row('Billable Hours/Year', fmtN(totalBillableHours, 0) + ' hrs')}
+    ${row('Minimum Hourly Rate', fmt(hourlyRate), true)}
+    ${row('Daily Rate (8 hrs)', fmt(hourlyRate * 8))}
+    ${row('Weekly Rate', fmt(hourlyRate * hoursPerWeek))}
+  </div>`;
+}
+
+/* ═══════════════════════════════════════════════════
+   6. COMMISSION
+═══════════════════════════════════════════════════ */
+function calcCommission() {
+  const sale = getVal('cm-sale');
+  const rate = getVal('cm-rate');
+  const count = getVal('cm-count') || 1;
+  const base = getVal('cm-base');
+
+  if (!sale || !rate) { showToast('Please fill in Sale Amount and Commission Rate.', 'error'); return; }
+
+  const commPerSale = sale * (rate / 100);
+  const totalComm = commPerSale * count;
+  const totalSales = sale * count;
+  const totalEarnings = totalComm + base;
+
+  document.getElementById('cm-results').innerHTML = `<div class="result-rows">
+    ${row('Sale Amount', fmt(sale))}
+    ${row('Commission Rate', fmtN(rate, 2) + '%')}
+    ${row('Commission per Sale', fmt(commPerSale), true)}
+    ${count > 1 ? row('Total Sales (' + count + ')', fmt(totalSales)) : ''}
+    ${count > 1 ? row('Total Commission', fmt(totalComm), true) : ''}
+    ${base > 0 ? row('Base Salary / Pay', fmt(base)) : ''}
+    ${base > 0 ? row('Total Earnings (Base + Commission)', fmt(totalEarnings), true) : ''}
+  </div>`;
+}
+
+/* ═══════════════════════════════════════════════════
+   7. SALES TAX REVERSE
+═══════════════════════════════════════════════════ */
+let stModeValue = 'reverse';
+
+function setStMode(mode) {
+  stModeValue = mode;
+  document.getElementById('st-mode-reverse').classList.toggle('active', mode === 'reverse');
+  document.getElementById('st-mode-forward').classList.toggle('active', mode === 'forward');
+  document.getElementById('st-amount-label').textContent =
+    mode === 'reverse' ? 'Total Price Paid (tax included) ($)' : 'Pre-tax Price ($)';
+}
+
+function calcSalesTax() {
+  const amount = getVal('st-amount');
+  const rate = getVal('st-rate');
+
+  if (!amount || rate === 0) { showToast('Please fill in both fields.', 'error'); return; }
+
+  let preTax, taxAmount, total;
+
+  if (stModeValue === 'reverse') {
+    // Total given, find pre-tax
+    preTax = amount / (1 + rate / 100);
+    taxAmount = amount - preTax;
+    total = amount;
+  } else {
+    // Pre-tax given, find total
+    preTax = amount;
+    taxAmount = amount * (rate / 100);
+    total = amount + taxAmount;
+  }
+
+  document.getElementById('st-results').innerHTML = `<div class="result-rows">
+    ${row('Pre-tax Price', fmt(preTax), stModeValue === 'reverse')}
+    ${row('Sales Tax (' + fmtN(rate, 2) + '%)', fmt(taxAmount))}
+    ${row('Total Price', fmt(total), stModeValue === 'forward')}
+  </div>`;
+}
+
+/* ═══════════════════════════════════════════════════
+   8. INFLATION
+═══════════════════════════════════════════════════ */
+let infModeValue = 'future';
+
+function setInfMode(mode) {
+  infModeValue = mode;
+  document.getElementById('inf-mode-future').classList.toggle('active', mode === 'future');
+  document.getElementById('inf-mode-past').classList.toggle('active', mode === 'past');
+  document.getElementById('inf-amount-label').textContent =
+    mode === 'future' ? 'Amount Today ($)' : 'Amount in the Future ($)';
+}
+
+function calcInflation() {
+  const amount = getVal('inf-amount');
+  const rate = getVal('inf-rate') / 100;
+  const years = getVal('inf-years');
+
+  if (!amount || !years) { showToast('Please fill in all required fields.', 'error'); return; }
+
+  let futureVal, pastVal;
+
+  if (infModeValue === 'future') {
+    futureVal = amount * Math.pow(1 + rate, years);
+    pastVal = amount;
+  } else {
+    pastVal = amount / Math.pow(1 + rate, years);
+    futureVal = amount;
+  }
+
+  const purchasingLoss = futureVal - pastVal;
+  const purchasingLossPct = ((purchasingLoss / pastVal) * 100).toFixed(1);
+
+  document.getElementById('inf-results').innerHTML = `<div class="result-rows">
+    ${row('Value Today', fmt(pastVal))}
+    ${row('Value in ' + years + ' year' + (years !== 1 ? 's' : '') + ' (at ' + fmtN(getVal('inf-rate'), 1) + '% inflation)', fmt(futureVal), true)}
+    ${row('Purchasing Power Change', fmt(purchasingLoss) + ' (' + purchasingLossPct + '%)')}
+    ${row('Today\'s ' + fmt(pastVal) + ' will feel like...', fmt(pastVal / Math.pow(1 + rate, years)) + ' in today\'s money')}
+  </div>`;
+}
+
+/* ═══════════════════════════════════════════════════
+   9. BUDGET SPLIT
+═══════════════════════════════════════════════════ */
+function calcBudgetSplit() {
+  const income = getVal('bs-income');
+  const needsPct = getVal('bs-needs');
+  const wantsPct = getVal('bs-wants');
+  const savePct = getVal('bs-save');
+
+  if (!income) { showToast('Please enter your monthly income.', 'error'); return; }
+
+  const total = needsPct + wantsPct + savePct;
+  if (Math.abs(total - 100) > 0.01) {
+    showToast('Percentages must add up to 100% (currently ' + fmtN(total, 1) + '%).', 'error');
+    return;
+  }
+
+  const needs = income * needsPct / 100;
+  const wants = income * wantsPct / 100;
+  const save  = income * savePct  / 100;
+
+  document.getElementById('bs-results').innerHTML = `
+    <div class="budget-bar">
+      <div class="seg" style="width:${needsPct}%;background:#3b82f6;"></div>
+      <div class="seg" style="width:${wantsPct}%;background:#a855f7;"></div>
+      <div class="seg" style="width:${savePct}%;background:#22c55e;"></div>
+    </div>
+    <div class="budget-legend">
+      <div class="leg"><div class="leg-dot" style="background:#3b82f6;"></div>Needs ${needsPct}%</div>
+      <div class="leg"><div class="leg-dot" style="background:#a855f7;"></div>Wants ${wantsPct}%</div>
+      <div class="leg"><div class="leg-dot" style="background:#22c55e;"></div>Savings ${savePct}%</div>
+    </div>
+    <div class="result-rows">
+      ${row('Monthly Income', fmt(income))}
+      ${row('Needs (' + needsPct + '%) — Housing, food, bills', fmt(needs), true)}
+      ${row('Wants (' + wantsPct + '%) — Dining, hobbies, fun', fmt(wants), true)}
+      ${row('Savings (' + savePct + '%) — Emergency fund, retirement', fmt(save), true)}
+      ${row('Annual Savings', fmt(save * 12))}
+      ${row('Annual Income', fmt(income * 12))}
+    </div>`;
+}
+</script>
+
+</body>
+</html>
