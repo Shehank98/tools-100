@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Image Resizer — Resize Photos Online Free — ToolBox</title>
+  <meta name="description" content="Free online image resizer. Resize photos by pixels or percentage, lock aspect ratio, pick social media presets and download instantly — no upload to servers." />
+  <link rel="stylesheet" href="style.css" />
+  <script src="utils.js" defer></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+  <style>
+    /* Drop zone */
+    .drop-zone {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 48px 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color .2s, background .2s;
+      background: var(--surface-1);
+    }
+    .drop-zone:hover, .drop-zone.drag-over {
+      border-color: var(--clr-primary);
+      background: #ede9fe22;
+    }
+    .drop-zone-icon { font-size: 2.8rem; margin-bottom: 12px; }
+    .drop-zone p   { color: var(--text-2); font-size: .9rem; margin: 4px 0; }
+    .drop-zone strong { color: var(--text-1); }
+
+    /* Two-pane preview */
+    .preview-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 20px;
+    }
+    @media (max-width: 600px) { .preview-grid { grid-template-columns: 1fr; } }
+
+    .preview-pane {
+      background: var(--surface-1);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      text-align: center;
+    }
+    .preview-pane-label {
+      font-size: .72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--text-3);
+      padding: 8px;
+      background: var(--surface-2);
+      border-bottom: 1px solid var(--border);
+    }
+    .preview-pane img {
+      max-width: 100%;
+      max-height: 240px;
+      object-fit: contain;
+      display: block;
+      margin: 12px auto;
+    }
+    .preview-pane-meta {
+      font-size: .78rem;
+      color: var(--text-2);
+      padding: 8px 12px 12px;
+    }
+
+    /* Controls */
+    .resize-controls { margin-top: 20px; }
+
+    .dim-row {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 10px;
+    }
+    .dim-separator {
+      font-size: 1.1rem;
+      color: var(--text-3);
+      font-weight: 700;
+      text-align: center;
+    }
+    .lock-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: .8rem;
+      font-weight: 600;
+      color: var(--text-2);
+      cursor: pointer;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 12px;
+      transition: background .15s;
+      white-space: nowrap;
+    }
+    .lock-btn.locked { color: var(--clr-primary); background: #ede9fe44; border-color: var(--clr-primary); }
+    .lock-btn:hover { background: var(--surface-3, #e5e7eb); }
+
+    /* Presets */
+    .preset-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .preset-btn {
+      padding: 8px 10px;
+      font-size: .78rem;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface-1);
+      color: var(--text-1);
+      cursor: pointer;
+      text-align: left;
+      transition: border-color .15s, background .15s;
+      line-height: 1.4;
+    }
+    .preset-btn span { display: block; color: var(--text-3); font-weight: 400; font-size: .72rem; }
+    .preset-btn:hover { border-color: var(--clr-primary); background: #ede9fe22; }
+
+    /* Quality slider */
+    input[type=range] { width: 100%; accent-color: var(--clr-primary); }
+
+    /* Info strip */
+    .info-strip {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      background: var(--surface-1);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 18px;
+      font-size: .82rem;
+      color: var(--text-2);
+      margin-top: 16px;
+    }
+    .info-strip strong { color: var(--text-1); display: block; font-size: .9rem; }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a href="index.html" class="logo">
+      <div class="logo-icon">🛠️</div>
+      ToolBox
+    </a>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="word-counter.html">Word Counter</a>
+      <a href="password-generator.html">Password</a>
+      <a href="qr-generator.html">QR Code</a>
+      <a href="image-compressor.html">Image Tools</a>
+      <a href="unit-converter.html">Converter</a>
+      <a href="finance-tools.html">Finance</a>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-btn" id="darkToggle" onclick="toggleDarkMode()" title="Toggle dark mode">🌙</button>
+      <button class="icon-btn nav-toggle" onclick="openMobileNav()">☰</button>
+    </div>
+  </div>
+</header>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobileNav">
+  <div class="mobile-nav-backdrop" onclick="closeMobileNav()"></div>
+  <div class="mobile-nav-drawer">
+    <button class="mobile-nav-close" onclick="closeMobileNav()">✕</button>
+    <a href="index.html">🏠 Home</a>
+    <a href="word-counter.html">📄 Word Counter</a>
+    <a href="font-changer.html">✍️ Font Changer</a>
+    <a href="unit-converter.html">📐 Unit Converter</a>
+    <a href="password-generator.html">🔒 Password Generator</a>
+    <a href="qr-generator.html">📱 QR Code Generator</a>
+    <a href="image-to-pdf.html">🖼️ Image to PDF</a>
+    <a href="image-compressor.html">🗜️ Image Compressor</a>
+    <a href="image-resizer.html" class="active">↔️ Image Resizer</a>
+    <a href="pdf-compressor.html">📋 PDF Compressor</a>
+    <a href="finance-tools.html">💰 Finance Tools</a>
+    <a href="background-remover.html">✂️ Background Remover</a>
+    <a href="color-palette.html">🎨 Color Palette</a>
+    <a href="json-formatter.html">🔧 JSON Formatter</a>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main>
+
+  <!-- TOP AD -->
+  <div class="ad-unit ad-top">
+    <span class="ad-label">Advertisement</span>
+    <ins class="adsbygoogle" style="display:block;width:100%;min-height:90px"
+         data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX" data-ad-slot="4444444444"
+         data-ad-format="horizontal" data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+
+  <!-- BREADCRUMB -->
+  <div class="breadcrumb">
+    <a href="index.html">🏠 Home</a>
+    <span>›</span>
+    <span>Image Resizer</span>
+  </div>
+
+  <!-- TOOL LAYOUT -->
+  <div class="tool-layout">
+
+    <!-- LEFT: TOOL -->
+    <div>
+      <div class="tool-box">
+        <div class="tool-box-header">
+          <h1>↔️ Image Resizer</h1>
+          <p>Resize any photo by exact pixels, percentage or social media preset. Works 100% in your browser — nothing is uploaded.</p>
+        </div>
+
+        <!-- Drop zone -->
+        <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+          <div class="drop-zone-icon">🖼️</div>
+          <strong>Click to upload or drag &amp; drop</strong>
+          <p>JPG, PNG, WebP, GIF — up to 20 MB</p>
+        </div>
+        <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="loadImage(this.files[0])">
+
+        <!-- Preview -->
+        <div id="previewSection" style="display:none;">
+
+          <div class="preview-grid">
+            <div class="preview-pane">
+              <div class="preview-pane-label">Original</div>
+              <img id="origPreview" src="" alt="Original">
+              <div class="preview-pane-meta" id="origMeta"></div>
+            </div>
+            <div class="preview-pane">
+              <div class="preview-pane-label">Resized Preview</div>
+              <img id="resizedPreview" src="" alt="Resized">
+              <div class="preview-pane-meta" id="resizedMeta"></div>
+            </div>
+          </div>
+
+          <!-- Info strip -->
+          <div class="info-strip" id="infoStrip">
+            <div><strong id="infoW">—</strong>Original Width</div>
+            <div><strong id="infoH">—</strong>Original Height</div>
+            <div><strong id="infoSize">—</strong>File Size</div>
+            <div><strong id="infoType">—</strong>Format</div>
+          </div>
+
+          <!-- Resize controls -->
+          <div class="resize-controls">
+
+            <!-- Mode tabs -->
+            <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
+              <button class="btn btn-primary" id="tabPx"  onclick="setMode('px')"  style="flex:1;">By Pixels</button>
+              <button class="btn btn-ghost"   id="tabPct" onclick="setMode('pct')" style="flex:1;">By %</button>
+              <button class="btn btn-ghost"   id="tabPre" onclick="setMode('pre')" style="flex:1;">Presets</button>
+            </div>
+
+            <!-- Pixel mode -->
+            <div id="modePx">
+              <div class="dim-row">
+                <div class="form-group" style="margin:0;">
+                  <label class="form-label">Width (px)</label>
+                  <input type="number" id="inputW" class="form-input" min="1" max="10000" placeholder="Width" oninput="onWChange()">
+                </div>
+                <div class="dim-separator">×</div>
+                <div class="form-group" style="margin:0;">
+                  <label class="form-label">Height (px)</label>
+                  <input type="number" id="inputH" class="form-input" min="1" max="10000" placeholder="Height" oninput="onHChange()">
+                </div>
+              </div>
+              <div style="margin-top:10px;">
+                <button class="lock-btn locked" id="lockBtn" onclick="toggleLock()">🔒 Lock aspect ratio</button>
+              </div>
+            </div>
+
+            <!-- Percentage mode -->
+            <div id="modePct" style="display:none;">
+              <div class="form-group">
+                <label class="form-label">Scale: <strong id="pctLabel">100%</strong></label>
+                <input type="range" id="pctSlider" min="1" max="200" value="100" oninput="onPctChange(this.value)">
+                <div style="display:flex;justify-content:space-between;font-size:.75rem;color:var(--text-3);margin-top:4px;">
+                  <span>1%</span><span>100%</span><span>200%</span>
+                </div>
+              </div>
+              <div style="font-size:.85rem;color:var(--text-2);" id="pctDimInfo"></div>
+            </div>
+
+            <!-- Presets mode -->
+            <div id="modePre" style="display:none;">
+              <p style="font-size:.82rem;color:var(--text-2);margin-bottom:10px;">Tap a preset to apply it:</p>
+              <div class="preset-grid">
+                <button class="preset-btn" onclick="applyPreset(1080,1080)">Instagram Post<span>1080 × 1080</span></button>
+                <button class="preset-btn" onclick="applyPreset(1080,1920)">Instagram Story<span>1080 × 1920</span></button>
+                <button class="preset-btn" onclick="applyPreset(1200,628)">Facebook Post<span>1200 × 628</span></button>
+                <button class="preset-btn" onclick="applyPreset(820,312)">Facebook Cover<span>820 × 312</span></button>
+                <button class="preset-btn" onclick="applyPreset(1500,500)">Twitter Cover<span>1500 × 500</span></button>
+                <button class="preset-btn" onclick="applyPreset(400,400)">Profile Picture<span>400 × 400</span></button>
+                <button class="preset-btn" onclick="applyPreset(1280,720)">HD 720p<span>1280 × 720</span></button>
+                <button class="preset-btn" onclick="applyPreset(1920,1080)">Full HD 1080p<span>1920 × 1080</span></button>
+                <button class="preset-btn" onclick="applyPreset(800,600)">Standard 800<span>800 × 600</span></button>
+                <button class="preset-btn" onclick="applyPreset(640,480)">Small 640<span>640 × 480</span></button>
+                <button class="preset-btn" onclick="applyPreset(2480,3508)">A4 Print (300dpi)<span>2480 × 3508</span></button>
+                <button class="preset-btn" onclick="applyPreset(256,256)">Thumbnail<span>256 × 256</span></button>
+              </div>
+            </div>
+
+            <!-- Output format & quality -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px;align-items:end;">
+              <div class="form-group" style="margin:0;">
+                <label class="form-label">Output format</label>
+                <select id="outputFormat" class="form-input" onchange="onFormatChange()">
+                  <option value="original">Same as original</option>
+                  <option value="image/jpeg">JPEG</option>
+                  <option value="image/png">PNG</option>
+                  <option value="image/webp">WebP</option>
+                </select>
+              </div>
+              <div class="form-group" style="margin:0;" id="qualityGroup">
+                <label class="form-label">Quality: <strong id="qualityLabel">92%</strong></label>
+                <input type="range" id="qualitySlider" min="10" max="100" value="92" oninput="onQualityChange(this.value)">
+              </div>
+            </div>
+
+            <!-- Action buttons -->
+            <div class="btn-group" style="margin-top:20px;">
+              <button class="btn btn-primary" onclick="resizeAndPreview()">↔️ Resize &amp; Preview</button>
+              <button class="btn btn-ghost"   id="downloadBtn" onclick="downloadResult()" style="display:none;">⬇️ Download</button>
+              <button class="btn btn-ghost"   onclick="resetTool()">🗑️ Reset</button>
+            </div>
+          </div>
+
+        </div><!-- /previewSection -->
+      </div>
+
+      <!-- MID AD -->
+      <div class="ad-unit ad-mid">
+        <span class="ad-label">Advertisement</span>
+        <ins class="adsbygoogle" style="display:block;width:100%;min-height:90px"
+             data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX" data-ad-slot="5555555555"
+             data-ad-format="horizontal" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </div>
+
+      <!-- Tips -->
+      <div class="tool-box">
+        <h2>💡 Tips for Best Results</h2>
+        <ul class="tips-list">
+          <li>Use <strong>Lock aspect ratio</strong> to avoid stretching your photo.</li>
+          <li>For photos, <strong>JPEG at 85–92%</strong> quality gives a great size/quality balance.</li>
+          <li>Use <strong>PNG</strong> when you need a transparent background.</li>
+          <li>Use <strong>WebP</strong> for the smallest file size with no visible quality loss — ideal for websites.</li>
+          <li>Social media <strong>presets</strong> are automatically sized to the platform's recommended dimensions.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- RIGHT: SIDEBAR -->
+    <aside class="sidebar">
+
+      <!-- Sidebar Ad -->
+      <div class="ad-unit ad-rect">
+        <span class="ad-label">Advertisement</span>
+        <ins class="adsbygoogle" style="display:block;width:100%;min-height:250px"
+             data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX" data-ad-slot="6666666666"
+             data-ad-format="rectangle" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </div>
+
+      <!-- Common sizes -->
+      <div class="tool-box">
+        <h3>📐 Common Sizes</h3>
+        <ul class="tips-list" style="font-size:.82rem;">
+          <li><strong>WhatsApp DP:</strong> 500 × 500 px</li>
+          <li><strong>Instagram Post:</strong> 1080 × 1080 px</li>
+          <li><strong>Facebook Cover:</strong> 820 × 312 px</li>
+          <li><strong>Twitter Header:</strong> 1500 × 500 px</li>
+          <li><strong>YouTube Thumbnail:</strong> 1280 × 720 px</li>
+          <li><strong>Passport Photo (US):</strong> 600 × 600 px</li>
+          <li><strong>Full HD Wallpaper:</strong> 1920 × 1080 px</li>
+        </ul>
+      </div>
+
+      <!-- Related -->
+      <div class="tool-box">
+        <h3>Related Tools</h3>
+        <div class="related-tools">
+          <a href="image-compressor.html" class="related-item">
+            <div class="related-icon" style="background:#fef9c3;">🗜️</div>
+            <div class="related-item-text">
+              <strong>Image Compressor</strong>
+              <span>Reduce file size</span>
+            </div>
+          </a>
+          <a href="image-to-pdf.html" class="related-item">
+            <div class="related-icon" style="background:#fee2e2;">🖼️</div>
+            <div class="related-item-text">
+              <strong>Image to PDF</strong>
+              <span>Combine images into PDF</span>
+            </div>
+          </a>
+          <a href="background-remover.html" class="related-item">
+            <div class="related-icon" style="background:#ede9fe;">✂️</div>
+            <div class="related-item-text">
+              <strong>Background Remover</strong>
+              <span>AI transparent PNG</span>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- Sidebar Ad 2 -->
+      <div class="ad-unit ad-rect">
+        <span class="ad-label">Advertisement</span>
+        <ins class="adsbygoogle" style="display:block;width:100%;min-height:250px"
+             data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX" data-ad-slot="7777777777"
+             data-ad-format="rectangle" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </div>
+
+    </aside>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="index.html" class="logo" style="color:#fff;">
+          <div class="logo-icon">🛠️</div> ToolBox
+        </a>
+        <p style="margin-top:12px;">Free, fast, privacy-friendly tools for everyday tasks.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Image Tools</h4>
+        <ul>
+          <li><a href="image-resizer.html">Image Resizer</a></li>
+          <li><a href="image-compressor.html">Image Compressor</a></li>
+          <li><a href="image-to-pdf.html">Image to PDF</a></li>
+          <li><a href="background-remover.html">Background Remover</a></li>
+          <li><a href="color-palette.html">Color Palette</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Other Tools</h4>
+        <ul>
+          <li><a href="word-counter.html">Word Counter</a></li>
+          <li><a href="password-generator.html">Password Generator</a></li>
+          <li><a href="unit-converter.html">Unit Converter</a></li>
+          <li><a href="finance-tools.html">Finance Tools</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 ToolBox. All rights reserved.</span>
+      <div class="footer-links">
+        <a href="privacy-policy.html">Privacy Policy</a>
+        <a href="terms.html">Terms</a>
+        <a href="contact.html">Contact</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  /* ── State ── */
+  let origImg     = null;   // HTMLImageElement
+  let origFile    = null;   // File
+  let origW       = 0;
+  let origH       = 0;
+  let aspectRatio = 1;
+  let locked      = true;
+  let currentMode = 'px';
+  let resultBlob  = null;
+  let resultExt   = 'jpg';
+
+  /* ── Drop zone ── */
+  const dz = document.getElementById('dropZone');
+  dz.addEventListener('dragover',  e => { e.preventDefault(); dz.classList.add('drag-over'); });
+  dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
+  dz.addEventListener('drop', e => {
+    e.preventDefault();
+    dz.classList.remove('drag-over');
+    const f = e.dataTransfer.files[0];
+    if (f && f.type.startsWith('image/')) loadImage(f);
+    else showToast('Please drop an image file', 'error');
+  });
+
+  /* ── Load image ── */
+  function loadImage(file) {
+    if (!file) return;
+    if (file.size > 20 * 1024 * 1024) { showToast('File too large (max 20 MB)', 'error'); return; }
+    origFile = file;
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        origImg = img;
+        origW   = img.naturalWidth;
+        origH   = img.naturalHeight;
+        aspectRatio = origW / origH;
+
+        // Show original preview
+        document.getElementById('origPreview').src = e.target.result;
+        document.getElementById('origMeta').textContent = `${origW} × ${origH} px · ${formatBytes(file.size)}`;
+
+        // Info strip
+        document.getElementById('infoW').textContent    = origW + ' px';
+        document.getElementById('infoH').textContent    = origH + ' px';
+        document.getElementById('infoSize').textContent = formatBytes(file.size);
+        document.getElementById('infoType').textContent = file.type.split('/')[1].toUpperCase();
+
+        // Seed pixel inputs
+        document.getElementById('inputW').value = origW;
+        document.getElementById('inputH').value = origH;
+
+        // Seed pct info
+        updatePctInfo(100);
+
+        // Hide drop zone, show controls
+        dz.style.display = 'none';
+        document.getElementById('previewSection').style.display = 'block';
+        document.getElementById('resizedPreview').src = e.target.result;
+        document.getElementById('resizedMeta').textContent = 'Click "Resize & Preview" to update';
+
+        showToast('Image loaded — adjust settings and resize', 'success');
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  /* ── Mode switching ── */
+  function setMode(m) {
+    currentMode = m;
+    ['px','pct','pre'].forEach(id => {
+      document.getElementById('mode' + id.charAt(0).toUpperCase() + id.slice(1)).style.display = m === id ? '' : 'none';
+      const btn = document.getElementById('tab' + id.charAt(0).toUpperCase() + id.slice(1));
+      btn.className = m === id ? 'btn btn-primary' : 'btn btn-ghost';
+    });
+  }
+
+  /* ── Pixel inputs ── */
+  function onWChange() {
+    if (!locked || !origW) return;
+    const w = parseInt(document.getElementById('inputW').value, 10);
+    if (w > 0) document.getElementById('inputH').value = Math.round(w / aspectRatio);
+  }
+  function onHChange() {
+    if (!locked || !origH) return;
+    const h = parseInt(document.getElementById('inputH').value, 10);
+    if (h > 0) document.getElementById('inputW').value = Math.round(h * aspectRatio);
+  }
+
+  /* ── Lock / unlock ── */
+  function toggleLock() {
+    locked = !locked;
+    const btn = document.getElementById('lockBtn');
+    btn.textContent = locked ? '🔒 Lock aspect ratio' : '🔓 Free resize';
+    btn.className   = 'lock-btn' + (locked ? ' locked' : '');
+  }
+
+  /* ── Percentage ── */
+  function onPctChange(val) {
+    document.getElementById('pctLabel').textContent = val + '%';
+    updatePctInfo(val);
+  }
+  function updatePctInfo(pct) {
+    if (!origW) return;
+    const w = Math.round(origW * pct / 100);
+    const h = Math.round(origH * pct / 100);
+    document.getElementById('pctDimInfo').textContent = `Output: ${w} × ${h} px`;
+  }
+
+  /* ── Presets ── */
+  function applyPreset(w, h) {
+    document.getElementById('inputW').value = w;
+    document.getElementById('inputH').value = h;
+    setMode('px');
+    showToast(`Preset applied: ${w} × ${h}`, 'info');
+  }
+
+  /* ── Format / quality ── */
+  function onFormatChange() {
+    const fmt = document.getElementById('outputFormat').value;
+    const showQ = fmt !== 'image/png';
+    document.getElementById('qualityGroup').style.opacity = showQ ? '1' : '.4';
+    document.getElementById('qualitySlider').disabled = !showQ;
+  }
+  function onQualityChange(val) {
+    document.getElementById('qualityLabel').textContent = val + '%';
+  }
+
+  /* ── Get target dimensions ── */
+  function getTargetDimensions() {
+    if (currentMode === 'pct') {
+      const pct = parseInt(document.getElementById('pctSlider').value, 10);
+      return { w: Math.round(origW * pct / 100), h: Math.round(origH * pct / 100) };
+    }
+    // px or pre — both use the pixel inputs
+    const w = parseInt(document.getElementById('inputW').value, 10);
+    const h = parseInt(document.getElementById('inputH').value, 10);
+    if (!w || !h || w < 1 || h < 1) return null;
+    return { w, h };
+  }
+
+  /* ── Get output MIME + ext ── */
+  function getOutputFormat() {
+    let fmt = document.getElementById('outputFormat').value;
+    if (fmt === 'original') {
+      fmt = origFile.type || 'image/jpeg';
+    }
+    const extMap = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif' };
+    return { mime: fmt, ext: extMap[fmt] || 'jpg' };
+  }
+
+  /* ── Resize & preview ── */
+  function resizeAndPreview() {
+    if (!origImg) { showToast('Please upload an image first', 'warning'); return; }
+    const dim = getTargetDimensions();
+    if (!dim) { showToast('Please enter valid dimensions', 'warning'); return; }
+    if (dim.w > 10000 || dim.h > 10000) { showToast('Max dimension is 10 000 px', 'warning'); return; }
+
+    const canvas = document.createElement('canvas');
+    canvas.width  = dim.w;
+    canvas.height = dim.h;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(origImg, 0, 0, dim.w, dim.h);
+
+    const { mime, ext } = getOutputFormat();
+    const quality = parseInt(document.getElementById('qualitySlider').value, 10) / 100;
+    resultExt = ext;
+
+    canvas.toBlob(blob => {
+      resultBlob = blob;
+      const url  = URL.createObjectURL(blob);
+      document.getElementById('resizedPreview').src = url;
+      document.getElementById('resizedMeta').textContent = `${dim.w} × ${dim.h} px · ${formatBytes(blob.size)}`;
+      document.getElementById('downloadBtn').style.display = '';
+      showToast('Resized! Click Download to save.', 'success');
+    }, mime, quality);
+  }
+
+  /* ── Download ── */
+  function downloadResult() {
+    if (!resultBlob) { showToast('Please resize first', 'warning'); return; }
+    const base = origFile ? origFile.name.replace(/\.[^.]+$/, '') : 'resized';
+    downloadBlob(resultBlob, `${base}_resized.${resultExt}`);
+  }
+
+  /* ── Reset ── */
+  function resetTool() {
+    origImg = origFile = resultBlob = null;
+    origW = origH = 0;
+    locked = true;
+    currentMode = 'px';
+    document.getElementById('fileInput').value = '';
+    document.getElementById('previewSection').style.display = 'none';
+    dz.style.display = '';
+    document.getElementById('downloadBtn').style.display = 'none';
+    document.getElementById('lockBtn').className = 'lock-btn locked';
+    document.getElementById('lockBtn').textContent = '🔒 Lock aspect ratio';
+    document.getElementById('pctSlider').value = 100;
+    document.getElementById('pctLabel').textContent = '100%';
+    document.getElementById('qualitySlider').value = 92;
+    document.getElementById('qualityLabel').textContent = '92%';
+    setMode('px');
+    showToast('Reset', 'info');
+  }
+</script>
+
+</body>
+</html>
