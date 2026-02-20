@@ -740,37 +740,44 @@
      JAVASCRIPT
 ════════════════════════════════════════════════════════ -->
 <script type="module">
-  /* ── CDN sources for @imgly/background-removal (tried in order) ── */
+  /* ── CDN sources for @imgly/background-removal (tried in order) ──
+     Version 1.7.0 is pinned directly to avoid CORS-breaking redirects.
+     jsdelivr always sets Access-Control-Allow-Origin: * so it goes first. ── */
   const CDN_SOURCES = [
     {
-      url:        'https://unpkg.com/@imgly/background-removal/dist/browser.mjs',
-      publicPath: 'https://unpkg.com/@imgly/background-removal/dist/',
+      url:        'https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.7.0/dist/browser.mjs',
+      publicPath: 'https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.7.0/dist/',
     },
     {
-      url:        'https://cdn.jsdelivr.net/npm/@imgly/background-removal/dist/browser.mjs',
-      publicPath: 'https://cdn.jsdelivr.net/npm/@imgly/background-removal/dist/',
+      url:        'https://unpkg.com/@imgly/background-removal@1.7.0/dist/browser.mjs',
+      publicPath: 'https://unpkg.com/@imgly/background-removal@1.7.0/dist/',
     },
   ];
 
   let removeBackground = null;
   let activePublicPath = CDN_SOURCES[0].publicPath;
+  let loadPromise      = null;   // prevents concurrent duplicate loads
 
-  async function loadLibrary() {
-    for (const src of CDN_SOURCES) {
-      try {
-        const mod = await import(src.url);
-        if (typeof mod.removeBackground === 'function') {
-          removeBackground = mod.removeBackground;
-          activePublicPath = src.publicPath;
-          console.log('AI library loaded from:', src.url);
-          return;
+  function loadLibrary() {
+    if (loadPromise) return loadPromise;  // return in-flight promise if already loading
+    loadPromise = (async () => {
+      for (const src of CDN_SOURCES) {
+        try {
+          const mod = await import(src.url);
+          if (typeof mod.removeBackground === 'function') {
+            removeBackground = mod.removeBackground;
+            activePublicPath = src.publicPath;
+            console.log('AI library loaded from:', src.url);
+            return;
+          }
+        } catch (e) {
+          console.warn('CDN source failed, trying next…', src.url, e.message);
         }
-      } catch (e) {
-        console.warn('CDN source failed, trying next…', src.url, e.message);
       }
-    }
-    console.error('All CDN sources failed — background removal unavailable.');
-    removeBackground = null;
+      console.error('All CDN sources failed — background removal unavailable.');
+      removeBackground = null;
+    })();
+    return loadPromise;
   }
 
   /* Preload library in the background */
