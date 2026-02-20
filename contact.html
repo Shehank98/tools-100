@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact Us — ToolBox</title>
+  <meta name="description" content="Get in touch with the ToolBox team. Send us your tool suggestions, bug reports, or general feedback." />
+  <link rel="stylesheet" href="style.css" />
+  <script src="utils.js" defer></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+  <style>
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 28px;
+      align-items: start;
+    }
+
+    .contact-info-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 18px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      margin-bottom: 12px;
+      transition: border-color var(--dur) var(--ease);
+    }
+
+    .contact-info-card:hover { border-color: var(--clr-primary-light); }
+
+    .contact-info-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .contact-info-card strong { display: block; font-size: .9rem; color: var(--text-1); margin-bottom: 3px; }
+    .contact-info-card span  { font-size: .84rem; color: var(--text-2); }
+    .contact-info-card a     { color: var(--clr-primary); text-decoration: none; font-weight: 600; }
+    .contact-info-card a:hover { text-decoration: underline; }
+
+    .social-links {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .social-btn {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-full);
+      text-decoration: none;
+      font-size: .84rem;
+      font-weight: 600;
+      color: var(--text-2);
+      background: var(--surface-1);
+      transition: all var(--dur) var(--ease);
+    }
+
+    .social-btn:hover {
+      border-color: var(--clr-primary);
+      color: var(--clr-primary);
+      background: var(--clr-primary-glow);
+    }
+
+    .form-success {
+      display: none;
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .form-success .success-icon { font-size: 3rem; margin-bottom: 14px; }
+    .form-success h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
+    .form-success p  { color: var(--text-2); font-size: .9rem; }
+
+    @media (max-width: 860px) {
+      .contact-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a href="index.html" class="logo">
+      <div class="logo-icon">🛠️</div>
+      ToolBox
+    </a>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="word-counter.html">Word Counter</a>
+      <a href="font-changer.html">Font Changer</a>
+      <a href="password-generator.html">Password</a>
+      <a href="qr-generator.html">QR Code</a>
+      <a href="image-compressor.html">Image Tools</a>
+      <a href="unit-converter.html">Converter</a>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-btn" id="darkToggle" onclick="toggleDarkMode()" title="Toggle dark mode">🌙</button>
+      <button class="icon-btn nav-toggle" onclick="openMobileNav()">☰</button>
+    </div>
+  </div>
+</header>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobileNav">
+  <div class="mobile-nav-backdrop" onclick="closeMobileNav()"></div>
+  <div class="mobile-nav-drawer">
+    <button class="mobile-nav-close" onclick="closeMobileNav()">✕</button>
+    <a href="index.html">🏠 Home</a>
+    <a href="word-counter.html">📄 Word Counter</a>
+    <a href="font-changer.html">✍️ Font Changer</a>
+    <a href="unit-converter.html">📐 Unit Converter</a>
+    <a href="password-generator.html">🔒 Password Generator</a>
+    <a href="qr-generator.html">📱 QR Code Generator</a>
+    <a href="image-to-pdf.html">🖼️ Image to PDF</a>
+    <a href="image-compressor.html">🗜️ Image Compressor</a>
+    <a href="pdf-compressor.html">📋 PDF Compressor</a>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main>
+
+  <!-- TOP AD -->
+  <div class="ad-unit ad-top">
+    <span class="ad-label">Advertisement</span>
+    <ins class="adsbygoogle" style="display:block;width:100%;min-height:90px"
+         data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX" data-ad-slot="1111111111"
+         data-ad-format="horizontal" data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+
+  <!-- BREADCRUMB -->
+  <div class="breadcrumb">
+    <a href="index.html">🏠 Home</a>
+    <span>›</span>
+    <span>Contact Us</span>
+  </div>
+
+  <!-- PAGE HEADING -->
+  <div style="margin-bottom:28px;">
+    <h1 style="font-size:2rem;font-weight:800;letter-spacing:-0.5px;margin-bottom:8px;">📬 Contact Us</h1>
+    <p style="color:var(--text-2);font-size:.97rem;">Have a question, suggestion, or found a bug? We'd love to hear from you. We read every message and respond within 1–2 business days.</p>
+  </div>
+
+  <div class="contact-grid">
+
+    <!-- LEFT: Contact Form -->
+    <div>
+      <div class="tool-box">
+        <h2 style="margin-bottom:20px;">Send Us a Message</h2>
+
+        <!-- Form -->
+        <div id="contactForm">
+          <div class="form-group">
+            <label for="contactName">Your Name <span style="color:var(--clr-danger);">*</span></label>
+            <input type="text" id="contactName" placeholder="John Smith" required />
+          </div>
+
+          <div class="form-group">
+            <label for="contactEmail">Email Address <span style="color:var(--clr-danger);">*</span></label>
+            <input type="text" id="contactEmail" placeholder="john@example.com" required />
+          </div>
+
+          <div class="form-group">
+            <label for="contactSubject">Subject</label>
+            <select id="contactSubject">
+              <option value="general">General Question</option>
+              <option value="bug">Bug Report</option>
+              <option value="suggestion">Tool Suggestion</option>
+              <option value="feedback">Feedback</option>
+              <option value="business">Business / Partnership</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="contactMessage">Message <span style="color:var(--clr-danger);">*</span></label>
+            <textarea id="contactMessage" placeholder="Tell us how we can help..." style="min-height:160px;"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="checkbox-item" style="font-size:.83rem;color:var(--text-2);">
+              <input type="checkbox" id="privacyCheck" />
+              I agree to the <a href="privacy-policy.html" style="color:var(--clr-primary);">Privacy Policy</a> and consent to being contacted via the email I provided.
+            </label>
+          </div>
+
+          <button class="btn btn-primary btn-lg btn-full" onclick="submitForm()">
+            📨 Send Message
+          </button>
+
+          <p style="font-size:.78rem;color:var(--text-3);margin-top:10px;text-align:center;">
+            We typically respond within 1–2 business days.
+          </p>
+        </div>
+
+        <!-- Success state -->
+        <div class="form-success" id="formSuccess">
+          <div class="success-icon">✅</div>
+          <h3>Message Sent!</h3>
+          <p>Thank you for reaching out. We've received your message and will get back to you within 1–2 business days.</p>
+          <button class="btn btn-outline" style="margin-top:16px;" onclick="resetForm()">Send Another Message</button>
+        </div>
+
+      </div>
+
+      <!-- MID AD -->
+      <div class="ad-unit ad-mid">
+        <span class="ad-label">Advertisement</span>
+        <ins class="adsbygoogle" style="display:block;width:100%;min-height:90px"
+             data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX" data-ad-slot="2222222222"
+             data-ad-format="horizontal" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </div>
+    </div>
+
+    <!-- RIGHT: Contact Info -->
+    <aside>
+
+      <!-- Sidebar Ad -->
+      <div class="ad-unit ad-rect" style="margin-bottom:20px;">
+        <span class="ad-label">Advertisement</span>
+        <ins class="adsbygoogle" style="display:block;width:100%;min-height:250px"
+             data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX" data-ad-slot="6666666666"
+             data-ad-format="rectangle" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </div>
+
+      <div class="tool-box" style="margin-bottom:20px;">
+        <h3 style="margin-bottom:16px;">📞 Contact Details</h3>
+
+        <div class="contact-info-card">
+          <div class="contact-info-icon" style="background:#ede9fe;">📧</div>
+          <div>
+            <strong>Email Us</strong>
+            <!-- Replace with your real email address -->
+            <span><a href="mailto:hello@yourtoolbox.com">hello@yourtoolbox.com</a></span>
+          </div>
+        </div>
+
+        <div class="contact-info-card">
+          <div class="contact-info-icon" style="background:#dcfce7;">⏰</div>
+          <div>
+            <strong>Response Time</strong>
+            <span>Usually within 1–2 business days</span>
+          </div>
+        </div>
+
+        <div class="contact-info-card">
+          <div class="contact-info-icon" style="background:#fff7ed;">📍</div>
+          <div>
+            <strong>Location</strong>
+            <!-- Update to your real location -->
+            <span>Available online worldwide</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Social Links -->
+      <div class="tool-box" style="margin-bottom:20px;">
+        <h3 style="margin-bottom:14px;">🌐 Follow Us</h3>
+        <p style="font-size:.84rem;color:var(--text-2);margin-bottom:14px;">Stay updated with new tools and announcements.</p>
+        <div class="social-links">
+          <!-- Replace # with your real social profile URLs -->
+          <a href="#" class="social-btn">𝕏 Twitter / X</a>
+          <a href="#" class="social-btn">📘 Facebook</a>
+          <a href="#" class="social-btn">📸 Instagram</a>
+          <a href="#" class="social-btn">💼 LinkedIn</a>
+        </div>
+      </div>
+
+      <!-- FAQ quick links -->
+      <div class="tool-box">
+        <h3 style="margin-bottom:14px;">❓ Quick Answers</h3>
+        <div style="display:flex;flex-direction:column;gap:10px;font-size:.85rem;">
+          <details style="border:1px solid var(--border);border-radius:var(--radius-xs);overflow:hidden;">
+            <summary style="padding:11px 14px;cursor:pointer;font-weight:600;color:var(--text-1);background:var(--surface-2);">Is ToolBox really free?</summary>
+            <p style="padding:12px 14px;color:var(--text-2);margin:0;border-top:1px solid var(--border);">Yes! All tools are 100% free to use. We sustain the site through advertising.</p>
+          </details>
+          <details style="border:1px solid var(--border);border-radius:var(--radius-xs);overflow:hidden;">
+            <summary style="padding:11px 14px;cursor:pointer;font-weight:600;color:var(--text-1);background:var(--surface-2);">Are my files uploaded to a server?</summary>
+            <p style="padding:12px 14px;color:var(--text-2);margin:0;border-top:1px solid var(--border);">No. All processing happens entirely inside your browser. Your files never leave your device.</p>
+          </details>
+          <details style="border:1px solid var(--border);border-radius:var(--radius-xs);overflow:hidden;">
+            <summary style="padding:11px 14px;cursor:pointer;font-weight:600;color:var(--text-1);background:var(--surface-2);">Can I request a new tool?</summary>
+            <p style="padding:12px 14px;color:var(--text-2);margin:0;border-top:1px solid var(--border);">Absolutely! Use the form on this page and select "Tool Suggestion" as the subject.</p>
+          </details>
+        </div>
+      </div>
+
+    </aside>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="index.html" class="logo" style="color:#fff;">
+          <div class="logo-icon">🛠️</div> ToolBox
+        </a>
+        <p style="margin-top:12px;">Free, fast, privacy-friendly tools for everyday tasks.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Text Tools</h4>
+        <ul>
+          <li><a href="word-counter.html">Word Counter</a></li>
+          <li><a href="font-changer.html">Font Changer</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Converters</h4>
+        <ul>
+          <li><a href="unit-converter.html">Unit Converter</a></li>
+          <li><a href="qr-generator.html">QR Code Generator</a></li>
+          <li><a href="image-to-pdf.html">Image to PDF</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="privacy-policy.html">Privacy Policy</a></li>
+          <li><a href="terms.html">Terms &amp; Conditions</a></li>
+          <li><a href="disclaimer.html">Disclaimer</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 ToolBox. All rights reserved.</span>
+      <div class="footer-links">
+        <a href="privacy-policy.html">Privacy Policy</a>
+        <a href="terms.html">Terms</a>
+        <a href="contact.html">Contact</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  function submitForm() {
+    const name    = document.getElementById('contactName').value.trim();
+    const email   = document.getElementById('contactEmail').value.trim();
+    const message = document.getElementById('contactMessage').value.trim();
+    const privacy = document.getElementById('privacyCheck').checked;
+
+    if (!name)    { showToast('Please enter your name.', 'warning'); return; }
+    if (!email || !email.includes('@')) { showToast('Please enter a valid email address.', 'warning'); return; }
+    if (!message) { showToast('Please enter your message.', 'warning'); return; }
+    if (!privacy) { showToast('Please agree to the Privacy Policy to continue.', 'warning'); return; }
+
+    // NOTE: This form is a front-end demo.
+    // To make it functional, integrate with a form service such as:
+    // Formspree (https://formspree.io), EmailJS (https://emailjs.com),
+    // Netlify Forms, or your own backend endpoint.
+
+    document.getElementById('contactForm').style.display = 'none';
+    document.getElementById('formSuccess').style.display  = 'block';
+  }
+
+  function resetForm() {
+    ['contactName','contactEmail','contactMessage'].forEach(id => {
+      document.getElementById(id).value = '';
+    });
+    document.getElementById('privacyCheck').checked = false;
+    document.getElementById('contactForm').style.display   = 'block';
+    document.getElementById('formSuccess').style.display   = 'none';
+  }
+</script>
+
+</body>
+</html>

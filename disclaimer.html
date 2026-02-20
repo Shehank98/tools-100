@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Disclaimer — ToolBox</title>
+  <meta name="description" content="ToolBox Disclaimer — tool results are for informational purposes only and should not be relied on for professional advice." />
+  <link rel="stylesheet" href="style.css" />
+  <script src="utils.js" defer></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+  <style>
+    .policy-wrap { max-width: 820px; margin: 0 auto; }
+    .policy-wrap h1 { font-size: 2rem; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 6px; }
+    .policy-wrap .last-updated { font-size: .82rem; color: var(--text-3); margin-bottom: 32px; }
+    .policy-section {
+      background: var(--surface-1);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-card);
+    }
+    .policy-section h2 { font-size: 1.15rem; font-weight: 800; color: var(--text-1); margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
+    .policy-section p  { color: var(--text-2); font-size: .93rem; line-height: 1.85; margin-bottom: 12px; }
+    .policy-section p:last-child { margin-bottom: 0; }
+    .policy-section ul { padding-left: 20px; color: var(--text-2); font-size: .93rem; line-height: 1.85; margin: 8px 0; }
+    .policy-section ul li { margin-bottom: 6px; }
+    .policy-section a { color: var(--clr-primary); }
+
+    .disclaimer-banner {
+      background: linear-gradient(135deg, var(--clr-primary-glow), rgba(6,182,212,.08));
+      border: 1.5px solid var(--clr-primary-light);
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      margin-bottom: 28px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .disclaimer-banner .icon { font-size: 2rem; flex-shrink: 0; }
+    .disclaimer-banner h2 { font-size: 1.1rem; font-weight: 800; color: var(--clr-primary); margin-bottom: 8px; }
+    .disclaimer-banner p  { color: var(--text-2); font-size: .9rem; line-height: 1.7; margin: 0; }
+
+    .tool-disclaimer-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+      margin: 16px 0;
+    }
+    .tool-disc-card {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+    }
+    .tool-disc-card h4 { font-size: .9rem; font-weight: 700; color: var(--text-1); margin-bottom: 6px; }
+    .tool-disc-card p  { font-size: .8rem; color: var(--text-2); line-height: 1.55; margin: 0; }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a href="index.html" class="logo">
+      <div class="logo-icon">🛠️</div>
+      ToolBox
+    </a>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="word-counter.html">Word Counter</a>
+      <a href="font-changer.html">Font Changer</a>
+      <a href="password-generator.html">Password</a>
+      <a href="qr-generator.html">QR Code</a>
+      <a href="image-compressor.html">Image Tools</a>
+      <a href="unit-converter.html">Converter</a>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-btn" id="darkToggle" onclick="toggleDarkMode()" title="Toggle dark mode">🌙</button>
+      <button class="icon-btn nav-toggle" onclick="openMobileNav()">☰</button>
+    </div>
+  </div>
+</header>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobileNav">
+  <div class="mobile-nav-backdrop" onclick="closeMobileNav()"></div>
+  <div class="mobile-nav-drawer">
+    <button class="mobile-nav-close" onclick="closeMobileNav()">✕</button>
+    <a href="index.html">🏠 Home</a>
+    <a href="word-counter.html">📄 Word Counter</a>
+    <a href="font-changer.html">✍️ Font Changer</a>
+    <a href="unit-converter.html">📐 Unit Converter</a>
+    <a href="password-generator.html">🔒 Password Generator</a>
+    <a href="qr-generator.html">📱 QR Code Generator</a>
+    <a href="image-to-pdf.html">🖼️ Image to PDF</a>
+    <a href="image-compressor.html">🗜️ Image Compressor</a>
+    <a href="pdf-compressor.html">📋 PDF Compressor</a>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main>
+
+  <div class="policy-wrap">
+
+    <div class="breadcrumb">
+      <a href="index.html">🏠 Home</a>
+      <span>›</span>
+      <span>Disclaimer</span>
+    </div>
+
+    <h1>⚠️ Disclaimer</h1>
+    <p class="last-updated">Last updated: February 20, 2026</p>
+
+    <!-- Key notice banner -->
+    <div class="disclaimer-banner">
+      <div class="icon">⚠️</div>
+      <div>
+        <h2>Important Notice</h2>
+        <p>
+          All tools, results, calculations, and outputs provided by ToolBox are for
+          <strong>informational and convenience purposes only</strong>. They do not constitute
+          professional advice of any kind — including legal, financial, medical, technical, or
+          security advice. Always verify important results independently and consult a qualified
+          professional for critical decisions.
+        </p>
+      </div>
+    </div>
+
+    <!-- General -->
+    <div class="policy-section">
+      <h2>1. General Disclaimer</h2>
+      <p>
+        The information and tools provided on ToolBox (<strong>yourtoolbox.com</strong>) are provided
+        in good faith for general informational and practical use. However, we make no representation
+        or warranty of any kind — express or implied — regarding the accuracy, adequacy, validity,
+        reliability, availability, or completeness of any information or results produced by our tools.
+      </p>
+      <p>
+        <strong>Under no circumstance shall ToolBox, its owners, developers, or contributors be
+        held liable for any loss or damage of any kind</strong> incurred as a result of the use of
+        the Website or reliance on any information or tool output provided herein.
+      </p>
+      <p>
+        Your use of the Website and your reliance on any information or tool output on the Website
+        is solely at your own risk.
+      </p>
+    </div>
+
+    <!-- Tool-Specific -->
+    <div class="policy-section">
+      <h2>2. Tool-Specific Disclaimers</h2>
+      <p>The following disclaimers apply to specific tools on our Website:</p>
+
+      <div class="tool-disclaimer-grid">
+        <div class="tool-disc-card">
+          <h4>📐 Unit Converter</h4>
+          <p>Conversion results are based on standard accepted values. For engineering, scientific, or professional use, always verify against authoritative references.</p>
+        </div>
+        <div class="tool-disc-card">
+          <h4>🔒 Password Generator</h4>
+          <p>Generated passwords use cryptographic randomness but offer no guarantee of complete security. Security also depends on how and where passwords are stored and used.</p>
+        </div>
+        <div class="tool-disc-card">
+          <h4>🗜️ Image Compressor</h4>
+          <p>Compression quality and output vary based on source image and settings. Original files should always be preserved before compression.</p>
+        </div>
+        <div class="tool-disc-card">
+          <h4>📋 PDF Compressor</h4>
+          <p>PDF compression is lossy. Always keep your original PDF file. Compressed outputs may have reduced visual quality, particularly for high-resolution images.</p>
+        </div>
+        <div class="tool-disc-card">
+          <h4>🖼️ Image to PDF</h4>
+          <p>Output quality depends on source image resolution. Results may vary between browsers and devices. Always preview before distributing.</p>
+        </div>
+        <div class="tool-disc-card">
+          <h4>📄 Word Counter</h4>
+          <p>Word and reading time counts are estimates. Results may vary depending on counting methodology. Do not rely on these counts for legal or publishing purposes without independent verification.</p>
+        </div>
+        <div class="tool-disc-card">
+          <h4>✍️ Font Changer</h4>
+          <p>Unicode font styles may not render correctly on all platforms, devices, or applications. Compatibility depends on the software and font support of the recipient.</p>
+        </div>
+        <div class="tool-disc-card">
+          <h4>📱 QR Code Generator</h4>
+          <p>Always test generated QR codes on multiple devices before distributing for commercial or official use. Scanning compatibility may vary by device and app.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- No Professional Advice -->
+    <div class="policy-section">
+      <h2>3. No Professional Advice</h2>
+      <p>
+        Nothing on this Website constitutes or is intended to constitute professional advice. This includes
+        but is not limited to:
+      </p>
+      <ul>
+        <li><strong>Legal advice:</strong> Do not use our tools as a substitute for legal counsel.</li>
+        <li><strong>Financial advice:</strong> Calculator or conversion results should not be used to make financial decisions without consulting a qualified financial adviser.</li>
+        <li><strong>Medical advice:</strong> None of our tools are designed for medical use. Do not make health-related decisions based on any output from this Website.</li>
+        <li><strong>Cybersecurity advice:</strong> Our password generator provides convenient strong passwords but is not a complete cybersecurity solution. Consult a security professional for enterprise security needs.</li>
+        <li><strong>Technical/Engineering advice:</strong> Unit conversions and calculations should be verified independently for any engineering or technical application.</li>
+      </ul>
+      <p>
+        Always consult a qualified professional when making decisions in these areas.
+      </p>
+    </div>
+
+    <!-- Errors and Omissions -->
+    <div class="policy-section">
+      <h2>4. Errors &amp; Omissions</h2>
+      <p>
+        While we make every effort to ensure that the information and tools on this Website are
+        accurate and up to date, we do not warrant the completeness or accuracy of the information
+        provided. Errors may occur in tool calculations, unit conversions, or display of results.
+      </p>
+      <p>
+        If you discover an error or inaccuracy, please <a href="contact.html">contact us</a> so
+        we can investigate and correct it as soon as possible.
+      </p>
+    </div>
+
+    <!-- External Links -->
+    <div class="policy-section">
+      <h2>5. External Links Disclaimer</h2>
+      <p>
+        Our Website may contain links to external websites that are not provided or maintained by
+        ToolBox. We do not guarantee the accuracy, relevance, timeliness, or completeness of any
+        information on these external websites.
+      </p>
+      <p>
+        Links to external websites do not imply endorsement or recommendation of any products,
+        services, or views expressed on those sites.
+      </p>
+    </div>
+
+    <!-- File Processing -->
+    <div class="policy-section">
+      <h2>6. File Processing &amp; Data Loss</h2>
+      <p>
+        Tools on ToolBox that process files (such as the Image Compressor, PDF Compressor, and
+        Image to PDF converter) work directly within your browser. While we do everything possible
+        to ensure reliable operation:
+      </p>
+      <ul>
+        <li><strong>Always keep a copy of your original files</strong> before using any compression or conversion tool.</li>
+        <li>File processing results may vary depending on your browser, device, and operating system.</li>
+        <li>We are not responsible for any data loss, file corruption, or quality degradation resulting from the use of our tools.</li>
+        <li>Browser crashes, memory limitations, or unsupported file types may cause unexpected results.</li>
+      </ul>
+    </div>
+
+    <!-- Advertising -->
+    <div class="policy-section">
+      <h2>7. Advertising Disclaimer</h2>
+      <p>
+        ToolBox displays third-party advertisements through Google AdSense. The display of an
+        advertisement on our Website does not constitute an endorsement, recommendation, or approval
+        of the advertised product, service, or company by ToolBox.
+      </p>
+      <p>
+        We are not responsible for the content, accuracy, or legality of any advertisements displayed
+        on our Website. Users interact with advertisements at their own risk.
+      </p>
+    </div>
+
+    <!-- Contact -->
+    <div class="policy-section">
+      <h2>8. Contact</h2>
+      <p>
+        If you have questions about this Disclaimer, please contact us:
+      </p>
+      <ul>
+        <li><strong>Email:</strong> <a href="mailto:hello@yourtoolbox.com">hello@yourtoolbox.com</a></li>
+        <li><strong>Contact Form:</strong> <a href="contact.html">Contact Page</a></li>
+      </ul>
+    </div>
+
+  </div><!-- end policy-wrap -->
+
+  <!-- BOTTOM AD -->
+  <div class="ad-unit ad-rect" style="max-width:820px;margin:32px auto 0;">
+    <span class="ad-label">Advertisement</span>
+    <ins class="adsbygoogle" style="display:block;width:100%;min-height:250px"
+         data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX" data-ad-slot="3333333333"
+         data-ad-format="rectangle" data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="index.html" class="logo" style="color:#fff;">
+          <div class="logo-icon">🛠️</div> ToolBox
+        </a>
+        <p style="margin-top:12px;">Free, fast, privacy-friendly tools for everyday tasks.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Text Tools</h4>
+        <ul>
+          <li><a href="word-counter.html">Word Counter</a></li>
+          <li><a href="font-changer.html">Font Changer</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Converters</h4>
+        <ul>
+          <li><a href="unit-converter.html">Unit Converter</a></li>
+          <li><a href="qr-generator.html">QR Code Generator</a></li>
+          <li><a href="image-to-pdf.html">Image to PDF</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="privacy-policy.html">Privacy Policy</a></li>
+          <li><a href="terms.html">Terms &amp; Conditions</a></li>
+          <li><a href="disclaimer.html">Disclaimer</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 ToolBox. All rights reserved.</span>
+      <div class="footer-links">
+        <a href="privacy-policy.html">Privacy Policy</a>
+        <a href="terms.html">Terms</a>
+        <a href="contact.html">Contact</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
