@@ -740,18 +740,37 @@
      JAVASCRIPT
 ════════════════════════════════════════════════════════ -->
 <script type="module">
-  /* ── CDN import for @imgly/background-removal ── */
-  const CDN_BASE = 'https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.4.5/dist/';
-  let removeBackground;
+  /* ── CDN sources for @imgly/background-removal (tried in order) ── */
+  const CDN_SOURCES = [
+    {
+      url:        'https://unpkg.com/@imgly/background-removal/dist/browser.mjs',
+      publicPath: 'https://unpkg.com/@imgly/background-removal/dist/',
+    },
+    {
+      url:        'https://cdn.jsdelivr.net/npm/@imgly/background-removal/dist/browser.mjs',
+      publicPath: 'https://cdn.jsdelivr.net/npm/@imgly/background-removal/dist/',
+    },
+  ];
+
+  let removeBackground = null;
+  let activePublicPath = CDN_SOURCES[0].publicPath;
 
   async function loadLibrary() {
-    try {
-      const mod = await import(CDN_BASE + 'browser.mjs');
-      removeBackground = mod.removeBackground;
-    } catch (e) {
-      console.error('Failed to load AI library:', e);
-      removeBackground = null;
+    for (const src of CDN_SOURCES) {
+      try {
+        const mod = await import(src.url);
+        if (typeof mod.removeBackground === 'function') {
+          removeBackground = mod.removeBackground;
+          activePublicPath = src.publicPath;
+          console.log('AI library loaded from:', src.url);
+          return;
+        }
+      } catch (e) {
+        console.warn('CDN source failed, trying next…', src.url, e.message);
+      }
     }
+    console.error('All CDN sources failed — background removal unavailable.');
+    removeBackground = null;
   }
 
   /* Preload library in the background */
@@ -805,13 +824,13 @@
       await loadLibrary();
     }
     if (!removeBackground) {
-      showError('Could not load the AI library. Please check your internet connection and try again.');
+      showError('Could not load the AI library. Please check your internet connection and try again.<br><small style="opacity:.75">Open browser console (F12) for details.</small>');
       return;
     }
 
     try {
       const resultBlob_ = await removeBackground(file, {
-        publicPath: CDN_BASE,
+        publicPath: activePublicPath,
         debug: false,
         model: 'medium',
         progress: (key, current, total) => {
