@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Code to Image Stylizer — Share Code as Beautiful Images — ToolBox</title>
+  <meta name="description" content="Convert code snippets into stunning, high-resolution images for Twitter, Instagram and LinkedIn. Pick themes, gradients and window styles. Free, no login." />
+  <link rel="stylesheet" href="style.css" />
+  <script src="utils.js" defer></script>
+  <!-- Prism.js core + autoloader -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+  <!-- html2canvas for export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <style>
+    /* ── Two-pane shell ── */
+    .c2i-shell {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      min-height: 640px;
+    }
+    @media(max-width: 860px) { .c2i-shell { grid-template-columns: 1fr; } }
+
+    /* ── Settings panel (left) ── */
+    .c2i-settings {
+      background: var(--surface-2);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      padding: 0;
+    }
+    .c2i-settings-body {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      flex: 1;
+    }
+    .c2i-section h4 {
+      font-size: .7rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .06em;
+      color: var(--text-3); margin-bottom: 8px;
+    }
+
+    /* Code textarea */
+    .c2i-textarea {
+      width: 100%; box-sizing: border-box;
+      min-height: 180px; resize: vertical;
+      font-family: 'Fira Code', 'Cascadia Code', 'Courier New', monospace;
+      font-size: .82rem; line-height: 1.6;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface-1);
+      color: var(--text-1);
+      tab-size: 2;
+    }
+    .c2i-textarea:focus { outline: none; border-color: var(--clr-primary); }
+
+    /* Theme swatches */
+    .theme-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+    }
+    .theme-swatch {
+      aspect-ratio: 1;
+      border-radius: 8px;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: border-color .15s, transform .1s;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      font-size: .6rem;
+      font-weight: 700;
+      align-items: center;
+      justify-content: center;
+      padding: 2px;
+      color: rgba(255,255,255,.8);
+      text-shadow: 0 1px 2px #0004;
+    }
+    .theme-swatch.active { border-color: var(--clr-primary); transform: scale(1.05); }
+    .theme-swatch:hover  { transform: scale(1.05); }
+
+    /* Background swatches */
+    .bg-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 5px;
+    }
+    .bg-swatch {
+      aspect-ratio: 1;
+      border-radius: 6px;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: border-color .15s, transform .1s;
+    }
+    .bg-swatch.active { border-color: var(--clr-primary); transform: scale(1.08); }
+    .bg-swatch:hover  { transform: scale(1.08); }
+    .bg-none-swatch {
+      background: repeating-conic-gradient(#aaa 0% 25%, #eee 0% 50%) 0 0 / 8px 8px;
+    }
+
+    /* Window style buttons */
+    .win-grid { display: flex; gap: 6px; }
+    .win-btn {
+      flex: 1; padding: 8px 4px;
+      border: 1px solid var(--border); border-radius: 8px;
+      background: var(--surface-1); color: var(--text-2);
+      font-size: .75rem; font-weight: 700; cursor: pointer;
+      text-align: center; transition: border-color .15s, background .15s;
+    }
+    .win-btn.active { border-color: var(--clr-primary); background: #ede9fe; color: var(--clr-primary); }
+
+    /* Range row */
+    .range-row { display: flex; justify-content: space-between; font-size: .72rem; color: var(--text-3); margin-top: 2px; }
+    input[type=range] { width: 100%; accent-color: var(--clr-primary); }
+
+    /* Language select */
+    .c2i-select {
+      width: 100%; padding: 7px 10px;
+      border: 1px solid var(--border); border-radius: 8px;
+      background: var(--surface-1); color: var(--text-1);
+      font-size: .85rem;
+    }
+    .c2i-input {
+      width: 100%; padding: 7px 10px; box-sizing: border-box;
+      border: 1px solid var(--border); border-radius: 8px;
+      background: var(--surface-1); color: var(--text-1);
+      font-size: .85rem;
+    }
+    .c2i-input:focus, .c2i-select:focus { outline: none; border-color: var(--clr-primary); }
+
+    /* Toggle */
+    .toggle-row { display: flex; align-items: center; justify-content: space-between; }
+    .toggle { position: relative; width: 36px; height: 20px; }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider {
+      position: absolute; inset: 0;
+      background: #cbd5e1; border-radius: 20px;
+      cursor: pointer; transition: background .2s;
+    }
+    .toggle-slider::before {
+      content: '';
+      position: absolute; width: 14px; height: 14px;
+      background: #fff; border-radius: 50%;
+      top: 3px; left: 3px;
+      transition: transform .2s;
+    }
+    .toggle input:checked + .toggle-slider { background: var(--clr-primary); }
+    .toggle input:checked + .toggle-slider::before { transform: translateX(16px); }
+
+    /* Scale buttons */
+    .scale-grid { display: flex; gap: 6px; }
+    .scale-btn {
+      flex: 1; padding: 7px;
+      border: 1px solid var(--border); border-radius: 8px;
+      background: var(--surface-1); color: var(--text-2);
+      font-size: .8rem; font-weight: 700; cursor: pointer;
+      text-align: center; transition: border-color .15s, background .15s;
+    }
+    .scale-btn.active { border-color: var(--clr-primary); background: #ede9fe; color: var(--clr-primary); }
+
+    /* ── Preview pane (right) ── */
+    .c2i-preview-pane {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .c2i-preview-topbar {
+      background: var(--surface-2);
+      border-bottom: 1px solid var(--border);
+      padding: 8px 14px;
+      font-size: .78rem; color: var(--text-2);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .c2i-preview-area {
+      flex: 1;
+      overflow: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 28px;
+      background: #475569;
+    }
+
+    /* ── The actual stylized card ── */
+    #codeCard {
+      display: inline-block;
+      border-radius: 14px;
+      padding: 48px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.5);
+      cursor: default;
+      /* background set by JS */
+    }
+    .code-window {
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 12px 40px rgba(0,0,0,.35);
+      /* background set by JS */
+      min-width: 360px;
+    }
+    .window-chrome {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px 10px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .mac-dots { display: flex; gap: 6px; }
+    .mac-dot {
+      width: 12px; height: 12px; border-radius: 50%;
+    }
+    .mac-dot.close    { background: #ff5f57; }
+    .mac-dot.minimize { background: #febc2e; }
+    .mac-dot.maximize { background: #28c840; }
+    .win-dots { display: flex; gap: 10px; margin-left: auto; }
+    .win-dot  { width: 14px; height: 14px; border-radius: 3px; background: rgba(255,255,255,.18); font-size: .6rem; display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.6); }
+    .chrome-title {
+      flex: 1; text-align: center;
+      font-size: .78rem; font-weight: 600;
+      opacity: .5;
+      letter-spacing: .01em;
+      font-family: -apple-system, sans-serif;
+    }
+    .code-body {
+      display: flex;
+      padding: 20px 0;
+      overflow-x: auto;
+    }
+    .line-numbers-col {
+      padding: 0 14px 0 20px;
+      text-align: right;
+      opacity: .35;
+      font-family: 'Fira Code', 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      white-space: pre;
+      user-select: none;
+      border-right: 1px solid rgba(128,128,128,.2);
+      margin-right: 16px;
+      flex-shrink: 0;
+    }
+    .code-content {
+      padding: 0 24px 0 0;
+      font-family: 'Fira Code', 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      white-space: pre;
+      flex: 1;
+    }
+    .watermark-bar {
+      padding: 8px 20px;
+      font-size: .68rem;
+      opacity: .35;
+      font-family: -apple-system, sans-serif;
+      text-align: right;
+      border-top: 1px solid rgba(255,255,255,.07);
+    }
+
+    /* ── Download bar ── */
+    .c2i-download-bar {
+      background: var(--surface-2);
+      border-top: 1px solid var(--border);
+      padding: 12px 16px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    /* Custom color picker */
+    input[type="color"] {
+      width: 100%; height: 34px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      cursor: pointer;
+      padding: 2px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a href="index.html" class="logo">
+      <div class="logo-icon">🛠️</div>
+      ToolBox
+    </a>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="word-counter.html">Word Counter</a>
+      <a href="password-generator.html">Password</a>
+      <a href="qr-generator.html">QR Code</a>
+      <a href="image-compressor.html">Image Tools</a>
+      <a href="unit-converter.html">Converter</a>
+      <a href="finance-tools.html">Finance</a>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-btn" id="darkToggle" onclick="toggleDarkMode()" title="Toggle dark mode">🌙</button>
+      <button class="icon-btn nav-toggle" onclick="openMobileNav()">☰</button>
+    </div>
+  </div>
+</header>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobileNav">
+  <div class="mobile-nav-backdrop" onclick="closeMobileNav()"></div>
+  <div class="mobile-nav-drawer">
+    <button class="mobile-nav-close" onclick="closeMobileNav()">✕</button>
+    <a href="index.html">🏠 Home</a>
+    <a href="word-counter.html">📄 Word Counter</a>
+    <a href="font-changer.html">✍️ Font Changer</a>
+    <a href="unit-converter.html">📐 Unit Converter</a>
+    <a href="password-generator.html">🔒 Password Generator</a>
+    <a href="qr-generator.html">📱 QR Code Generator</a>
+    <a href="image-to-pdf.html">🖼️ Image to PDF</a>
+    <a href="image-compressor.html">🗜️ Image Compressor</a>
+    <a href="image-resizer.html">↔️ Image Resizer</a>
+    <a href="base64-encoder.html">🔡 Base64 Encoder</a>
+    <a href="pdf-editor.html">✏️ PDF Editor</a>
+    <a href="photo-censor.html">🔲 Photo Censor</a>
+    <a href="code-to-image.html" class="active">🎨 Code to Image</a>
+    <a href="pdf-compressor.html">📋 PDF Compressor</a>
+    <a href="finance-tools.html">💰 Finance Tools</a>
+    <a href="json-formatter.html">🔧 JSON Formatter</a>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main>
+
+  <!-- TOP AD -->
+  <div class="ad-unit ad-top">
+    <span class="ad-label">Advertisement</span>
+    <ins class="adsbygoogle" style="display:block;width:100%;min-height:90px"
+         data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX" data-ad-slot="5050505050"
+         data-ad-format="horizontal" data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+
+  <!-- BREADCRUMB -->
+  <div class="breadcrumb">
+    <a href="index.html">🏠 Home</a>
+    <span>›</span>
+    <span>Code to Image Stylizer</span>
+  </div>
+
+  <!-- HERO -->
+  <div style="margin-bottom:16px;">
+    <h1 style="font-size:1.5rem;margin-bottom:4px;">🎨 Code to Image Stylizer</h1>
+    <p style="color:var(--text-2);font-size:.9rem;">Paste code, pick a theme &amp; gradient, download a beautiful high-res image — perfect for Twitter/X, LinkedIn and Instagram.</p>
+  </div>
+
+  <!-- MAIN TOOL -->
+  <div class="c2i-shell">
+
+    <!-- ── Settings panel ── -->
+    <div class="c2i-settings">
+      <div class="c2i-settings-body">
+
+        <!-- Code input -->
+        <div class="c2i-section">
+          <h4>Your Code</h4>
+          <select class="c2i-select" id="langSelect" onchange="scheduleUpdate()">
+            <option value="javascript">JavaScript</option>
+            <option value="typescript">TypeScript</option>
+            <option value="jsx">JSX / React</option>
+            <option value="python">Python</option>
+            <option value="java">Java</option>
+            <option value="c">C</option>
+            <option value="cpp">C++</option>
+            <option value="csharp">C#</option>
+            <option value="go">Go</option>
+            <option value="rust">Rust</option>
+            <option value="php">PHP</option>
+            <option value="ruby">Ruby</option>
+            <option value="swift">Swift</option>
+            <option value="kotlin">Kotlin</option>
+            <option value="css">CSS</option>
+            <option value="html">HTML</option>
+            <option value="sql">SQL</option>
+            <option value="bash">Bash / Shell</option>
+            <option value="json">JSON</option>
+            <option value="yaml">YAML</option>
+            <option value="markdown">Markdown</option>
+          </select>
+          <textarea class="c2i-textarea" id="codeInput" spellcheck="false"
+            placeholder="Paste your code here…"
+            oninput="scheduleUpdate()" style="margin-top:8px;">const greet = (name) => {
+  // Say hello 👋
+  return `Hello, ${name}!`;
+};
+
+console.log(greet("World"));</textarea>
+        </div>
+
+        <!-- Theme -->
+        <div class="c2i-section">
+          <h4>Theme</h4>
+          <div class="theme-grid" id="themeGrid"></div>
+        </div>
+
+        <!-- Background -->
+        <div class="c2i-section">
+          <h4>Background</h4>
+          <div class="bg-grid" id="bgGrid"></div>
+          <div id="customBgRow" style="display:none;margin-top:8px;">
+            <input type="color" id="customBgColor" value="#6366f1" oninput="setCustomBg(this.value)">
+          </div>
+        </div>
+
+        <!-- Window chrome -->
+        <div class="c2i-section">
+          <h4>Window Style</h4>
+          <div class="win-grid">
+            <button class="win-btn active" id="chrome-macos"   onclick="setChrome('macos')">🍎 macOS</button>
+            <button class="win-btn"        id="chrome-windows" onclick="setChrome('windows')">🪟 Windows</button>
+            <button class="win-btn"        id="chrome-none"    onclick="setChrome('none')">⬜ None</button>
+          </div>
+        </div>
+
+        <!-- Filename -->
+        <div class="c2i-section">
+          <h4>Filename / Title</h4>
+          <input type="text" class="c2i-input" id="filenameInput" value="index.js" placeholder="index.js" oninput="scheduleUpdate()">
+        </div>
+
+        <!-- Font size -->
+        <div class="c2i-section">
+          <h4>Font Size — <span id="fontSizeLabel">13</span>px</h4>
+          <input type="range" id="fontSizeSlider" min="10" max="22" value="13" oninput="setFontSize(this.value)">
+          <div class="range-row"><span>10</span><span>22</span></div>
+        </div>
+
+        <!-- Padding -->
+        <div class="c2i-section">
+          <h4>Card Padding — <span id="paddingLabel">48</span>px</h4>
+          <input type="range" id="paddingSlider" min="16" max="96" value="48" oninput="setPadding(this.value)">
+          <div class="range-row"><span>16</span><span>96</span></div>
+        </div>
+
+        <!-- Line numbers -->
+        <div class="c2i-section">
+          <div class="toggle-row">
+            <span style="font-size:.85rem;color:var(--text-2);">Line numbers</span>
+            <label class="toggle"><input type="checkbox" id="lineNumToggle" checked onchange="scheduleUpdate()"><span class="toggle-slider"></span></label>
+          </div>
+        </div>
+
+        <!-- Watermark -->
+        <div class="c2i-section">
+          <div class="toggle-row">
+            <span style="font-size:.85rem;color:var(--text-2);">Watermark</span>
+            <label class="toggle"><input type="checkbox" id="watermarkToggle" onchange="scheduleUpdate()"><span class="toggle-slider"></span></label>
+          </div>
+          <input type="text" class="c2i-input" id="watermarkText" placeholder="toolbox.example.com"
+            style="margin-top:6px;" oninput="scheduleUpdate()">
+        </div>
+
+        <!-- Export scale -->
+        <div class="c2i-section">
+          <h4>Export Resolution</h4>
+          <div class="scale-grid">
+            <button class="scale-btn"        id="scale-1" onclick="setScale(1)">1×</button>
+            <button class="scale-btn active" id="scale-2" onclick="setScale(2)">2×</button>
+            <button class="scale-btn"        id="scale-3" onclick="setScale(3)">3×</button>
+          </div>
+        </div>
+
+      </div><!-- /c2i-settings-body -->
+    </div><!-- /c2i-settings -->
+
+    <!-- ── Preview pane ── -->
+    <div class="c2i-preview-pane">
+
+      <div class="c2i-preview-topbar">
+        <span>Live Preview</span>
+        <span id="previewDims" style="margin-left:auto;"></span>
+      </div>
+
+      <div class="c2i-preview-area" id="previewArea">
+        <!-- The card that gets exported -->
+        <div id="codeCard">
+          <div class="code-window" id="codeWindow">
+            <div class="window-chrome" id="windowChrome">
+              <div class="mac-dots" id="macDots">
+                <div class="mac-dot close"></div>
+                <div class="mac-dot minimize"></div>
+                <div class="mac-dot maximize"></div>
+              </div>
+              <div class="chrome-title" id="chromeTitle">index.js</div>
+            </div>
+            <div class="code-body" id="codeBody">
+              <div class="line-numbers-col" id="lineNumsCol"></div>
+              <div class="code-content" id="codeContent"></div>
+            </div>
+            <div class="watermark-bar" id="watermarkBar" style="display:none;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Download bar -->
+      <div class="c2i-download-bar">
+        <button class="btn btn-primary" onclick="exportImage('png')">⬇️ PNG</button>
+        <button class="btn btn-ghost"   onclick="exportImage('jpg')">⬇️ JPG</button>
+        <button class="btn btn-ghost"   onclick="copyImageToClipboard()">📋 Copy Image</button>
+        <span style="font-size:.78rem;color:var(--text-3);margin-left:auto;" id="exportNote"></span>
+      </div>
+
+    </div><!-- /c2i-preview-pane -->
+
+  </div><!-- /c2i-shell -->
+
+  <!-- Tips & Ads -->
+  <div class="tool-layout" style="margin-top:20px;">
+    <div>
+      <div class="ad-unit ad-mid">
+        <span class="ad-label">Advertisement</span>
+        <ins class="adsbygoogle" style="display:block;width:100%;min-height:90px"
+             data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX" data-ad-slot="6060606060"
+             data-ad-format="horizontal" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </div>
+      <div class="tool-box">
+        <h2>💡 Tips for stunning code images</h2>
+        <ul class="tips-list">
+          <li>Use <strong>2× or 3× resolution</strong> for sharp images on Retina/HiDPI screens.</li>
+          <li>Keep snippets <strong>short and focused</strong> — 5–20 lines look best on social media.</li>
+          <li><strong>Dracula</strong> and <strong>One Dark</strong> themes look great on dark feeds; <strong>GitHub Light</strong> pops on white backgrounds.</li>
+          <li>Match your background gradient to your brand or the mood of the post.</li>
+          <li>Turn off line numbers for very short snippets to keep it clean.</li>
+          <li>Add your <strong>website watermark</strong> to drive traffic back to your profile.</li>
+        </ul>
+      </div>
+    </div>
+    <aside class="sidebar">
+      <div class="ad-unit ad-rect">
+        <span class="ad-label">Advertisement</span>
+        <ins class="adsbygoogle" style="display:block;width:100%;min-height:250px"
+             data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX" data-ad-slot="7070707070"
+             data-ad-format="rectangle" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </div>
+      <div class="tool-box">
+        <h3>Related Tools</h3>
+        <div class="related-tools">
+          <a href="json-formatter.html" class="related-item">
+            <div class="related-icon" style="background:#e0f2fe;">🔧</div>
+            <div class="related-item-text"><strong>JSON Formatter</strong><span>Prettify &amp; validate JSON</span></div>
+          </a>
+          <a href="base64-encoder.html" class="related-item">
+            <div class="related-icon" style="background:#f0fdf4;">🔡</div>
+            <div class="related-item-text"><strong>Base64 Encoder</strong><span>Encode / decode data</span></div>
+          </a>
+          <a href="qr-generator.html" class="related-item">
+            <div class="related-icon" style="background:#fef9c3;">📱</div>
+            <div class="related-item-text"><strong>QR Generator</strong><span>Share links as QR codes</span></div>
+          </a>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="index.html" class="logo" style="color:#fff;">
+          <div class="logo-icon">🛠️</div> ToolBox
+        </a>
+        <p style="margin-top:12px;">Free, fast, privacy-friendly tools for everyday tasks.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Dev Tools</h4>
+        <ul>
+          <li><a href="code-to-image.html">Code to Image</a></li>
+          <li><a href="json-formatter.html">JSON Formatter</a></li>
+          <li><a href="base64-encoder.html">Base64 Encoder</a></li>
+          <li><a href="pdf-editor.html">PDF Editor</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Other Tools</h4>
+        <ul>
+          <li><a href="image-resizer.html">Image Resizer</a></li>
+          <li><a href="photo-censor.html">Photo Censor</a></li>
+          <li><a href="finance-tools.html">Finance Tools</a></li>
+          <li><a href="qr-generator.html">QR Code Generator</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 ToolBox. All rights reserved.</span>
+      <div class="footer-links">
+        <a href="privacy-policy.html">Privacy Policy</a>
+        <a href="terms.html">Terms</a>
+        <a href="contact.html">Contact</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Hidden scratch element for Prism highlighting -->
+<div id="prismScratch" style="display:none;position:absolute;left:-9999px;"></div>
+
+<script>
+/* ═══════════════════════════════════════════════════
+   Code-to-Image Stylizer — main script
+   ═══════════════════════════════════════════════════ */
+
+/* ── Configure Prism autoloader ── */
+if (window.Prism && Prism.plugins && Prism.plugins.autoloader) {
+  Prism.plugins.autoloader.languages_path =
+    'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/';
+}
+
+/* ── Theme definitions ── */
+const THEMES = {
+  dracula: {
+    id: 'dracula', name: 'Dracula', dark: true,
+    bg: '#282a36', text: '#f8f8f2',
+    comment: '#6272a4', keyword: '#ff79c6',
+    string: '#f1fa8c', func: '#50fa7b',
+    number: '#bd93f9', operator: '#ff79c6',
+    className: '#8be9fd', variable: '#f8f8f2',
+    property: '#66d9e8', punctuation: '#f8f8f2',
+    builtin: '#8be9fd',
+  },
+  oneDark: {
+    id: 'oneDark', name: 'One Dark', dark: true,
+    bg: '#282c34', text: '#abb2bf',
+    comment: '#5c6370', keyword: '#c678dd',
+    string: '#98c379', func: '#61afef',
+    number: '#d19a66', operator: '#56b6c2',
+    className: '#e5c07b', variable: '#e06c75',
+    property: '#61afef', punctuation: '#abb2bf',
+    builtin: '#e5c07b',
+  },
+  githubDark: {
+    id: 'githubDark', name: 'GitHub Dark', dark: true,
+    bg: '#0d1117', text: '#c9d1d9',
+    comment: '#8b949e', keyword: '#ff7b72',
+    string: '#a5d6ff', func: '#d2a8ff',
+    number: '#79c0ff', operator: '#ff7b72',
+    className: '#ffa657', variable: '#ffa657',
+    property: '#79c0ff', punctuation: '#c9d1d9',
+    builtin: '#79c0ff',
+  },
+  githubLight: {
+    id: 'githubLight', name: 'GitHub Light', dark: false,
+    bg: '#ffffff', text: '#24292e',
+    comment: '#6a737d', keyword: '#d73a49',
+    string: '#032f62', func: '#6f42c1',
+    number: '#005cc5', operator: '#d73a49',
+    className: '#e36209', variable: '#e36209',
+    property: '#005cc5', punctuation: '#24292e',
+    builtin: '#005cc5',
+  },
+  monokai: {
+    id: 'monokai', name: 'Monokai', dark: true,
+    bg: '#272822', text: '#f8f8f2',
+    comment: '#75715e', keyword: '#f92672',
+    string: '#e6db74', func: '#a6e22e',
+    number: '#ae81ff', operator: '#f92672',
+    className: '#a6e22e', variable: '#f8f8f2',
+    property: '#66d9e8', punctuation: '#f8f8f2',
+    builtin: '#66d9e8',
+  },
+  nord: {
+    id: 'nord', name: 'Nord', dark: true,
+    bg: '#2e3440', text: '#d8dee9',
+    comment: '#4c566a', keyword: '#81a1c1',
+    string: '#a3be8c', func: '#88c0d0',
+    number: '#b48ead', operator: '#81a1c1',
+    className: '#8fbcbb', variable: '#bf616a',
+    property: '#88c0d0', punctuation: '#eceff4',
+    builtin: '#8fbcbb',
+  },
+  solarized: {
+    id: 'solarized', name: 'Solarized', dark: true,
+    bg: '#002b36', text: '#839496',
+    comment: '#586e75', keyword: '#859900',
+    string: '#2aa198', func: '#268bd2',
+    number: '#d33682', operator: '#859900',
+    className: '#b58900', variable: '#cb4b16',
+    property: '#268bd2', punctuation: '#839496',
+    builtin: '#268bd2',
+  },
+  nightOwl: {
+    id: 'nightOwl', name: 'Night Owl', dark: true,
+    bg: '#011627', text: '#d6deeb',
+    comment: '#637777', keyword: '#c792ea',
+    string: '#ecc48d', func: '#82aaff',
+    number: '#f78c6c', operator: '#c792ea',
+    className: '#ffcb8b', variable: '#addb67',
+    property: '#80cbc4', punctuation: '#d6deeb',
+    builtin: '#addb67',
+  },
+};
+
+/* ── Token → color mapping ── */
+function tokenColor(classes, theme) {
+  const map = {
+    comment: theme.comment, prolog: theme.comment, doctype: theme.comment, cdata: theme.comment,
+    keyword: theme.keyword, tag: theme.keyword, important: theme.keyword, atrule: theme.keyword,
+    string: theme.string, 'attr-value': theme.string, 'template-string': theme.string,
+    'template-punctuation': theme.string, char: theme.string, regex: theme.string, url: theme.string,
+    function: theme.func, 'function-variable': theme.func,
+    number: theme.number, boolean: theme.number, constant: theme.number, symbol: theme.number,
+    operator: theme.operator,
+    'class-name': theme.className, selector: theme.property, 'attr-name': theme.property,
+    property: theme.property,
+    variable: theme.variable, parameter: theme.variable,
+    builtin: theme.builtin, punctuation: theme.punctuation,
+  };
+  for (const cls of classes.trim().split(/\s+/)) {
+    if (map[cls]) return map[cls];
+  }
+  return theme.text;
+}
+
+/* ── Apply inline styles to Prism HTML ── */
+function applyThemeStyles(html, theme) {
+  // Replace class-based tokens with inline colour
+  html = html.replace(/class="token ([^"]+)"/g, (_, classes) => {
+    const col     = tokenColor(classes, theme);
+    const isComment = classes.includes('comment');
+    return `style="color:${col};${isComment ? 'font-style:italic;' : ''}"`;
+  });
+  return html;
+}
+
+/* ── Background presets ── */
+const BG_PRESETS = [
+  { id: 'sunset',   label: 'Sunset',   value: 'linear-gradient(135deg,#f093fb 0%,#f5576c 50%,#feb47b 100%)' },
+  { id: 'ocean',    label: 'Ocean',    value: 'linear-gradient(135deg,#2193b0 0%,#6dd5ed 100%)' },
+  { id: 'purple',   label: 'Purple',   value: 'linear-gradient(135deg,#667eea 0%,#764ba2 100%)' },
+  { id: 'aurora',   label: 'Aurora',   value: 'linear-gradient(135deg,#43e97b 0%,#38f9d7 100%)' },
+  { id: 'midnight', label: 'Night',    value: 'linear-gradient(135deg,#0f0c29 0%,#302b63 50%,#24243e 100%)' },
+  { id: 'candy',    label: 'Candy',    value: 'linear-gradient(135deg,#f77062 0%,#fe5196 100%)' },
+  { id: 'peach',    label: 'Peach',    value: 'linear-gradient(135deg,#f7971e 0%,#ffd200 100%)' },
+  { id: 'cosmic',   label: 'Cosmic',   value: 'linear-gradient(135deg,#12c2e9 0%,#c471ed 50%,#f64f59 100%)' },
+  { id: 'dark',     label: 'Dark',     value: '#1a1a2e' },
+  { id: 'none',     label: 'None',     value: 'transparent' },
+  { id: 'custom',   label: 'Custom',   value: null },
+];
+const BG_GRADIENT_MAPS = {
+  sunset:   ['#f093fb','#f5576c','#feb47b'],
+  ocean:    ['#2193b0','#6dd5ed'],
+  purple:   ['#667eea','#764ba2'],
+  aurora:   ['#43e97b','#38f9d7'],
+  midnight: ['#0f0c29','#24243e'],
+  candy:    ['#f77062','#fe5196'],
+  peach:    ['#f7971e','#ffd200'],
+  cosmic:   ['#12c2e9','#c471ed','#f64f59'],
+};
+
+/* ── State ── */
+let currentTheme  = THEMES.dracula;
+let currentBgId   = 'sunset';
+let currentBgVal  = BG_PRESETS[0].value;
+let currentChrome = 'macos';
+let currentScale  = 2;
+let updateTimer   = null;
+
+/* ── Build theme swatches ── */
+const themeGrid = document.getElementById('themeGrid');
+Object.values(THEMES).forEach(theme => {
+  const sw = document.createElement('div');
+  sw.className = 'theme-swatch' + (theme.id === 'dracula' ? ' active' : '');
+  sw.style.background = theme.bg;
+  sw.style.color = theme.text;
+  sw.title = theme.name;
+  sw.innerHTML = `<span style="color:${theme.keyword};font-size:.65rem;font-weight:800;font-family:monospace;">if</span><span style="font-size:.55rem;margin-top:1px;">${theme.name}</span>`;
+  sw.onclick = () => {
+    document.querySelectorAll('.theme-swatch').forEach(s => s.classList.remove('active'));
+    sw.classList.add('active');
+    currentTheme = theme;
+    scheduleUpdate();
+  };
+  themeGrid.appendChild(sw);
+});
+
+/* ── Build background swatches ── */
+const bgGrid = document.getElementById('bgGrid');
+BG_PRESETS.forEach(bg => {
+  const sw = document.createElement('div');
+  sw.className = 'bg-swatch' + (bg.id === 'sunset' ? ' active' : '');
+  sw.title = bg.label;
+  if (bg.id === 'none') sw.classList.add('bg-none-swatch');
+  else if (bg.value) sw.style.background = bg.value;
+  else sw.style.background = 'conic-gradient(#6366f1,#ec4899,#f59e0b,#6366f1)'; // custom placeholder
+  sw.onclick = () => {
+    document.querySelectorAll('.bg-swatch').forEach(s => s.classList.remove('active'));
+    sw.classList.add('active');
+    currentBgId  = bg.id;
+    currentBgVal = bg.value || document.getElementById('customBgColor').value;
+    document.getElementById('customBgRow').style.display = bg.id === 'custom' ? '' : 'none';
+    scheduleUpdate();
+  };
+  bgGrid.appendChild(sw);
+});
+
+function setCustomBg(c) {
+  currentBgVal = c;
+  scheduleUpdate();
+}
+
+/* ── Chrome ── */
+function setChrome(c) {
+  currentChrome = c;
+  ['macos','windows','none'].forEach(id => {
+    document.getElementById('chrome-' + id).classList.toggle('active', id === c);
+  });
+  scheduleUpdate();
+}
+
+/* ── Font size / padding ── */
+function setFontSize(v) { document.getElementById('fontSizeLabel').textContent = v; scheduleUpdate(); }
+function setPadding(v)  { document.getElementById('paddingLabel').textContent  = v; scheduleUpdate(); }
+
+/* ── Export scale ── */
+function setScale(s) {
+  currentScale = s;
+  [1,2,3].forEach(n => document.getElementById('scale-' + n).classList.toggle('active', n === s));
+}
+
+/* ── Debounced update ── */
+function scheduleUpdate() {
+  clearTimeout(updateTimer);
+  updateTimer = setTimeout(updatePreview, 120);
+}
+
+/* ── Highlight code via Prism ── */
+function highlightCode(code, lang, callback) {
+  const scratch = document.getElementById('prismScratch');
+  const el = document.createElement('code');
+  el.className = `language-${lang}`;
+  el.textContent = code;
+  scratch.appendChild(el);
+  try {
+    Prism.highlightElement(el, false, () => {
+      const html = el.innerHTML;
+      scratch.removeChild(el);
+      callback(html);
+    });
+  } catch(e) {
+    // Fallback: plain text
+    const html = code.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    try { scratch.removeChild(el); } catch(_) {}
+    callback(html);
+  }
+}
+
+/* ── Main update ── */
+function updatePreview() {
+  const code     = document.getElementById('codeInput').value;
+  const lang     = document.getElementById('langSelect').value;
+  const filename = document.getElementById('filenameInput').value || 'code';
+  const fontSize = parseInt(document.getElementById('fontSizeSlider').value);
+  const padding  = parseInt(document.getElementById('paddingSlider').value);
+  const showNums = document.getElementById('lineNumToggle').checked;
+  const showWm   = document.getElementById('watermarkToggle').checked;
+  const wmText   = document.getElementById('watermarkText').value;
+
+  highlightCode(code, lang, (rawHtml) => {
+    const styledHtml = applyThemeStyles(rawHtml, currentTheme);
+    const lines = styledHtml.split('\n');
+
+    // Card background
+    const card = document.getElementById('codeCard');
+    card.style.background = currentBgVal;
+    card.style.padding    = padding + 'px';
+
+    // Window background
+    const win = document.getElementById('codeWindow');
+    win.style.background = currentTheme.bg;
+    win.style.color      = currentTheme.text;
+
+    // Chrome
+    const chrome     = document.getElementById('windowChrome');
+    const macDots    = document.getElementById('macDots');
+    const chromeTitle = document.getElementById('chromeTitle');
+    chromeTitle.textContent = filename;
+    chromeTitle.style.color = currentTheme.text;
+
+    if (currentChrome === 'none') {
+      chrome.style.display = 'none';
+    } else {
+      chrome.style.display = 'flex';
+      chrome.style.background = currentTheme.dark
+        ? 'rgba(0,0,0,.25)'
+        : 'rgba(0,0,0,.06)';
+      // macOS dots
+      macDots.innerHTML = '';
+      if (currentChrome === 'macos') {
+        macDots.innerHTML = `<div class="mac-dot close"></div><div class="mac-dot minimize"></div><div class="mac-dot maximize"></div>`;
+        let winDots = document.getElementById('winDotsEl');
+        if (winDots) winDots.remove();
+      } else {
+        // Windows style — dots on right
+        let winDots = document.getElementById('winDotsEl');
+        if (!winDots) {
+          winDots = document.createElement('div');
+          winDots.id = 'winDotsEl';
+          winDots.className = 'win-dots';
+          winDots.style.marginLeft = 'auto';
+          winDots.innerHTML = `<div class="win-dot">─</div><div class="win-dot">□</div><div class="win-dot">✕</div>`;
+          chrome.appendChild(winDots);
+        }
+      }
+    }
+
+    // Line numbers
+    const lineCol = document.getElementById('lineNumsCol');
+    if (showNums) {
+      lineCol.style.display = '';
+      lineCol.style.color   = currentTheme.comment;
+      lineCol.style.fontSize = fontSize + 'px';
+      lineCol.textContent   = lines.map((_, i) => i + 1).join('\n');
+    } else {
+      lineCol.style.display = 'none';
+    }
+
+    // Code content
+    const codeEl = document.getElementById('codeContent');
+    codeEl.innerHTML = styledHtml;
+    codeEl.style.color    = currentTheme.text;
+    codeEl.style.fontSize = fontSize + 'px';
+
+    // Watermark
+    const wmBar = document.getElementById('watermarkBar');
+    if (showWm && wmText) {
+      wmBar.style.display = '';
+      wmBar.style.color   = currentTheme.text;
+      wmBar.textContent   = wmText;
+    } else {
+      wmBar.style.display = 'none';
+    }
+
+    // Update dims label
+    const cardEl = document.getElementById('codeCard');
+    requestAnimationFrame(() => {
+      const r = cardEl.getBoundingClientRect();
+      document.getElementById('previewDims').textContent =
+        `${Math.round(r.width * currentScale)} × ${Math.round(r.height * currentScale)} px @ ${currentScale}×`;
+    });
+  });
+}
+
+/* ── Export ── */
+async function exportImage(format) {
+  const btn = document.querySelector('.c2i-download-bar .btn-primary');
+  const note = document.getElementById('exportNote');
+  note.textContent = 'Generating…';
+
+  try {
+    const card = document.getElementById('codeCard');
+    const canvas = await html2canvas(card, {
+      scale: currentScale,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: currentBgVal === 'transparent' ? null : undefined,
+      logging: false,
+    });
+
+    const mime = format === 'jpg' ? 'image/jpeg' : 'image/png';
+    const ext  = format === 'jpg' ? 'jpg' : 'png';
+    const filename = (document.getElementById('filenameInput').value || 'code').replace(/\.[^.]+$/, '');
+    const quality = format === 'jpg' ? 0.93 : 1;
+
+    canvas.toBlob(blob => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = `${filename}_code.${ext}`; a.click();
+      URL.revokeObjectURL(url);
+      note.textContent = '✔ Downloaded!';
+      setTimeout(() => note.textContent = '', 3000);
+    }, mime, quality);
+  } catch(e) {
+    note.textContent = 'Export failed';
+    if (typeof showToast === 'function') showToast('Export failed: ' + e.message, 'error');
+    console.error(e);
+  }
+}
+
+async function copyImageToClipboard() {
+  const note = document.getElementById('exportNote');
+  note.textContent = 'Copying…';
+  try {
+    const card = document.getElementById('codeCard');
+    const canvas = await html2canvas(card, { scale: currentScale, useCORS: true, logging: false });
+    canvas.toBlob(async blob => {
+      try {
+        await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+        note.textContent = '✔ Copied to clipboard!';
+      } catch(e) {
+        note.textContent = 'Clipboard not supported — use Download';
+      }
+      setTimeout(() => note.textContent = '', 3000);
+    }, 'image/png');
+  } catch(e) {
+    note.textContent = 'Failed';
+    console.error(e);
+  }
+}
+
+/* ── Init ── */
+updatePreview();
+</script>
+
+</body>
+</html>
