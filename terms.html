@@ -3,9 +3,43 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Terms &amp; Conditions — ToolBox</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/favicon.svg" />
+<title>Terms &amp; Conditions — ToolBox</title>
   <meta name="description" content="ToolBox Terms and Conditions — rules for using our free online tools website." />
-  <link rel="stylesheet" href="style.css" />
+    <!-- SEO -->
+  <meta name="keywords" content="ToolBox terms and conditions, terms of service, user agreement" />
+  <meta name="author" content="ToolBox" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://onekitapp.com/terms" />
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://onekitapp.com/terms" />
+  <meta property="og:title" content="Terms & Conditions — ToolBox" />
+  <meta property="og:description" content="ToolBox Terms & Conditions. Read the terms governing use of our free online tools." />
+  <meta property="og:image" content="https://onekitapp.com/og-image.png" />
+  <meta property="og:site_name" content="ToolBox" />
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Terms & Conditions — ToolBox" />
+  <meta name="twitter:description" content="ToolBox Terms & Conditions. Read the terms governing use of our free online tools." />
+  <meta name="twitter:image" content="https://onekitapp.com/og-image.png" />
+  <!-- Schema.org -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Terms & Conditions — ToolBox",
+    "url": "https://onekitapp.com/terms",
+    "description": "ToolBox Terms & Conditions. Read the terms governing use of our free online tools.",
+    "publisher": {
+      "@type": "Organization",
+      "name": "ToolBox",
+      "url": "https://onekitapp.com"
+    }
+  }
+  </script>
+<link rel="stylesheet" href="style.css" />
   <script src="utils.js" defer></script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
   <style>
@@ -33,24 +67,31 @@
     .toc a   { color: var(--clr-primary); text-decoration: none; font-size: .9rem; }
     .toc a:hover { text-decoration: underline; }
   </style>
+  <!-- Google Analytics GA4 — replace G-XXXXXXXXXX with your Measurement ID -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script>
 </head>
 <body>
 
 <!-- HEADER -->
 <header>
   <div class="header-inner">
-    <a href="index.html" class="logo">
-      <div class="logo-icon">🛠️</div>
-      ToolBox
+    <a href="/" class="logo">
+      <img src="/logo.svg" alt="ToolBox" class="logo-img" width="120" height="29" />
     </a>
     <nav>
-      <a href="index.html">Home</a>
-      <a href="word-counter.html">Word Counter</a>
-      <a href="font-changer.html">Font Changer</a>
-      <a href="password-generator.html">Password</a>
-      <a href="qr-generator.html">QR Code</a>
-      <a href="image-compressor.html">Image Tools</a>
-      <a href="unit-converter.html">Converter</a>
+      <a href="/">Home</a>
+      <a href="/word-counter">Word Counter</a>
+      <a href="/font-changer">Font Changer</a>
+      <a href="/password-generator">Password</a>
+      <a href="/qr-generator">QR Code</a>
+      <a href="/image-compressor">Image Tools</a>
+      <a href="/unit-converter">Converter</a>
     </nav>
     <div class="header-actions">
       <button class="icon-btn" id="darkToggle" onclick="toggleDarkMode()" title="Toggle dark mode">🌙</button>
@@ -64,15 +105,15 @@
   <div class="mobile-nav-backdrop" onclick="closeMobileNav()"></div>
   <div class="mobile-nav-drawer">
     <button class="mobile-nav-close" onclick="closeMobileNav()">✕</button>
-    <a href="index.html">🏠 Home</a>
-    <a href="word-counter.html">📄 Word Counter</a>
-    <a href="font-changer.html">✍️ Font Changer</a>
-    <a href="unit-converter.html">📐 Unit Converter</a>
-    <a href="password-generator.html">🔒 Password Generator</a>
-    <a href="qr-generator.html">📱 QR Code Generator</a>
-    <a href="image-to-pdf.html">🖼️ Image to PDF</a>
-    <a href="image-compressor.html">🗜️ Image Compressor</a>
-    <a href="pdf-compressor.html">📋 PDF Compressor</a>
+    <a href="/">🏠 Home</a>
+    <a href="/word-counter">📄 Word Counter</a>
+    <a href="/font-changer">✍️ Font Changer</a>
+    <a href="/unit-converter">📐 Unit Converter</a>
+    <a href="/password-generator">🔒 Password Generator</a>
+    <a href="/qr-generator">📱 QR Code Generator</a>
+    <a href="/image-to-pdf">🖼️ Image to PDF</a>
+    <a href="/image-compressor">🗜️ Image Compressor</a>
+    <a href="/pdf-compressor">📋 PDF Compressor</a>
   </div>
 </div>
 
@@ -82,7 +123,7 @@
   <div class="policy-wrap">
 
     <div class="breadcrumb">
-      <a href="index.html">🏠 Home</a>
+      <a href="/">🏠 Home</a>
       <span>›</span>
       <span>Terms &amp; Conditions</span>
     </div>
@@ -263,7 +304,7 @@
       </p>
       <p>
         Google AdSense may use cookies to personalise advertisements based on your browsing history.
-        For more information, see our <a href="privacy-policy.html">Privacy Policy</a> or
+        For more information, see our <a href="/privacy-policy">Privacy Policy</a> or
         <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener">Google's advertising policy</a>.
       </p>
     </div>
@@ -272,7 +313,7 @@
     <div class="policy-section" id="privacy">
       <h2>9. Privacy</h2>
       <p>
-        Your use of ToolBox is also governed by our <a href="privacy-policy.html">Privacy Policy</a>,
+        Your use of ToolBox is also governed by our <a href="/privacy-policy">Privacy Policy</a>,
         which is incorporated into these Terms by reference. Please review the Privacy Policy to
         understand our practices regarding your data.
       </p>
@@ -314,7 +355,7 @@
       </p>
       <ul>
         <li><strong>Email:</strong> <a href="mailto:hello@yourtoolbox.com">hello@yourtoolbox.com</a></li>
-        <li><strong>Contact Form:</strong> <a href="contact.html">Contact Page</a></li>
+        <li><strong>Contact Form:</strong> <a href="/contact">Contact Page</a></li>
       </ul>
     </div>
 
@@ -336,43 +377,43 @@
   <div class="footer-inner">
     <div class="footer-top">
       <div class="footer-brand">
-        <a href="index.html" class="logo" style="color:#fff;">
-          <div class="logo-icon">🛠️</div> ToolBox
+        <a href="/" class="logo" style="color:#fff;">
+          <img src="/logo-white.svg" alt="ToolBox" class="logo-img logo-img-white" width="120" height="29" />
         </a>
         <p style="margin-top:12px;">Free, fast, privacy-friendly tools for everyday tasks.</p>
       </div>
       <div class="footer-col">
         <h4>Text Tools</h4>
         <ul>
-          <li><a href="word-counter.html">Word Counter</a></li>
-          <li><a href="font-changer.html">Font Changer</a></li>
+          <li><a href="/word-counter">Word Counter</a></li>
+          <li><a href="/font-changer">Font Changer</a></li>
         </ul>
       </div>
       <div class="footer-col">
         <h4>Converters</h4>
         <ul>
-          <li><a href="unit-converter.html">Unit Converter</a></li>
-          <li><a href="qr-generator.html">QR Code Generator</a></li>
-          <li><a href="image-to-pdf.html">Image to PDF</a></li>
+          <li><a href="/unit-converter">Unit Converter</a></li>
+          <li><a href="/qr-generator">QR Code Generator</a></li>
+          <li><a href="/image-to-pdf">Image to PDF</a></li>
         </ul>
       </div>
       <div class="footer-col">
         <h4>Company</h4>
         <ul>
-          <li><a href="about.html">About Us</a></li>
-          <li><a href="contact.html">Contact</a></li>
-          <li><a href="privacy-policy.html">Privacy Policy</a></li>
-          <li><a href="terms.html">Terms &amp; Conditions</a></li>
-          <li><a href="disclaimer.html">Disclaimer</a></li>
+          <li><a href="/about">About Us</a></li>
+          <li><a href="/contact">Contact</a></li>
+          <li><a href="/privacy-policy">Privacy Policy</a></li>
+          <li><a href="/terms">Terms &amp; Conditions</a></li>
+          <li><a href="/disclaimer">Disclaimer</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
       <span>© 2026 ToolBox. All rights reserved.</span>
       <div class="footer-links">
-        <a href="privacy-policy.html">Privacy Policy</a>
-        <a href="terms.html">Terms</a>
-        <a href="contact.html">Contact</a>
+        <a href="/privacy-policy">Privacy Policy</a>
+        <a href="/terms">Terms</a>
+        <a href="/contact">Contact</a>
       </div>
     </div>
   </div>

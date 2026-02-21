@@ -3,31 +3,74 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>QR Code Generator — Free & Instant — ToolBox</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/favicon.svg" />
+<title>QR Code Generator — Free & Instant — ToolBox</title>
   <meta name="description" content="Free QR code generator. Create QR codes for URLs, text, Wi-Fi, emails and more. Customise colors and download as PNG instantly." />
-  <link rel="stylesheet" href="style.css" />
+    <!-- SEO -->
+  <meta name="keywords" content="QR code generator, free QR maker, create QR code, QR code for URL, QR code download, online QR generator" />
+  <meta name="author" content="ToolBox" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://onekitapp.com/qr-generator" />
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://onekitapp.com/qr-generator" />
+  <meta property="og:title" content="QR Code Generator — Free Online QR Maker | ToolBox" />
+  <meta property="og:description" content="Free QR code generator for URLs, text, Wi-Fi, email and phone. Download as PNG instantly. No account needed." />
+  <meta property="og:image" content="https://onekitapp.com/og-image.png" />
+  <meta property="og:site_name" content="ToolBox" />
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="QR Code Generator — Free Online QR Maker | ToolBox" />
+  <meta name="twitter:description" content="Free QR code generator for URLs, text, Wi-Fi, email and phone. Download as PNG instantly. No account needed." />
+  <meta name="twitter:image" content="https://onekitapp.com/og-image.png" />
+  <!-- Schema.org -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "QR Code Generator — Free Online QR Maker | ToolBox",
+    "url": "https://onekitapp.com/qr-generator",
+    "description": "Free QR code generator for URLs, text, Wi-Fi, email and phone. Download as PNG instantly. No account needed.",
+    "publisher": {
+      "@type": "Organization",
+      "name": "ToolBox",
+      "url": "https://onekitapp.com"
+    },
+    "applicationCategory": "UtilityApplication",
+    "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
+  }
+  </script>
+<link rel="stylesheet" href="style.css" />
   <script src="utils.js" defer></script>
   <!-- QR Code library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+  <!-- Google Analytics GA4 — replace G-XXXXXXXXXX with your Measurement ID -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script>
 </head>
 <body>
 
 <!-- HEADER -->
 <header>
   <div class="header-inner">
-    <a href="index.html" class="logo">
-      <div class="logo-icon">🛠️</div>
-      ToolBox
+    <a href="/" class="logo">
+      <img src="/logo.svg" alt="ToolBox" class="logo-img" width="120" height="29" />
     </a>
     <nav>
-      <a href="index.html">Home</a>
-      <a href="word-counter.html">Word Counter</a>
-      <a href="font-changer.html">Font Changer</a>
-      <a href="password-generator.html">Password</a>
-      <a href="qr-generator.html" class="active">QR Code</a>
-      <a href="image-compressor.html">Image Tools</a>
-      <a href="unit-converter.html">Converter</a>
+      <a href="/">Home</a>
+      <a href="/word-counter">Word Counter</a>
+      <a href="/font-changer">Font Changer</a>
+      <a href="/password-generator">Password</a>
+      <a href="/qr-generator" class="active">QR Code</a>
+      <a href="/image-compressor">Image Tools</a>
+      <a href="/unit-converter">Converter</a>
     </nav>
     <div class="header-actions">
       <button class="icon-btn" id="darkToggle" onclick="toggleDarkMode()" title="Toggle dark mode">🌙</button>
@@ -41,15 +84,15 @@
   <div class="mobile-nav-backdrop" onclick="closeMobileNav()"></div>
   <div class="mobile-nav-drawer">
     <button class="mobile-nav-close" onclick="closeMobileNav()">✕</button>
-    <a href="index.html">🏠 Home</a>
-    <a href="word-counter.html">📄 Word Counter</a>
-    <a href="font-changer.html">✍️ Font Changer</a>
-    <a href="unit-converter.html">📐 Unit Converter</a>
-    <a href="password-generator.html">🔒 Password Generator</a>
-    <a href="qr-generator.html" class="active">📱 QR Code Generator</a>
-    <a href="image-to-pdf.html">🖼️ Image to PDF</a>
-    <a href="image-compressor.html">🗜️ Image Compressor</a>
-    <a href="pdf-compressor.html">📋 PDF Compressor</a>
+    <a href="/">🏠 Home</a>
+    <a href="/word-counter">📄 Word Counter</a>
+    <a href="/font-changer">✍️ Font Changer</a>
+    <a href="/unit-converter">📐 Unit Converter</a>
+    <a href="/password-generator">🔒 Password Generator</a>
+    <a href="/qr-generator" class="active">📱 QR Code Generator</a>
+    <a href="/image-to-pdf">🖼️ Image to PDF</a>
+    <a href="/image-compressor">🗜️ Image Compressor</a>
+    <a href="/pdf-compressor">📋 PDF Compressor</a>
   </div>
 </div>
 
@@ -67,7 +110,7 @@
 
   <!-- BREADCRUMB -->
   <div class="breadcrumb">
-    <a href="index.html">🏠 Home</a>
+    <a href="/">🏠 Home</a>
     <span>›</span>
     <span>QR Code Generator</span>
   </div>
@@ -258,21 +301,21 @@
       <div class="tool-box">
         <h3>Related Tools</h3>
         <div class="related-tools">
-          <a href="password-generator.html" class="related-item">
+          <a href="/password-generator" class="related-item">
             <div class="related-icon" style="background:#dcfce7;">🔒</div>
             <div class="related-item-text">
               <strong>Password Generator</strong>
               <span>Secure passwords</span>
             </div>
           </a>
-          <a href="image-compressor.html" class="related-item">
+          <a href="/image-compressor" class="related-item">
             <div class="related-icon" style="background:#fef9c3;">🗜️</div>
             <div class="related-item-text">
               <strong>Image Compressor</strong>
               <span>Reduce image size</span>
             </div>
           </a>
-          <a href="font-changer.html" class="related-item">
+          <a href="/font-changer" class="related-item">
             <div class="related-icon" style="background:#fce7f3;">✍️</div>
             <div class="related-item-text">
               <strong>Font Changer</strong>
@@ -301,32 +344,32 @@
   <div class="footer-inner">
     <div class="footer-top">
       <div class="footer-brand">
-        <a href="index.html" class="logo" style="color:#fff;">
-          <div class="logo-icon">🛠️</div> ToolBox
+        <a href="/" class="logo" style="color:#fff;">
+          <img src="/logo-white.svg" alt="ToolBox" class="logo-img logo-img-white" width="120" height="29" />
         </a>
         <p style="margin-top:12px;">Free, fast, privacy-friendly tools for everyday tasks.</p>
       </div>
       <div class="footer-col">
         <h4>Text Tools</h4>
         <ul>
-          <li><a href="word-counter.html">Word Counter</a></li>
-          <li><a href="font-changer.html">Font Changer</a></li>
+          <li><a href="/word-counter">Word Counter</a></li>
+          <li><a href="/font-changer">Font Changer</a></li>
         </ul>
       </div>
       <div class="footer-col">
         <h4>Converters</h4>
         <ul>
-          <li><a href="unit-converter.html">Unit Converter</a></li>
-          <li><a href="qr-generator.html">QR Code Generator</a></li>
-          <li><a href="image-to-pdf.html">Image to PDF</a></li>
+          <li><a href="/unit-converter">Unit Converter</a></li>
+          <li><a href="/qr-generator">QR Code Generator</a></li>
+          <li><a href="/image-to-pdf">Image to PDF</a></li>
         </ul>
       </div>
       <div class="footer-col">
         <h4>Other Tools</h4>
         <ul>
-          <li><a href="password-generator.html">Password Generator</a></li>
-          <li><a href="image-compressor.html">Image Compressor</a></li>
-          <li><a href="pdf-compressor.html">PDF Compressor</a></li>
+          <li><a href="/password-generator">Password Generator</a></li>
+          <li><a href="/image-compressor">Image Compressor</a></li>
+          <li><a href="/pdf-compressor">PDF Compressor</a></li>
         </ul>
       </div>
     </div>

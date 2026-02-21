@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 48" width="200" height="48" role="img" aria-label="ToolBox logo">
+  <defs>
+    <linearGradient id="logoGradW" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#818cf8"/>
+      <stop offset="100%" stop-color="#a78bfa"/>
+    </linearGradient>
+  </defs>
+  <!-- Icon box -->
+  <rect x="0" y="4" width="40" height="40" rx="10" fill="url(#logoGradW)"/>
+  <!-- Wrench shape -->
+  <path d="M27 13a7 7 0 00-6.93 8.07L12 29.14 14.86 32l8.07-8.07A7 7 0 1027 13z" fill="white"/>
+  <circle cx="27" cy="20" r="3.5" fill="url(#logoGradW)"/>
+  <!-- Wordmark — white text -->
+  <text x="52" y="32" font-family="Inter, Segoe UI, system-ui, sans-serif" font-size="22" font-weight="800" fill="white" letter-spacing="-0.5">Tool<tspan fill="#a78bfa">Box</tspan></text>
+</svg>

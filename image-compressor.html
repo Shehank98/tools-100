@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Image Compressor — Free Online — ToolBox</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/favicon.svg" />
+<title>Image Compressor — Free Online — ToolBox</title>
   <meta name="description" content="Free online image compressor. Reduce JPG, PNG and WebP file sizes without losing quality. Before/after preview. No upload — runs in your browser." />
   <link rel="stylesheet" href="style.css" />
   <script src="utils.js" defer></script>
@@ -46,24 +48,31 @@
       .compare-grid { grid-template-columns: 1fr; }
     }
   </style>
+  <!-- Google Analytics GA4 — replace G-XXXXXXXXXX with your Measurement ID -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script>
 </head>
 <body>
 
 <!-- HEADER -->
 <header>
   <div class="header-inner">
-    <a href="index.html" class="logo">
-      <div class="logo-icon">🛠️</div>
-      ToolBox
+    <a href="/" class="logo">
+      <img src="/logo.svg" alt="ToolBox" class="logo-img" width="120" height="29" />
     </a>
     <nav>
-      <a href="index.html">Home</a>
-      <a href="word-counter.html">Word Counter</a>
-      <a href="font-changer.html">Font Changer</a>
-      <a href="password-generator.html">Password</a>
-      <a href="qr-generator.html">QR Code</a>
-      <a href="image-compressor.html" class="active">Image Tools</a>
-      <a href="unit-converter.html">Converter</a>
+      <a href="/">Home</a>
+      <a href="/word-counter">Word Counter</a>
+      <a href="/font-changer">Font Changer</a>
+      <a href="/password-generator">Password</a>
+      <a href="/qr-generator">QR Code</a>
+      <a href="/image-compressor" class="active">Image Tools</a>
+      <a href="/unit-converter">Converter</a>
     </nav>
     <div class="header-actions">
       <button class="icon-btn" id="darkToggle" onclick="toggleDarkMode()" title="Toggle dark mode">🌙</button>
@@ -77,15 +86,15 @@
   <div class="mobile-nav-backdrop" onclick="closeMobileNav()"></div>
   <div class="mobile-nav-drawer">
     <button class="mobile-nav-close" onclick="closeMobileNav()">✕</button>
-    <a href="index.html">🏠 Home</a>
-    <a href="word-counter.html">📄 Word Counter</a>
-    <a href="font-changer.html">✍️ Font Changer</a>
-    <a href="unit-converter.html">📐 Unit Converter</a>
-    <a href="password-generator.html">🔒 Password Generator</a>
-    <a href="qr-generator.html">📱 QR Code Generator</a>
-    <a href="image-to-pdf.html">🖼️ Image to PDF</a>
-    <a href="image-compressor.html" class="active">🗜️ Image Compressor</a>
-    <a href="pdf-compressor.html">📋 PDF Compressor</a>
+    <a href="/">🏠 Home</a>
+    <a href="/word-counter">📄 Word Counter</a>
+    <a href="/font-changer">✍️ Font Changer</a>
+    <a href="/unit-converter">📐 Unit Converter</a>
+    <a href="/password-generator">🔒 Password Generator</a>
+    <a href="/qr-generator">📱 QR Code Generator</a>
+    <a href="/image-to-pdf">🖼️ Image to PDF</a>
+    <a href="/image-compressor" class="active">🗜️ Image Compressor</a>
+    <a href="/pdf-compressor">📋 PDF Compressor</a>
   </div>
 </div>
 
@@ -103,7 +112,7 @@
 
   <!-- BREADCRUMB -->
   <div class="breadcrumb">
-    <a href="index.html">🏠 Home</a>
+    <a href="/">🏠 Home</a>
     <span>›</span>
     <span>Image Compressor</span>
   </div>
@@ -265,21 +274,21 @@
       <div class="tool-box">
         <h3>Related Tools</h3>
         <div class="related-tools">
-          <a href="image-to-pdf.html" class="related-item">
+          <a href="/image-to-pdf" class="related-item">
             <div class="related-icon" style="background:#fee2e2;">🖼️</div>
             <div class="related-item-text">
               <strong>Image to PDF</strong>
               <span>Convert images to PDF</span>
             </div>
           </a>
-          <a href="pdf-compressor.html" class="related-item">
+          <a href="/pdf-compressor" class="related-item">
             <div class="related-icon" style="background:#f0fdf4;">📋</div>
             <div class="related-item-text">
               <strong>PDF Compressor</strong>
               <span>Reduce PDF size</span>
             </div>
           </a>
-          <a href="qr-generator.html" class="related-item">
+          <a href="/qr-generator" class="related-item">
             <div class="related-icon" style="background:#fff7ed;">📱</div>
             <div class="related-item-text">
               <strong>QR Code Generator</strong>
@@ -308,32 +317,32 @@
   <div class="footer-inner">
     <div class="footer-top">
       <div class="footer-brand">
-        <a href="index.html" class="logo" style="color:#fff;">
-          <div class="logo-icon">🛠️</div> ToolBox
+        <a href="/" class="logo" style="color:#fff;">
+          <img src="/logo-white.svg" alt="ToolBox" class="logo-img logo-img-white" width="120" height="29" />
         </a>
         <p style="margin-top:12px;">Free, fast, privacy-friendly tools for everyday tasks.</p>
       </div>
       <div class="footer-col">
         <h4>Text Tools</h4>
         <ul>
-          <li><a href="word-counter.html">Word Counter</a></li>
-          <li><a href="font-changer.html">Font Changer</a></li>
+          <li><a href="/word-counter">Word Counter</a></li>
+          <li><a href="/font-changer">Font Changer</a></li>
         </ul>
       </div>
       <div class="footer-col">
         <h4>Converters</h4>
         <ul>
-          <li><a href="unit-converter.html">Unit Converter</a></li>
-          <li><a href="qr-generator.html">QR Code Generator</a></li>
-          <li><a href="image-to-pdf.html">Image to PDF</a></li>
+          <li><a href="/unit-converter">Unit Converter</a></li>
+          <li><a href="/qr-generator">QR Code Generator</a></li>
+          <li><a href="/image-to-pdf">Image to PDF</a></li>
         </ul>
       </div>
       <div class="footer-col">
         <h4>Other Tools</h4>
         <ul>
-          <li><a href="password-generator.html">Password Generator</a></li>
-          <li><a href="image-compressor.html">Image Compressor</a></li>
-          <li><a href="pdf-compressor.html">PDF Compressor</a></li>
+          <li><a href="/password-generator">Password Generator</a></li>
+          <li><a href="/image-compressor">Image Compressor</a></li>
+          <li><a href="/pdf-compressor">PDF Compressor</a></li>
         </ul>
       </div>
     </div>

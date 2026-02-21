@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" role="img" aria-label="ToolBox favicon">
+  <defs>
+    <linearGradient id="favGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#8b5cf6"/>
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <rect width="48" height="48" rx="12" fill="url(#favGrad)"/>
+  <!-- Wrench -->
+  <path d="M32 10a9 9 0 00-8.9 10.38L12 31.43 15.57 35l11.05-11.1A9 9 0 1032 10z" fill="white"/>
+  <circle cx="32" cy="19" r="4.5" fill="url(#favGrad)"/>
+</svg>

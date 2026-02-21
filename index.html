@@ -3,31 +3,77 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ToolBox — Free Online Tools for Everyday Life</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/favicon.svg" />
+<title>ToolBox — Free Online Tools for Everyday Life</title>
   <meta name="description" content="Free, fast online tools — word counter, password generator, QR code maker, image compressor, PDF tools and more. No signup needed." />
-  <link rel="stylesheet" href="style.css" />
+    <!-- SEO -->
+  <meta name="keywords" content="free online tools, word counter, password generator, QR code generator, image compressor, PDF compressor, unit converter, finance calculator, background remover" />
+  <meta name="author" content="ToolBox" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://onekitapp.com/" />
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://onekitapp.com/" />
+  <meta property="og:title" content="ToolBox — Free Online Tools for Everyday Life" />
+  <meta property="og:description" content="Free, fast online tools — word counter, password generator, QR code maker, image compressor, PDF tools and more. No signup needed." />
+  <meta property="og:image" content="https://onekitapp.com/og-image.png" />
+  <meta property="og:site_name" content="ToolBox" />
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="ToolBox — Free Online Tools for Everyday Life" />
+  <meta name="twitter:description" content="Free, fast online tools — word counter, password generator, QR code maker, image compressor, PDF tools and more. No signup needed." />
+  <meta name="twitter:image" content="https://onekitapp.com/og-image.png" />
+  <!-- Schema.org -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "ToolBox — Free Online Tools for Everyday Life",
+    "url": "https://onekitapp.com/",
+    "description": "Free, fast online tools — word counter, password generator, QR code maker, image compressor, PDF tools and more. No signup needed.",
+    "publisher": {
+      "@type": "Organization",
+      "name": "ToolBox",
+      "url": "https://onekitapp.com"
+    },
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://onekitapp.com/?search={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+<link rel="stylesheet" href="style.css" />
   <script src="utils.js" defer></script>
   <!-- Google AdSense — replace ca-pub-XXXXXXXXXXXXXXXXX with your Publisher ID -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+  <!-- Google Analytics GA4 — replace G-XXXXXXXXXX with your Measurement ID -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script>
 </head>
 <body>
 
 <!-- HEADER -->
 <header>
   <div class="header-inner">
-    <a href="index.html" class="logo">
-      <div class="logo-icon">🛠️</div>
-      ToolBox
+    <a href="/" class="logo">
+      <img src="/logo.svg" alt="ToolBox" class="logo-img" width="120" height="29" />
     </a>
     <nav>
-      <a href="index.html" class="active">Home</a>
-      <a href="word-counter.html">Word Counter</a>
-      <a href="font-changer.html">Font Changer</a>
-      <a href="password-generator.html">Password</a>
-      <a href="qr-generator.html">QR Code</a>
-      <a href="image-compressor.html">Image Tools</a>
-      <a href="unit-converter.html">Converter</a>
-      <a href="finance-tools.html">Finance</a>
+      <a href="/" class="active">Home</a>
+      <a href="/word-counter">Word Counter</a>
+      <a href="/font-changer">Font Changer</a>
+      <a href="/password-generator">Password</a>
+      <a href="/qr-generator">QR Code</a>
+      <a href="/image-compressor">Image Tools</a>
+      <a href="/unit-converter">Converter</a>
+      <a href="/finance-tools">Finance</a>
     </nav>
     <div class="header-actions">
       <button class="icon-btn" id="darkToggle" onclick="toggleDarkMode()" title="Toggle dark mode">🌙</button>
@@ -41,18 +87,18 @@
   <div class="mobile-nav-backdrop" onclick="closeMobileNav()"></div>
   <div class="mobile-nav-drawer">
     <button class="mobile-nav-close" onclick="closeMobileNav()">✕</button>
-    <a href="index.html" class="active">🏠 Home</a>
-    <a href="word-counter.html">📄 Word Counter</a>
-    <a href="font-changer.html">✍️ Font Changer</a>
-    <a href="unit-converter.html">📐 Unit Converter</a>
-    <a href="password-generator.html">🔒 Password Generator</a>
-    <a href="qr-generator.html">📱 QR Code Generator</a>
-    <a href="image-to-pdf.html">🖼️ Image to PDF</a>
-    <a href="image-compressor.html">🗜️ Image Compressor</a>
-    <a href="pdf-compressor.html">📋 PDF Compressor</a>
-    <a href="finance-tools.html">💰 Finance Tools</a>
-    <a href="background-remover.html">✂️ Background Remover</a>
-    <a href="color-palette.html">🎨 Color Palette</a>
+    <a href="/" class="active">🏠 Home</a>
+    <a href="/word-counter">📄 Word Counter</a>
+    <a href="/font-changer">✍️ Font Changer</a>
+    <a href="/unit-converter">📐 Unit Converter</a>
+    <a href="/password-generator">🔒 Password Generator</a>
+    <a href="/qr-generator">📱 QR Code Generator</a>
+    <a href="/image-to-pdf">🖼️ Image to PDF</a>
+    <a href="/image-compressor">🗜️ Image Compressor</a>
+    <a href="/pdf-compressor">📋 PDF Compressor</a>
+    <a href="/finance-tools">💰 Finance Tools</a>
+    <a href="/background-remover">✂️ Background Remover</a>
+    <a href="/color-palette">🎨 Color Palette</a>
   </div>
 </div>
 
@@ -103,7 +149,7 @@
   <div class="tools-grid" id="toolsGrid">
 
     <!-- Word Counter -->
-    <a href="word-counter.html" class="tool-card" data-cat="text" data-tags="word counter character count sentences paragraphs reading time text">
+    <a href="/word-counter" class="tool-card" data-cat="text" data-tags="word counter character count sentences paragraphs reading time text">
       <div class="tool-icon" style="background:#ede9fe;">📄</div>
       <h3>Word Counter</h3>
       <p>Count words, characters, sentences &amp; estimate reading time in real time.</p>
@@ -114,7 +160,7 @@
     </a>
 
     <!-- Font Changer -->
-    <a href="font-changer.html" class="tool-card" data-cat="text" data-tags="font changer stylish text generator unicode bold italic cursive fancy">
+    <a href="/font-changer" class="tool-card" data-cat="text" data-tags="font changer stylish text generator unicode bold italic cursive fancy">
       <div class="tool-icon" style="background:#fce7f3;">✍️</div>
       <h3>Font Changer</h3>
       <p>Transform text into 20+ stylish Unicode fonts — bold, italic, cursive &amp; more.</p>
@@ -125,7 +171,7 @@
     </a>
 
     <!-- Password Generator -->
-    <a href="password-generator.html" class="tool-card" data-cat="security" data-tags="password generator secure random strong">
+    <a href="/password-generator" class="tool-card" data-cat="security" data-tags="password generator secure random strong">
       <div class="tool-icon" style="background:#dcfce7;">🔒</div>
       <h3>Password Generator</h3>
       <p>Create strong, secure random passwords with full customisation options.</p>
@@ -136,7 +182,7 @@
     </a>
 
     <!-- QR Code Generator -->
-    <a href="qr-generator.html" class="tool-card" data-cat="converter" data-tags="qr code generator scan url link text barcode">
+    <a href="/qr-generator" class="tool-card" data-cat="converter" data-tags="qr code generator scan url link text barcode">
       <div class="tool-icon" style="background:#fff7ed;">📱</div>
       <h3>QR Code Generator</h3>
       <p>Generate QR codes for any URL or text. Download as PNG in seconds.</p>
@@ -147,7 +193,7 @@
     </a>
 
     <!-- Unit Converter -->
-    <a href="unit-converter.html" class="tool-card" data-cat="converter" data-tags="unit converter length weight temperature km miles kg lb celsius fahrenheit">
+    <a href="/unit-converter" class="tool-card" data-cat="converter" data-tags="unit converter length weight temperature km miles kg lb celsius fahrenheit">
       <div class="tool-icon" style="background:#e0f2fe;">📐</div>
       <h3>Unit Converter</h3>
       <p>Convert length, weight &amp; temperature between all major units instantly.</p>
@@ -158,7 +204,7 @@
     </a>
 
     <!-- Image to PDF -->
-    <a href="image-to-pdf.html" class="tool-card" data-cat="image pdf" data-tags="image to pdf convert jpg png photos pdf document">
+    <a href="/image-to-pdf" class="tool-card" data-cat="image pdf" data-tags="image to pdf convert jpg png photos pdf document">
       <div class="tool-icon" style="background:#fee2e2;">🖼️</div>
       <h3>Image to PDF</h3>
       <p>Combine multiple images (JPG, PNG, WebP) into a single PDF file.</p>
@@ -169,7 +215,7 @@
     </a>
 
     <!-- Image Compressor -->
-    <a href="image-compressor.html" class="tool-card" data-cat="image" data-tags="image compressor reduce size jpg png optimize photo">
+    <a href="/image-compressor" class="tool-card" data-cat="image" data-tags="image compressor reduce size jpg png optimize photo">
       <div class="tool-icon" style="background:#fef9c3;">🗜️</div>
       <h3>Image Compressor</h3>
       <p>Compress images without quality loss. Supports JPG, PNG &amp; WebP formats.</p>
@@ -180,7 +226,7 @@
     </a>
 
     <!-- PDF Compressor -->
-    <a href="pdf-compressor.html" class="tool-card" data-cat="pdf" data-tags="pdf compressor reduce size optimize document file">
+    <a href="/pdf-compressor" class="tool-card" data-cat="pdf" data-tags="pdf compressor reduce size optimize document file">
       <div class="tool-icon" style="background:#f0fdf4;">📋</div>
       <h3>PDF Compressor</h3>
       <p>Reduce PDF file size while keeping quality — all processed in your browser.</p>
@@ -191,7 +237,7 @@
     </a>
 
     <!-- Finance Tools -->
-    <a href="finance-tools.html" class="tool-card" data-cat="finance" data-tags="finance calculator compound interest savings goal debt payoff loan salary budget inflation commission tax">
+    <a href="/finance-tools" class="tool-card" data-cat="finance" data-tags="finance calculator compound interest savings goal debt payoff loan salary budget inflation commission tax">
       <div class="tool-icon" style="background:#d1fae5;">💰</div>
       <h3>Finance Tools</h3>
       <p>10 calculators: compound interest, savings, budget split, loan, salary, tax &amp; more.</p>
@@ -202,7 +248,7 @@
     </a>
 
     <!-- Background Remover -->
-    <a href="background-remover.html" class="tool-card" data-cat="image" data-tags="background remover remove bg ai transparent png photo cutout erase">
+    <a href="/background-remover" class="tool-card" data-cat="image" data-tags="background remover remove bg ai transparent png photo cutout erase">
       <div class="tool-icon" style="background:#ede9fe;">✂️</div>
       <h3>Background Remover</h3>
       <p>AI-powered background removal — transparent PNG output, no quality loss, fully in-browser.</p>
@@ -213,7 +259,7 @@
     </a>
 
     <!-- Color Palette Extractor -->
-    <a href="color-palette.html" class="tool-card" data-cat="image" data-tags="color palette extractor dominant colors hex rgb hsl css variables design photo">
+    <a href="/color-palette" class="tool-card" data-cat="image" data-tags="color palette extractor dominant colors hex rgb hsl css variables design photo">
       <div class="tool-icon" style="background:#d1fae5;">🎨</div>
       <h3>Color Palette Extractor</h3>
       <p>Extract dominant colors from any image. Get HEX, RGB &amp; HSL codes and export as CSS variables.</p>
@@ -288,64 +334,64 @@
   <div class="footer-inner">
     <div class="footer-top">
       <div class="footer-brand">
-        <a href="index.html" class="logo" style="color:#fff;">
-          <div class="logo-icon">🛠️</div> ToolBox
+        <a href="/" class="logo" style="color:#fff;">
+          <img src="/logo-white.svg" alt="ToolBox" class="logo-img logo-img-white" width="120" height="29" />
         </a>
         <p style="margin-top:12px;">Free, fast, privacy-friendly tools for everyday tasks. No account, no cost — just open and use.</p>
       </div>
       <div class="footer-col">
         <h4>Text Tools</h4>
         <ul>
-          <li><a href="word-counter.html">Word Counter</a></li>
-          <li><a href="font-changer.html">Font Changer</a></li>
+          <li><a href="/word-counter">Word Counter</a></li>
+          <li><a href="/font-changer">Font Changer</a></li>
         </ul>
       </div>
       <div class="footer-col">
         <h4>Converters</h4>
         <ul>
-          <li><a href="unit-converter.html">Unit Converter</a></li>
-          <li><a href="qr-generator.html">QR Code Generator</a></li>
-          <li><a href="image-to-pdf.html">Image to PDF</a></li>
+          <li><a href="/unit-converter">Unit Converter</a></li>
+          <li><a href="/qr-generator">QR Code Generator</a></li>
+          <li><a href="/image-to-pdf">Image to PDF</a></li>
         </ul>
       </div>
       <div class="footer-col">
         <h4>Other Tools</h4>
         <ul>
-          <li><a href="password-generator.html">Password Generator</a></li>
-          <li><a href="image-compressor.html">Image Compressor</a></li>
-          <li><a href="pdf-compressor.html">PDF Compressor</a></li>
-          <li><a href="background-remover.html">Background Remover</a></li>
-          <li><a href="color-palette.html">Color Palette</a></li>
+          <li><a href="/password-generator">Password Generator</a></li>
+          <li><a href="/image-compressor">Image Compressor</a></li>
+          <li><a href="/pdf-compressor">PDF Compressor</a></li>
+          <li><a href="/background-remover">Background Remover</a></li>
+          <li><a href="/color-palette">Color Palette</a></li>
         </ul>
       </div>
       <div class="footer-col">
         <h4>Finance</h4>
         <ul>
-          <li><a href="finance-tools.html">Compound Interest</a></li>
-          <li><a href="finance-tools.html">Savings Goal</a></li>
-          <li><a href="finance-tools.html">Budget Split</a></li>
-          <li><a href="finance-tools.html">All Finance Tools</a></li>
+          <li><a href="/finance-tools">Compound Interest</a></li>
+          <li><a href="/finance-tools">Savings Goal</a></li>
+          <li><a href="/finance-tools">Budget Split</a></li>
+          <li><a href="/finance-tools">All Finance Tools</a></li>
         </ul>
       </div>
       <div class="footer-col">
         <h4>Company</h4>
         <ul>
-          <li><a href="about.html">About Us</a></li>
-          <li><a href="contact.html">Contact</a></li>
-          <li><a href="privacy-policy.html">Privacy Policy</a></li>
-          <li><a href="terms.html">Terms &amp; Conditions</a></li>
-          <li><a href="disclaimer.html">Disclaimer</a></li>
+          <li><a href="/about">About Us</a></li>
+          <li><a href="/contact">Contact</a></li>
+          <li><a href="/privacy-policy">Privacy Policy</a></li>
+          <li><a href="/terms">Terms &amp; Conditions</a></li>
+          <li><a href="/disclaimer">Disclaimer</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
       <span>© 2026 ToolBox. All rights reserved.</span>
       <div class="footer-links">
-        <a href="about.html">About</a>
-        <a href="privacy-policy.html">Privacy Policy</a>
-        <a href="terms.html">Terms</a>
-        <a href="disclaimer.html">Disclaimer</a>
-        <a href="contact.html">Contact</a>
+        <a href="/about">About</a>
+        <a href="/privacy-policy">Privacy Policy</a>
+        <a href="/terms">Terms</a>
+        <a href="/disclaimer">Disclaimer</a>
+        <a href="/contact">Contact</a>
       </div>
     </div>
   </div>

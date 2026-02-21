@@ -3,9 +3,45 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI Background Remover — Free, No Quality Loss — ToolBox</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/favicon.svg" />
+<title>AI Background Remover — Free, No Quality Loss — ToolBox</title>
   <meta name="description" content="Remove image backgrounds instantly with AI. No quality loss, fully in-browser, no upload to servers. Download as transparent PNG." />
-  <link rel="stylesheet" href="style.css" />
+    <!-- SEO -->
+  <meta name="keywords" content="background remover, remove background online, remove image background, transparent background, AI background removal, free background eraser" />
+  <meta name="author" content="ToolBox" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://onekitapp.com/background-remover" />
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://onekitapp.com/background-remover" />
+  <meta property="og:title" content="Background Remover — Remove Image Background Free | ToolBox" />
+  <meta property="og:description" content="AI-powered background remover. Remove background from photos online for free. Get transparent PNG output instantly — no upload to servers." />
+  <meta property="og:image" content="https://onekitapp.com/og-image.png" />
+  <meta property="og:site_name" content="ToolBox" />
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Background Remover — Remove Image Background Free | ToolBox" />
+  <meta name="twitter:description" content="AI-powered background remover. Remove background from photos online for free. Get transparent PNG output instantly — no upload to servers." />
+  <meta name="twitter:image" content="https://onekitapp.com/og-image.png" />
+  <!-- Schema.org -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Background Remover — Remove Image Background Free | ToolBox",
+    "url": "https://onekitapp.com/background-remover",
+    "description": "AI-powered background remover. Remove background from photos online for free. Get transparent PNG output instantly — no upload to servers.",
+    "publisher": {
+      "@type": "Organization",
+      "name": "ToolBox",
+      "url": "https://onekitapp.com"
+    },
+    "applicationCategory": "UtilityApplication",
+    "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
+  }
+  </script>
+<link rel="stylesheet" href="style.css" />
   <script src="utils.js" defer></script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
   <style>
@@ -473,22 +509,29 @@
     [data-theme="dark"] .error-box { background: #1c0a0a; border-color: #7f1d1d; color: #fca5a5; }
     .error-box .e-icon { font-size: 2rem; margin-bottom: 10px; }
   </style>
+  <!-- Google Analytics GA4 — replace G-XXXXXXXXXX with your Measurement ID -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script>
 </head>
 <body>
 
 <!-- HEADER -->
 <header>
   <div class="header-inner">
-    <a href="index.html" class="logo">
-      <div class="logo-icon">🛠️</div>
-      ToolBox
+    <a href="/" class="logo">
+      <img src="/logo.svg" alt="ToolBox" class="logo-img" width="120" height="29" />
     </a>
     <nav>
-      <a href="index.html">Home</a>
-      <a href="image-compressor.html">Image Tools</a>
-      <a href="image-to-pdf.html">Image to PDF</a>
-      <a href="finance-tools.html">Finance</a>
-      <a href="background-remover.html" class="active">BG Remover</a>
+      <a href="/">Home</a>
+      <a href="/image-compressor">Image Tools</a>
+      <a href="/image-to-pdf">Image to PDF</a>
+      <a href="/finance-tools">Finance</a>
+      <a href="/background-remover" class="active">BG Remover</a>
     </nav>
     <div class="header-actions">
       <button class="icon-btn" id="darkToggle" onclick="toggleDarkMode()" title="Toggle dark mode">🌙</button>
@@ -502,18 +545,18 @@
   <div class="mobile-nav-backdrop" onclick="closeMobileNav()"></div>
   <div class="mobile-nav-drawer">
     <button class="mobile-nav-close" onclick="closeMobileNav()">✕</button>
-    <a href="index.html">🏠 Home</a>
-    <a href="word-counter.html">📄 Word Counter</a>
-    <a href="font-changer.html">✍️ Font Changer</a>
-    <a href="unit-converter.html">📐 Unit Converter</a>
-    <a href="password-generator.html">🔒 Password Generator</a>
-    <a href="qr-generator.html">📱 QR Code Generator</a>
-    <a href="image-to-pdf.html">🖼️ Image to PDF</a>
-    <a href="image-compressor.html">🗜️ Image Compressor</a>
-    <a href="pdf-compressor.html">📋 PDF Compressor</a>
-    <a href="finance-tools.html">💰 Finance Tools</a>
-    <a href="background-remover.html" class="active">✂️ Background Remover</a>
-    <a href="color-palette.html">🎨 Color Palette</a>
+    <a href="/">🏠 Home</a>
+    <a href="/word-counter">📄 Word Counter</a>
+    <a href="/font-changer">✍️ Font Changer</a>
+    <a href="/unit-converter">📐 Unit Converter</a>
+    <a href="/password-generator">🔒 Password Generator</a>
+    <a href="/qr-generator">📱 QR Code Generator</a>
+    <a href="/image-to-pdf">🖼️ Image to PDF</a>
+    <a href="/image-compressor">🗜️ Image Compressor</a>
+    <a href="/pdf-compressor">📋 PDF Compressor</a>
+    <a href="/finance-tools">💰 Finance Tools</a>
+    <a href="/background-remover" class="active">✂️ Background Remover</a>
+    <a href="/color-palette">🎨 Color Palette</a>
   </div>
 </div>
 
@@ -679,10 +722,10 @@
   <div style="margin-top:8px;">
     <h3 style="font-size:1rem;font-weight:700;margin-bottom:14px;color:var(--text-1);">More Image Tools</h3>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;">
-      <a href="color-palette.html"     class="related-item">🎨 Color Palette</a>
-      <a href="image-compressor.html"  class="related-item">🗜️ Image Compressor</a>
-      <a href="image-to-pdf.html"      class="related-item">🖼️ Image to PDF</a>
-      <a href="qr-generator.html"      class="related-item">📱 QR Code Generator</a>
+      <a href="/color-palette"     class="related-item">🎨 Color Palette</a>
+      <a href="/image-compressor"  class="related-item">🗜️ Image Compressor</a>
+      <a href="/image-to-pdf"      class="related-item">🖼️ Image to PDF</a>
+      <a href="/qr-generator"      class="related-item">📱 QR Code Generator</a>
     </div>
   </div>
 
@@ -693,46 +736,46 @@
   <div class="footer-inner">
     <div class="footer-top">
       <div class="footer-brand">
-        <a href="index.html" class="logo" style="color:#fff;">
-          <div class="logo-icon">🛠️</div> ToolBox
+        <a href="/" class="logo" style="color:#fff;">
+          <img src="/logo-white.svg" alt="ToolBox" class="logo-img logo-img-white" width="120" height="29" />
         </a>
         <p style="margin-top:12px;">Free, fast, privacy-friendly tools for everyday tasks. No account, no cost — just open and use.</p>
       </div>
       <div class="footer-col">
         <h4>Image Tools</h4>
         <ul>
-          <li><a href="background-remover.html">Background Remover</a></li>
-          <li><a href="image-compressor.html">Image Compressor</a></li>
-          <li><a href="image-to-pdf.html">Image to PDF</a></li>
+          <li><a href="/background-remover">Background Remover</a></li>
+          <li><a href="/image-compressor">Image Compressor</a></li>
+          <li><a href="/image-to-pdf">Image to PDF</a></li>
         </ul>
       </div>
       <div class="footer-col">
         <h4>Other Tools</h4>
         <ul>
-          <li><a href="word-counter.html">Word Counter</a></li>
-          <li><a href="password-generator.html">Password Generator</a></li>
-          <li><a href="finance-tools.html">Finance Tools</a></li>
+          <li><a href="/word-counter">Word Counter</a></li>
+          <li><a href="/password-generator">Password Generator</a></li>
+          <li><a href="/finance-tools">Finance Tools</a></li>
         </ul>
       </div>
       <div class="footer-col">
         <h4>Company</h4>
         <ul>
-          <li><a href="about.html">About Us</a></li>
-          <li><a href="contact.html">Contact</a></li>
-          <li><a href="privacy-policy.html">Privacy Policy</a></li>
-          <li><a href="terms.html">Terms &amp; Conditions</a></li>
-          <li><a href="disclaimer.html">Disclaimer</a></li>
+          <li><a href="/about">About Us</a></li>
+          <li><a href="/contact">Contact</a></li>
+          <li><a href="/privacy-policy">Privacy Policy</a></li>
+          <li><a href="/terms">Terms &amp; Conditions</a></li>
+          <li><a href="/disclaimer">Disclaimer</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
       <span>© 2026 ToolBox. All rights reserved.</span>
       <div class="footer-links">
-        <a href="about.html">About</a>
-        <a href="privacy-policy.html">Privacy Policy</a>
-        <a href="terms.html">Terms</a>
-        <a href="disclaimer.html">Disclaimer</a>
-        <a href="contact.html">Contact</a>
+        <a href="/about">About</a>
+        <a href="/privacy-policy">Privacy Policy</a>
+        <a href="/terms">Terms</a>
+        <a href="/disclaimer">Disclaimer</a>
+        <a href="/contact">Contact</a>
       </div>
     </div>
   </div>

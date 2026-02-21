@@ -112,6 +112,13 @@ header {
   flex-shrink: 0;
 }
 
+.logo-img {
+  height: 29px;
+  width: auto;
+  display: block;
+}
+
+
 .logo-icon {
   width: 36px;
   height: 36px;
