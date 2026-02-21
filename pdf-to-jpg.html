@@ -548,7 +548,10 @@
   function downloadPage(idx) {
     const { canvas, ext, mimeType, quality } = canvases[idx];
     canvas.toBlob(blob => {
-      downloadBlob(blob, `${fileName}-page-${idx + 1}.${ext}`);
+      showDownloadModal(() => {
+        downloadBlob(blob, `${fileName}-page-${idx + 1}.${ext}`);
+        showToast(`Page ${idx + 1} downloaded!`);
+      });
     }, mimeType, quality);
   }
 
@@ -567,8 +570,10 @@
         folder.file(`${fileName}-page-${i + 1}.${ext}`, arrBuf);
       }
       const zipBlob = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE' });
-      downloadBlob(zipBlob, `${fileName}-pages.zip`);
-      showToast('ZIP downloaded!');
+      showDownloadModal(() => {
+        downloadBlob(zipBlob, `${fileName}-pages.zip`);
+        showToast('ZIP downloaded!');
+      });
     } catch (err) {
       showToast('ZIP failed: ' + err.message, 'error');
     } finally {
