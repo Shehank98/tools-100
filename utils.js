@@ -123,7 +123,7 @@ function showDownloadModal(downloadFn, seconds) {
         <span class="dl-ad-lbl">Advertisement</span>
         <ins class="adsbygoogle"
              style="display:block;width:100%;min-height:120px;"
-             data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX"
+             data-ad-client="ca-pub-7825416731856682"
              data-ad-slot="8888888888"
              data-ad-format="auto"
              data-full-width-responsive="true"></ins>
