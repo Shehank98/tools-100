@@ -96,9 +96,11 @@
     <a href="/password-generator">🔒 Password Generator</a>
     <a href="/qr-generator">📱 QR Code Generator</a>
     <a href="/image-to-pdf">🖼️ Image to PDF</a>
+    <a href="/pdf-to-jpg">🔄 PDF to JPG</a>
     <a href="/image-compressor">🗜️ Image Compressor</a>
     <a href="/pdf-compressor">📋 PDF Compressor</a>
     <a href="/finance-tools">💰 Finance Tools</a>
+    <a href="/mortgage-calculator">🏠 Mortgage Calculator</a>
     <a href="/meme-generator">😂 Meme Generator</a>
     <a href="/color-palette">🎨 Color Palette</a>
   </div>
@@ -130,13 +132,13 @@
 
   <!-- CATEGORY FILTER -->
   <div class="category-wrap" id="catWrap">
-    <button class="cat-btn active" onclick="filterCat('all', this)">⚡ All Tools <span class="cnt">11</span></button>
+    <button class="cat-btn active" onclick="filterCat('all', this)">⚡ All Tools <span class="cnt">13</span></button>
     <button class="cat-btn" onclick="filterCat('text', this)">📝 Text <span class="cnt">2</span></button>
     <button class="cat-btn" onclick="filterCat('security', this)">🔒 Security <span class="cnt">1</span></button>
     <button class="cat-btn" onclick="filterCat('converter', this)">🔄 Converter <span class="cnt">2</span></button>
     <button class="cat-btn" onclick="filterCat('image', this)">🖼️ Image <span class="cnt">4</span></button>
-    <button class="cat-btn" onclick="filterCat('pdf', this)">📋 PDF <span class="cnt">1</span></button>
-    <button class="cat-btn" onclick="filterCat('finance', this)">💰 Finance <span class="cnt">1</span></button>
+    <button class="cat-btn" onclick="filterCat('pdf', this)">📋 PDF <span class="cnt">2</span></button>
+    <button class="cat-btn" onclick="filterCat('finance', this)">💰 Finance <span class="cnt">2</span></button>
   </div>
 
   <!-- ALL TOOLS GRID -->
@@ -263,6 +265,28 @@
       </div>
     </a>
 
+    <!-- Mortgage Calculator -->
+    <a href="/mortgage-calculator" class="tool-card" data-cat="finance" data-tags="mortgage calculator loan monthly payment amortization schedule interest home loan EMI compare">
+      <div class="tool-icon" style="background:#fef9c3;">🏠</div>
+      <h3>Mortgage Calculator</h3>
+      <p>Calculate monthly payments, total interest &amp; full amortization schedule. Compare two loans side by side.</p>
+      <div class="tool-meta">
+        <span class="tool-badge">Finance</span>
+        <span class="tool-arrow">Open →</span>
+      </div>
+    </a>
+
+    <!-- PDF to JPG -->
+    <a href="/pdf-to-jpg" class="tool-card" data-cat="pdf" data-tags="pdf to jpg pdf to image convert pdf jpg png extract pages pdf converter">
+      <div class="tool-icon" style="background:#ede9fe;">🔄</div>
+      <h3>PDF to JPG</h3>
+      <p>Convert every PDF page into a high-quality JPG or PNG image. Download individually or as a ZIP.</p>
+      <div class="tool-meta">
+        <span class="tool-badge">PDF</span>
+        <span class="tool-arrow">Open →</span>
+      </div>
+    </a>
+
   </div>
 
   <!-- No results message -->
@@ -330,6 +354,7 @@
           <li><a href="/unit-converter">Unit Converter</a></li>
           <li><a href="/qr-generator">QR Code Generator</a></li>
           <li><a href="/image-to-pdf">Image to PDF</a></li>
+          <li><a href="/pdf-to-jpg">PDF to JPG</a></li>
         </ul>
       </div>
       <div class="footer-col">
@@ -345,10 +370,8 @@
       <div class="footer-col">
         <h4>Finance</h4>
         <ul>
-          <li><a href="/finance-tools">Compound Interest</a></li>
-          <li><a href="/finance-tools">Savings Goal</a></li>
-          <li><a href="/finance-tools">Budget Split</a></li>
-          <li><a href="/finance-tools">All Finance Tools</a></li>
+          <li><a href="/finance-tools">Finance Tools</a></li>
+          <li><a href="/mortgage-calculator">Mortgage Calculator</a></li>
         </ul>
       </div>
       <div class="footer-col">
