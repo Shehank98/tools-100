@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Photo Censor — Blur, Pixelate & Black Bar Tool — ToolBox</title>
+  <meta name="description" content="Free online photo censor tool. Pixelate, blur or black-bar sensitive areas of any image interactively in your browser — nothing uploaded to any server." />
+  <link rel="stylesheet" href="style.css" />
+  <script src="utils.js" defer></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+  <style>
+    /* ── Drop zone ── */
+    .drop-zone {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 56px 24px;
+      text-align: center;
+      cursor: pointer;
+      background: var(--surface-1);
+      transition: border-color .2s, background .2s;
+    }
+    .drop-zone:hover, .drop-zone.drag-over {
+      border-color: var(--clr-primary);
+      background: #ede9fe22;
+    }
+    .drop-zone-icon { font-size: 3rem; margin-bottom: 12px; }
+
+    /* ── Editor shell ── */
+    .censor-shell {
+      display: flex;
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--surface-1);
+      min-height: 540px;
+    }
+
+    /* ── Left toolbar ── */
+    .ctoolbar {
+      width: 58px;
+      background: var(--surface-2);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px 0;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+    .ctool-btn {
+      width: 42px; height: 42px;
+      border: 1px solid transparent;
+      border-radius: 9px;
+      background: none;
+      cursor: pointer;
+      font-size: 1rem;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .15s, border-color .15s;
+      position: relative;
+      color: var(--text-1);
+      flex-direction: column;
+      gap: 1px;
+    }
+    .ctool-btn .ctool-label { font-size: .52rem; font-weight: 700; color: var(--text-3); line-height: 1; }
+    .ctool-btn:hover  { background: var(--surface-3, #e5e7eb); }
+    .ctool-btn.active { background: #ede9fe; border-color: var(--clr-primary); }
+    .ctool-btn[title]:hover::after {
+      content: attr(title);
+      position: absolute; left: 52px; top: 50%; transform: translateY(-50%);
+      background: #1e293b; color: #fff;
+      font-size: .72rem; white-space: nowrap;
+      padding: 4px 8px; border-radius: 5px; z-index: 99;
+      pointer-events: none;
+    }
+    .ctoolbar-sep { width: 32px; height: 1px; background: var(--border); margin: 4px 0; }
+
+    /* ── Canvas area ── */
+    .ccanvas-area {
+      flex: 1;
+      overflow: auto;
+      background: #475569;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 20px;
+    }
+    .ccanvas-wrap {
+      position: relative;
+      display: inline-block;
+      cursor: crosshair;
+      user-select: none;
+      box-shadow: 0 4px 24px #0006;
+    }
+    .ccanvas-wrap.tool-move { cursor: move; }
+    #imgCanvas, #overlayCanvas {
+      display: block;
+      position: absolute; top: 0; left: 0;
+    }
+    #imgCanvas     { z-index: 1; }
+    #overlayCanvas { z-index: 2; }
+
+    /* ── Right panel ── */
+    .cpanel {
+      width: 200px;
+      background: var(--surface-2);
+      border-left: 1px solid var(--border);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      font-size: .82rem;
+      flex-shrink: 0;
+      overflow-y: auto;
+    }
+    .cpanel h4 {
+      font-size: .7rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .06em;
+      color: var(--text-3); margin-bottom: 6px;
+    }
+    .cpanel input[type=range] { width: 100%; accent-color: var(--clr-primary); }
+    .cpanel .range-row { display: flex; justify-content: space-between; font-size: .75rem; color: var(--text-3); margin-top: 2px; }
+
+    /* Region list */
+    .region-list { display: flex; flex-direction: column; gap: 6px; max-height: 220px; overflow-y: auto; }
+    .region-item {
+      display: flex; align-items: center; gap: 6px;
+      background: var(--surface-1);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 6px 8px;
+      font-size: .75rem; cursor: pointer;
+      transition: border-color .15s;
+    }
+    .region-item:hover { border-color: var(--clr-primary); }
+    .region-item.selected { border-color: var(--clr-primary); background: #ede9fe22; }
+    .region-dot {
+      width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0;
+    }
+    .region-del { margin-left: auto; cursor: pointer; color: var(--text-3); font-size: .9rem; }
+    .region-del:hover { color: #dc2626; }
+
+    /* Effect type buttons */
+    .effect-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+    }
+    .eff-btn {
+      padding: 7px 4px; font-size: .72rem; font-weight: 700;
+      border: 1px solid var(--border); border-radius: 8px;
+      background: var(--surface-1); color: var(--text-2);
+      cursor: pointer; text-align: center;
+      transition: border-color .15s, background .15s;
+    }
+    .eff-btn:hover  { border-color: var(--clr-primary); background: #ede9fe22; }
+    .eff-btn.active { border-color: var(--clr-primary); background: #ede9fe; color: var(--clr-primary); }
+
+    /* Color swatches for bar color */
+    .swatch-row { display: flex; gap: 6px; flex-wrap: wrap; }
+    .swatch {
+      width: 24px; height: 24px; border-radius: 5px;
+      border: 2px solid transparent; cursor: pointer;
+      transition: border-color .1s;
+    }
+    .swatch.active { border-color: var(--clr-primary); }
+
+    @media(max-width: 680px) { .cpanel { display: none; } .ctoolbar { width: 44px; } }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a href="index.html" class="logo">
+      <div class="logo-icon">🛠️</div>
+      ToolBox
+    </a>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="word-counter.html">Word Counter</a>
+      <a href="password-generator.html">Password</a>
+      <a href="qr-generator.html">QR Code</a>
+      <a href="image-compressor.html">Image Tools</a>
+      <a href="unit-converter.html">Converter</a>
+      <a href="finance-tools.html">Finance</a>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-btn" id="darkToggle" onclick="toggleDarkMode()" title="Toggle dark mode">🌙</button>
+      <button class="icon-btn nav-toggle" onclick="openMobileNav()">☰</button>
+    </div>
+  </div>
+</header>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobileNav">
+  <div class="mobile-nav-backdrop" onclick="closeMobileNav()"></div>
+  <div class="mobile-nav-drawer">
+    <button class="mobile-nav-close" onclick="closeMobileNav()">✕</button>
+    <a href="index.html">🏠 Home</a>
+    <a href="word-counter.html">📄 Word Counter</a>
+    <a href="font-changer.html">✍️ Font Changer</a>
+    <a href="unit-converter.html">📐 Unit Converter</a>
+    <a href="password-generator.html">🔒 Password Generator</a>
+    <a href="qr-generator.html">📱 QR Code Generator</a>
+    <a href="image-to-pdf.html">🖼️ Image to PDF</a>
+    <a href="image-compressor.html">🗜️ Image Compressor</a>
+    <a href="image-resizer.html">↔️ Image Resizer</a>
+    <a href="base64-encoder.html">🔡 Base64 Encoder</a>
+    <a href="pdf-editor.html">✏️ PDF Editor</a>
+    <a href="photo-censor.html" class="active">🔲 Photo Censor</a>
+    <a href="pdf-compressor.html">📋 PDF Compressor</a>
+    <a href="finance-tools.html">💰 Finance Tools</a>
+    <a href="background-remover.html">✂️ Background Remover</a>
+    <a href="color-palette.html">🎨 Color Palette</a>
+    <a href="json-formatter.html">🔧 JSON Formatter</a>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main>
+
+  <!-- TOP AD -->
+  <div class="ad-unit ad-top">
+    <span class="ad-label">Advertisement</span>
+    <ins class="adsbygoogle" style="display:block;width:100%;min-height:90px"
+         data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX" data-ad-slot="1010101010"
+         data-ad-format="horizontal" data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+
+  <!-- BREADCRUMB -->
+  <div class="breadcrumb">
+    <a href="index.html">🏠 Home</a>
+    <span>›</span>
+    <span>Photo Censor</span>
+  </div>
+
+  <!-- HERO -->
+  <div style="margin-bottom:16px;">
+    <h1 style="font-size:1.5rem;margin-bottom:4px;">🔲 Photo Censor</h1>
+    <p style="color:var(--text-2);font-size:.9rem;">Draw boxes over sensitive areas and apply pixelate, blur or black-bar effects. Everything runs in your browser — your photo never leaves your device.</p>
+  </div>
+
+  <!-- DROP ZONE -->
+  <div id="dropWrap">
+    <div class="drop-zone" id="dropZone" onclick="document.getElementById('imgFileInput').click()">
+      <div class="drop-zone-icon">🖼️</div>
+      <strong style="font-size:1.05rem;">Click to upload or drag &amp; drop</strong>
+      <p style="color:var(--text-2);font-size:.85rem;margin-top:8px;">JPG, PNG, WebP, GIF — up to 20 MB</p>
+    </div>
+    <input type="file" id="imgFileInput" accept="image/*" style="display:none" onchange="loadImage(this.files[0])">
+  </div>
+
+  <!-- EDITOR (hidden until image loaded) -->
+  <div id="editorWrap" style="display:none;">
+
+    <!-- Action bar -->
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap;">
+      <button class="btn btn-ghost btn-sm" onclick="document.getElementById('imgFileInput').click()">📂 Open Image</button>
+      <button class="btn btn-ghost btn-sm" onclick="undoRegion()">↩️ Undo</button>
+      <button class="btn btn-ghost btn-sm" onclick="clearAll()">🗑️ Clear All</button>
+      <button class="btn btn-ghost btn-sm" onclick="applyAll()">👁️ Preview</button>
+      <button class="btn btn-primary btn-sm" onclick="downloadResult()" style="margin-left:auto;">⬇️ Download</button>
+    </div>
+
+    <!-- Editor shell -->
+    <div class="censor-shell">
+
+      <!-- Left toolbar -->
+      <div class="ctoolbar">
+        <button class="ctool-btn active" id="ctool-draw" title="Draw region" onclick="setTool('draw')">
+          ▭
+          <span class="ctool-label">Draw</span>
+        </button>
+        <button class="ctool-btn" id="ctool-move" title="Move / select region" onclick="setTool('move')">
+          ✥
+          <span class="ctool-label">Move</span>
+        </button>
+        <div class="ctoolbar-sep"></div>
+        <!-- Quick-effect shortcuts -->
+        <button class="ctool-btn" title="Pixelate" onclick="setEffect('pixelate')">
+          ▦
+          <span class="ctool-label">Pixel</span>
+        </button>
+        <button class="ctool-btn" title="Blur" onclick="setEffect('blur')">
+          ≋
+          <span class="ctool-label">Blur</span>
+        </button>
+        <button class="ctool-btn" title="Black bar" onclick="setEffect('blackbar')">
+          ■
+          <span class="ctool-label">Black</span>
+        </button>
+        <button class="ctool-btn" title="White bar" onclick="setEffect('whitebar')">
+          □
+          <span class="ctool-label">White</span>
+        </button>
+        <div class="ctoolbar-sep"></div>
+        <button class="ctool-btn" title="Zoom in"  onclick="zoomCanvas(0.15)">🔍<span class="ctool-label">In</span></button>
+        <button class="ctool-btn" title="Zoom out" onclick="zoomCanvas(-0.15)">🔎<span class="ctool-label">Out</span></button>
+        <button class="ctool-btn" title="Fit to screen" onclick="fitToScreen()">⊡<span class="ctool-label">Fit</span></button>
+      </div>
+
+      <!-- Canvas area -->
+      <div class="ccanvas-area" id="ccanvasArea">
+        <div class="ccanvas-wrap" id="ccanvasWrap">
+          <canvas id="imgCanvas"></canvas>
+          <canvas id="overlayCanvas"></canvas>
+        </div>
+      </div>
+
+      <!-- Right panel -->
+      <div class="cpanel">
+
+        <!-- Effect type -->
+        <div>
+          <h4>Censor Type</h4>
+          <div class="effect-grid">
+            <button class="eff-btn active" id="eff-pixelate" onclick="setEffect('pixelate')">▦ Pixelate</button>
+            <button class="eff-btn"        id="eff-blur"      onclick="setEffect('blur')">≋ Blur</button>
+            <button class="eff-btn"        id="eff-blackbar"  onclick="setEffect('blackbar')">■ Black</button>
+            <button class="eff-btn"        id="eff-whitebar"  onclick="setEffect('whitebar')">□ White</button>
+            <button class="eff-btn"        id="eff-emoji"     onclick="setEffect('emoji')">😊 Emoji</button>
+            <button class="eff-btn"        id="eff-custom"    onclick="setEffect('custom')">🎨 Custom</button>
+          </div>
+        </div>
+
+        <!-- Emoji picker (shown when emoji mode) -->
+        <div id="emojiPicker" style="display:none;">
+          <h4>Emoji</h4>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <span class="ctool-btn" style="cursor:pointer;font-size:1.2rem;" onclick="setEmoji('😊')">😊</span>
+            <span class="ctool-btn" style="cursor:pointer;font-size:1.2rem;" onclick="setEmoji('🙈')">🙈</span>
+            <span class="ctool-btn" style="cursor:pointer;font-size:1.2rem;" onclick="setEmoji('⭐')">⭐</span>
+            <span class="ctool-btn" style="cursor:pointer;font-size:1.2rem;" onclick="setEmoji('❓')">❓</span>
+            <span class="ctool-btn" style="cursor:pointer;font-size:1.2rem;" onclick="setEmoji('🔴')">🔴</span>
+            <span class="ctool-btn" style="cursor:pointer;font-size:1.2rem;" onclick="setEmoji('💥')">💥</span>
+          </div>
+          <input type="text" id="customEmoji" maxlength="2" placeholder="Type emoji…"
+                 style="width:100%;margin-top:6px;padding:4px 8px;border:1px solid var(--border);border-radius:6px;background:var(--surface-1);color:var(--text-1);box-sizing:border-box;"
+                 oninput="setEmoji(this.value)">
+        </div>
+
+        <!-- Custom color (shown when custom mode) -->
+        <div id="customColorPicker" style="display:none;">
+          <h4>Fill Color</h4>
+          <div class="swatch-row" style="margin-bottom:8px;">
+            <div class="swatch active" style="background:#000" onclick="setCustomColor('#000000')"></div>
+            <div class="swatch" style="background:#fff;border:1px solid #ccc;" onclick="setCustomColor('#ffffff')"></div>
+            <div class="swatch" style="background:#2563eb" onclick="setCustomColor('#2563eb')"></div>
+            <div class="swatch" style="background:#16a34a" onclick="setCustomColor('#16a34a')"></div>
+            <div class="swatch" style="background:#dc2626" onclick="setCustomColor('#dc2626')"></div>
+            <div class="swatch" style="background:#f59e0b" onclick="setCustomColor('#f59e0b')"></div>
+          </div>
+          <input type="color" id="customColorInput" value="#000000" style="width:100%;height:32px;border:none;border-radius:6px;cursor:pointer;" oninput="setCustomColor(this.value)">
+        </div>
+
+        <!-- Intensity -->
+        <div>
+          <h4>Intensity — <span id="intensityLabel">16</span></h4>
+          <input type="range" id="intensitySlider" min="4" max="48" value="16" oninput="setIntensity(this.value)">
+          <div class="range-row"><span>Low</span><span>High</span></div>
+        </div>
+
+        <!-- Opacity -->
+        <div>
+          <h4>Opacity — <span id="opacityLabel">100%</span></h4>
+          <input type="range" id="opacitySlider" min="20" max="100" value="100" oninput="setOpacity(this.value)">
+          <div class="range-row"><span>20%</span><span>100%</span></div>
+        </div>
+
+        <!-- Region list -->
+        <div>
+          <h4>Regions (<span id="regionCount">0</span>)</h4>
+          <div class="region-list" id="regionList">
+            <div style="color:var(--text-3);font-size:.75rem;">Draw boxes on the image to add censored regions.</div>
+          </div>
+        </div>
+
+        <!-- Apply button -->
+        <button class="btn btn-primary" style="width:100%;" onclick="applyAll()">👁️ Preview All</button>
+
+      </div><!-- /cpanel -->
+
+    </div><!-- /censor-shell -->
+
+  </div><!-- /editorWrap -->
+
+  <!-- Tips & Ads -->
+  <div class="tool-layout" style="margin-top:20px;">
+    <div>
+      <div class="ad-unit ad-mid">
+        <span class="ad-label">Advertisement</span>
+        <ins class="adsbygoogle" style="display:block;width:100%;min-height:90px"
+             data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX" data-ad-slot="2020202020"
+             data-ad-format="horizontal" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </div>
+
+      <div class="tool-box">
+        <h2>💡 How to use Photo Censor</h2>
+        <ul class="tips-list">
+          <li><strong>Draw</strong> — drag to draw a rectangle over the area you want to hide.</li>
+          <li><strong>Pixelate</strong> — classic mosaic effect; drag the Intensity slider to control block size.</li>
+          <li><strong>Blur</strong> — smooth Gaussian-style blur; great for faces.</li>
+          <li><strong>Black / White bar</strong> — solid opaque bars, the traditional censoring method.</li>
+          <li><strong>Emoji</strong> — place a repeating emoji (e.g. 😊) over the region for a fun cover-up.</li>
+          <li><strong>Custom color</strong> — fill with any colour, with adjustable opacity.</li>
+          <li>Add <strong>multiple regions</strong> with different effects before downloading.</li>
+        </ul>
+      </div>
+    </div>
+
+    <aside class="sidebar">
+      <div class="ad-unit ad-rect">
+        <span class="ad-label">Advertisement</span>
+        <ins class="adsbygoogle" style="display:block;width:100%;min-height:250px"
+             data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX" data-ad-slot="3030303030"
+             data-ad-format="rectangle" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </div>
+
+      <div class="tool-box">
+        <h3>Related Tools</h3>
+        <div class="related-tools">
+          <a href="image-resizer.html" class="related-item">
+            <div class="related-icon" style="background:#e0f2fe;">↔️</div>
+            <div class="related-item-text"><strong>Image Resizer</strong><span>Resize any photo</span></div>
+          </a>
+          <a href="image-compressor.html" class="related-item">
+            <div class="related-icon" style="background:#fef9c3;">🗜️</div>
+            <div class="related-item-text"><strong>Image Compressor</strong><span>Reduce file size</span></div>
+          </a>
+          <a href="background-remover.html" class="related-item">
+            <div class="related-icon" style="background:#ede9fe;">✂️</div>
+            <div class="related-item-text"><strong>Background Remover</strong><span>AI transparent PNG</span></div>
+          </a>
+        </div>
+      </div>
+
+      <div class="ad-unit ad-rect">
+        <span class="ad-label">Advertisement</span>
+        <ins class="adsbygoogle" style="display:block;width:100%;min-height:250px"
+             data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX" data-ad-slot="4040404040"
+             data-ad-format="rectangle" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </div>
+    </aside>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="index.html" class="logo" style="color:#fff;">
+          <div class="logo-icon">🛠️</div> ToolBox
+        </a>
+        <p style="margin-top:12px;">Free, fast, privacy-friendly tools for everyday tasks.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Image Tools</h4>
+        <ul>
+          <li><a href="photo-censor.html">Photo Censor</a></li>
+          <li><a href="image-resizer.html">Image Resizer</a></li>
+          <li><a href="image-compressor.html">Image Compressor</a></li>
+          <li><a href="image-to-pdf.html">Image to PDF</a></li>
+          <li><a href="background-remover.html">Background Remover</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Other Tools</h4>
+        <ul>
+          <li><a href="pdf-editor.html">PDF Editor</a></li>
+          <li><a href="base64-encoder.html">Base64 Encoder</a></li>
+          <li><a href="json-formatter.html">JSON Formatter</a></li>
+          <li><a href="finance-tools.html">Finance Tools</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 ToolBox. All rights reserved.</span>
+      <div class="footer-links">
+        <a href="privacy-policy.html">Privacy Policy</a>
+        <a href="terms.html">Terms</a>
+        <a href="contact.html">Contact</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ═══════════════════════════════════════════
+   Photo Censor — main script
+   ═══════════════════════════════════════════ */
+
+/* ── State ── */
+let sourceImg   = null;   // original Image object
+let origFile    = null;
+let zoomLevel   = 1.0;
+
+// Regions: { id, x, y, w, h, effect, intensity, opacity, color, emoji }
+// x,y,w,h are in IMAGE coordinates (not canvas display coords)
+let regions     = [];
+let regionIdSeq = 0;
+let selectedId  = null;
+
+// Drawing state
+let isDrawing   = false;
+let isDragging  = false;
+let dragRegionId = null;
+let dragOffX, dragOffY;
+let drawStartX, drawStartY;
+
+// Tool & effect settings
+let currentTool      = 'draw';
+let currentEffect    = 'pixelate';
+let currentIntensity = 16;
+let currentOpacity   = 1.0;
+let currentColor     = '#000000';
+let currentEmoji     = '😊';
+
+// Region colours for list
+const REGION_COLORS = ['#6366f1','#f59e0b','#10b981','#ef4444','#3b82f6','#ec4899','#8b5cf6','#14b8a6'];
+
+/* ── Drop zone ── */
+const dz = document.getElementById('dropZone');
+dz.addEventListener('dragover',  e => { e.preventDefault(); dz.classList.add('drag-over'); });
+dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
+dz.addEventListener('drop', e => {
+  e.preventDefault(); dz.classList.remove('drag-over');
+  const f = e.dataTransfer.files[0];
+  if (f && f.type.startsWith('image/')) loadImage(f);
+  else showToast('Please drop an image file', 'error');
+});
+
+/* ── Load image ── */
+function loadImage(file) {
+  if (!file) return;
+  if (file.size > 20 * 1024 * 1024) { showToast('Max 20 MB', 'error'); return; }
+  origFile = file;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      sourceImg = img;
+      regions   = [];
+      document.getElementById('imgFileInput').value = '';
+      document.getElementById('dropWrap').style.display   = 'none';
+      document.getElementById('editorWrap').style.display = '';
+      fitToScreen();
+      renderAll();
+      updateRegionList();
+      showToast('Image loaded — draw boxes to censor areas', 'success');
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+/* ── Canvas sizing ── */
+function getDisplaySize() {
+  return { dw: Math.round(sourceImg.naturalWidth * zoomLevel), dh: Math.round(sourceImg.naturalHeight * zoomLevel) };
+}
+
+function applyCanvasSize() {
+  const { dw, dh } = getDisplaySize();
+  const ic = document.getElementById('imgCanvas');
+  const oc = document.getElementById('overlayCanvas');
+  const wrap = document.getElementById('ccanvasWrap');
+  ic.width = oc.width = dw;
+  ic.height = oc.height = dh;
+  wrap.style.width  = dw + 'px';
+  wrap.style.height = dh + 'px';
+}
+
+function fitToScreen() {
+  const area = document.getElementById('ccanvasArea');
+  const maxW = (area.clientWidth  || 700) - 40;
+  const maxH = (area.clientHeight || 500) - 40;
+  const scaleW = maxW / sourceImg.naturalWidth;
+  const scaleH = maxH / sourceImg.naturalHeight;
+  zoomLevel = Math.min(1, scaleW, scaleH);
+  applyCanvasSize();
+}
+
+function zoomCanvas(delta) {
+  zoomLevel = Math.max(0.1, Math.min(5, zoomLevel + delta));
+  applyCanvasSize();
+  renderAll();
+}
+
+/* ── Render ── */
+function renderAll() {
+  if (!sourceImg) return;
+  const ic  = document.getElementById('imgCanvas');
+  const oc  = document.getElementById('overlayCanvas');
+  const ictx = ic.getContext('2d');
+  const octx = oc.getContext('2d');
+  const { dw, dh } = getDisplaySize();
+
+  // Draw original image
+  ictx.clearRect(0, 0, dw, dh);
+  ictx.drawImage(sourceImg, 0, 0, dw, dh);
+
+  // Draw overlay: selection boxes
+  octx.clearRect(0, 0, dw, dh);
+  regions.forEach(r => {
+    const rx = r.x * zoomLevel, ry = r.y * zoomLevel;
+    const rw = r.w * zoomLevel, rh = r.h * zoomLevel;
+    // effect preview on image canvas
+    applyEffectToCtx(ictx, r, rx, ry, rw, rh, dw, dh);
+    // selection border on overlay
+    octx.save();
+    octx.strokeStyle = r.id === selectedId ? '#6366f1' : 'rgba(99,102,241,0.5)';
+    octx.lineWidth   = r.id === selectedId ? 2 : 1;
+    octx.setLineDash(r.id === selectedId ? [] : [4, 3]);
+    octx.strokeRect(rx, ry, rw, rh);
+    // resize handle
+    if (r.id === selectedId) {
+      octx.fillStyle = '#6366f1';
+      octx.fillRect(rx + rw - 6, ry + rh - 6, 8, 8);
+    }
+    octx.restore();
+  });
+}
+
+/* ── Apply effect to context ── */
+function applyEffectToCtx(ctx, r, rx, ry, rw, rh, dw, dh) {
+  if (rw < 2 || rh < 2) return;
+  const alpha = r.opacity;
+
+  if (r.effect === 'blackbar') {
+    ctx.save(); ctx.globalAlpha = alpha; ctx.fillStyle = '#000'; ctx.fillRect(rx, ry, rw, rh); ctx.restore();
+  } else if (r.effect === 'whitebar') {
+    ctx.save(); ctx.globalAlpha = alpha; ctx.fillStyle = '#fff'; ctx.fillRect(rx, ry, rw, rh); ctx.restore();
+  } else if (r.effect === 'custom') {
+    ctx.save(); ctx.globalAlpha = alpha; ctx.fillStyle = r.color || '#000'; ctx.fillRect(rx, ry, rw, rh); ctx.restore();
+  } else if (r.effect === 'emoji') {
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    const em  = r.emoji || '😊';
+    const fs  = Math.max(12, Math.min(rw, rh) * 0.5);
+    ctx.font  = fs + 'px serif';
+    ctx.textBaseline = 'middle';
+    ctx.textAlign    = 'center';
+    ctx.fillText(em, rx + rw / 2, ry + rh / 2);
+    ctx.restore();
+  } else if (r.effect === 'pixelate') {
+    pixelate(ctx, rx, ry, rw, rh, r.intensity, alpha);
+  } else if (r.effect === 'blur') {
+    blurRegion(ctx, rx, ry, rw, rh, r.intensity, alpha);
+  }
+}
+
+/* ── Pixelate ── */
+function pixelate(ctx, x, y, w, h, blockSize, alpha) {
+  const bs = Math.max(2, blockSize);
+  // Read original pixels
+  let imgData;
+  try { imgData = ctx.getImageData(x, y, w, h); } catch(e) { return; }
+  const d = imgData.data;
+  for (let by = 0; by < h; by += bs) {
+    for (let bx = 0; bx < w; bx += bs) {
+      // Average color of block
+      let r=0,g=0,b=0,a=0,cnt=0;
+      for (let dy = 0; dy < bs && by + dy < h; dy++) {
+        for (let dx = 0; dx < bs && bx + dx < w; dx++) {
+          const i = ((by + dy) * w + (bx + dx)) * 4;
+          r += d[i]; g += d[i+1]; b += d[i+2]; a += d[i+3]; cnt++;
+        }
+      }
+      r=r/cnt|0; g=g/cnt|0; b=b/cnt|0; a=a/cnt|0;
+      for (let dy = 0; dy < bs && by + dy < h; dy++) {
+        for (let dx = 0; dx < bs && bx + dx < w; dx++) {
+          const i = ((by + dy) * w + (bx + dx)) * 4;
+          d[i]=r; d[i+1]=g; d[i+2]=b; d[i+3]=Math.round(a * alpha);
+        }
+      }
+    }
+  }
+  ctx.putImageData(imgData, x, y);
+}
+
+/* ── Blur (box-blur approximation, fast) ── */
+function blurRegion(ctx, x, y, w, h, radius, alpha) {
+  const r = Math.max(1, Math.round(radius));
+  // We'll use the ctx filter for speed
+  ctx.save();
+  ctx.filter = `blur(${r}px)`;
+  ctx.globalAlpha = alpha;
+  // draw the region from image again with blur
+  const offC = document.createElement('canvas');
+  offC.width = sourceImg.naturalWidth * zoomLevel;
+  offC.height = sourceImg.naturalHeight * zoomLevel;
+  const offCtx = offC.getContext('2d');
+  offCtx.drawImage(sourceImg, 0, 0, offC.width, offC.height);
+  ctx.drawImage(offC, x, y, w, h, x, y, w, h);
+  ctx.restore();
+}
+
+/* ── Tool ── */
+function setTool(t) {
+  currentTool = t;
+  ['draw','move'].forEach(id => {
+    document.getElementById('ctool-' + id).classList.toggle('active', id === t);
+  });
+  document.getElementById('ccanvasWrap').className = 'ccanvas-wrap tool-' + t;
+}
+
+/* ── Effect ── */
+function setEffect(e) {
+  currentEffect = e;
+  document.querySelectorAll('.eff-btn').forEach(b => b.classList.remove('active'));
+  const btn = document.getElementById('eff-' + e);
+  if (btn) btn.classList.add('active');
+  // Also sync toolbar quick buttons
+  document.getElementById('emojiPicker').style.display       = e === 'emoji'  ? '' : 'none';
+  document.getElementById('customColorPicker').style.display = e === 'custom' ? '' : 'none';
+  // Apply to selected region too
+  if (selectedId !== null) {
+    const reg = regions.find(r => r.id === selectedId);
+    if (reg) { reg.effect = e; renderAll(); }
+  }
+}
+function setEmoji(em) { currentEmoji = em || '😊'; if (selectedId !== null) { const r = regions.find(r => r.id === selectedId); if (r) { r.emoji = em; renderAll(); } } }
+function setCustomColor(c) {
+  currentColor = c;
+  document.getElementById('customColorInput').value = c;
+  document.querySelectorAll('#customColorPicker .swatch').forEach(s => s.classList.toggle('active', s.style.background === c || s.getAttribute('onclick') && s.getAttribute('onclick').includes(c)));
+  if (selectedId !== null) { const r = regions.find(r => r.id === selectedId); if (r) { r.color = c; renderAll(); } }
+}
+function setIntensity(v) {
+  currentIntensity = parseInt(v);
+  document.getElementById('intensityLabel').textContent = v;
+  if (selectedId !== null) { const r = regions.find(r => r.id === selectedId); if (r) { r.intensity = currentIntensity; renderAll(); } }
+}
+function setOpacity(v) {
+  currentOpacity = parseInt(v) / 100;
+  document.getElementById('opacityLabel').textContent = v + '%';
+  if (selectedId !== null) { const r = regions.find(r => r.id === selectedId); if (r) { r.opacity = currentOpacity; renderAll(); } }
+}
+
+/* ── Canvas events ── */
+const overlayCanvas = document.getElementById('overlayCanvas');
+overlayCanvas.addEventListener('mousedown',  onCDown);
+overlayCanvas.addEventListener('mousemove',  onCMove);
+overlayCanvas.addEventListener('mouseup',    onCUp);
+overlayCanvas.addEventListener('mouseleave', onCUp);
+overlayCanvas.addEventListener('touchstart', e => { e.preventDefault(); onCDown(e.touches[0]); }, { passive: false });
+overlayCanvas.addEventListener('touchmove',  e => { e.preventDefault(); onCMove(e.touches[0]); }, { passive: false });
+overlayCanvas.addEventListener('touchend',   e => { e.preventDefault(); onCUp(); });
+
+function getCanvasPos(e) {
+  const r = overlayCanvas.getBoundingClientRect();
+  return { x: e.clientX - r.left, y: e.clientY - r.top };
+}
+function toImgCoords(cx, cy) {
+  return { ix: cx / zoomLevel, iy: cy / zoomLevel };
+}
+
+function onCDown(e) {
+  const { x, y } = getCanvasPos(e);
+
+  if (currentTool === 'move') {
+    // Find region under cursor
+    const hit = [...regions].reverse().find(r => {
+      const rx = r.x * zoomLevel, ry = r.y * zoomLevel;
+      return x >= rx && x <= rx + r.w * zoomLevel && y >= ry && y <= ry + r.h * zoomLevel;
+    });
+    if (hit) {
+      selectedId   = hit.id;
+      isDragging   = true;
+      dragRegionId = hit.id;
+      dragOffX     = x - hit.x * zoomLevel;
+      dragOffY     = y - hit.y * zoomLevel;
+      // Sync panel sliders to region
+      document.getElementById('intensitySlider').value = hit.intensity;
+      document.getElementById('intensityLabel').textContent = hit.intensity;
+      document.getElementById('opacitySlider').value = Math.round(hit.opacity * 100);
+      document.getElementById('opacityLabel').textContent = Math.round(hit.opacity * 100) + '%';
+      setEffect(hit.effect);
+      renderAll();
+    } else {
+      selectedId = null;
+      renderAll();
+    }
+    return;
+  }
+
+  // draw tool
+  isDrawing  = true;
+  drawStartX = x;
+  drawStartY = y;
+  selectedId = null;
+}
+
+let drawRect = null;
+function onCMove(e) {
+  const { x, y } = getCanvasPos(e);
+
+  if (isDragging && dragRegionId !== null) {
+    const r = regions.find(r => r.id === dragRegionId);
+    if (r) {
+      r.x = Math.max(0, (x - dragOffX) / zoomLevel);
+      r.y = Math.max(0, (y - dragOffY) / zoomLevel);
+      r.x = Math.min(r.x, sourceImg.naturalWidth  - r.w);
+      r.y = Math.min(r.y, sourceImg.naturalHeight - r.h);
+      renderAll();
+    }
+    return;
+  }
+
+  if (!isDrawing) return;
+  // Show rubber-band on overlay
+  const oc = document.getElementById('overlayCanvas');
+  const octx = oc.getContext('2d');
+  renderAll(); // redraws existing regions
+  const rx = Math.min(drawStartX, x), ry = Math.min(drawStartY, y);
+  const rw = Math.abs(x - drawStartX),  rh = Math.abs(y - drawStartY);
+  octx.save();
+  octx.strokeStyle = '#6366f1'; octx.lineWidth = 2; octx.setLineDash([5,3]);
+  octx.strokeRect(rx, ry, rw, rh);
+  octx.restore();
+}
+
+function onCUp(e) {
+  if (isDragging) { isDragging = false; dragRegionId = null; return; }
+  if (!isDrawing) return;
+  isDrawing = false;
+
+  if (e) {
+    const { x, y } = getCanvasPos(e);
+    let rx = Math.min(drawStartX, x), ry = Math.min(drawStartY, y);
+    let rw = Math.abs(x - drawStartX), rh = Math.abs(y - drawStartY);
+    if (rw < 8 || rh < 8) return; // too small
+
+    // Convert to image coords
+    const { ix, iy } = toImgCoords(rx, ry);
+    const iw = rw / zoomLevel, ih = rh / zoomLevel;
+
+    const reg = {
+      id: ++regionIdSeq,
+      x: ix, y: iy, w: iw, h: ih,
+      effect:    currentEffect,
+      intensity: currentIntensity,
+      opacity:   currentOpacity,
+      color:     currentColor,
+      emoji:     currentEmoji,
+    };
+    regions.push(reg);
+    selectedId = reg.id;
+    updateRegionList();
+    renderAll();
+    showToast('Region added — click Preview or Download', 'info');
+  }
+}
+
+/* ── Region list ── */
+function updateRegionList() {
+  const list = document.getElementById('regionList');
+  document.getElementById('regionCount').textContent = regions.length;
+  if (regions.length === 0) {
+    list.innerHTML = '<div style="color:var(--text-3);font-size:.75rem;">Draw boxes on the image to add censored regions.</div>';
+    return;
+  }
+  list.innerHTML = '';
+  regions.forEach((r, i) => {
+    const item = document.createElement('div');
+    item.className = 'region-item' + (r.id === selectedId ? ' selected' : '');
+    item.onclick = () => { selectedId = r.id; updateRegionList(); renderAll(); };
+    const dot = document.createElement('div');
+    dot.className = 'region-dot';
+    dot.style.background = REGION_COLORS[i % REGION_COLORS.length];
+    const label = document.createElement('span');
+    label.textContent = `#${i+1} ${r.effect}`;
+    const del = document.createElement('span');
+    del.className = 'region-del'; del.textContent = '✕';
+    del.onclick = ev => { ev.stopPropagation(); regions = regions.filter(x => x.id !== r.id); if (selectedId === r.id) selectedId = null; updateRegionList(); renderAll(); };
+    item.append(dot, label, del);
+    list.appendChild(item);
+  });
+}
+
+/* ── Undo / clear ── */
+function undoRegion() {
+  if (regions.length === 0) { showToast('Nothing to undo', 'warning'); return; }
+  const removed = regions.pop();
+  if (selectedId === removed.id) selectedId = null;
+  updateRegionList();
+  renderAll();
+  showToast('Removed last region', 'info');
+}
+function clearAll() {
+  regions = []; selectedId = null;
+  updateRegionList();
+  renderAll();
+  showToast('All regions cleared', 'info');
+}
+
+/* ── Preview (apply all to displayed canvas) ── */
+function applyAll() { renderAll(); showToast('Preview updated', 'info'); }
+
+/* ── Download ── */
+function downloadResult() {
+  if (!sourceImg) { showToast('No image loaded', 'warning'); return; }
+
+  // Render at full resolution
+  const offC = document.createElement('canvas');
+  offC.width  = sourceImg.naturalWidth;
+  offC.height = sourceImg.naturalHeight;
+  const offCtx = offC.getContext('2d');
+  offCtx.drawImage(sourceImg, 0, 0);
+
+  // Apply each region at full scale (zoomLevel = 1)
+  regions.forEach(r => {
+    applyEffectFull(offCtx, r, sourceImg.naturalWidth, sourceImg.naturalHeight);
+  });
+
+  const ext = (origFile && origFile.type === 'image/png') ? 'png' : 'jpg';
+  const mime = ext === 'png' ? 'image/png' : 'image/jpeg';
+  const base = origFile ? origFile.name.replace(/\.[^.]+$/, '') : 'censored';
+
+  offC.toBlob(blob => {
+    if (typeof downloadBlob === 'function') {
+      downloadBlob(blob, `${base}_censored.${ext}`);
+    } else {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = `${base}_censored.${ext}`; a.click();
+      URL.revokeObjectURL(url);
+    }
+    showToast('Image downloaded!', 'success');
+  }, mime, 0.93);
+}
+
+/* ── Apply effect at full image resolution ── */
+function applyEffectFull(ctx, r, imgW, imgH) {
+  const x = Math.round(r.x), y = Math.round(r.y);
+  const w = Math.round(r.w), h = Math.round(r.h);
+  if (w < 1 || h < 1) return;
+  const alpha = r.opacity;
+
+  if (r.effect === 'blackbar') {
+    ctx.save(); ctx.globalAlpha = alpha; ctx.fillStyle = '#000'; ctx.fillRect(x, y, w, h); ctx.restore();
+  } else if (r.effect === 'whitebar') {
+    ctx.save(); ctx.globalAlpha = alpha; ctx.fillStyle = '#fff'; ctx.fillRect(x, y, w, h); ctx.restore();
+  } else if (r.effect === 'custom') {
+    ctx.save(); ctx.globalAlpha = alpha; ctx.fillStyle = r.color || '#000'; ctx.fillRect(x, y, w, h); ctx.restore();
+  } else if (r.effect === 'emoji') {
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    const em = r.emoji || '😊';
+    const fs = Math.max(16, Math.min(w, h) * 0.5);
+    ctx.font = fs + 'px serif';
+    ctx.textBaseline = 'middle'; ctx.textAlign = 'center';
+    ctx.fillText(em, x + w / 2, y + h / 2);
+    ctx.restore();
+  } else if (r.effect === 'pixelate') {
+    pixelate(ctx, x, y, w, h, r.intensity, alpha);
+  } else if (r.effect === 'blur') {
+    // Blur at full res using a temporary canvas
+    const tmp = document.createElement('canvas');
+    tmp.width = imgW; tmp.height = imgH;
+    const tctx = tmp.getContext('2d');
+    tctx.drawImage(sourceImg, 0, 0);
+    ctx.save();
+    ctx.filter = `blur(${r.intensity}px)`;
+    ctx.globalAlpha = alpha;
+    ctx.drawImage(tmp, x, y, w, h, x, y, w, h);
+    ctx.restore();
+  }
+}
+</script>
+
+</body>
+</html>
