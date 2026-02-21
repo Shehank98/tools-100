@@ -100,6 +100,62 @@ function downloadBlob(blob, filename) {
   setTimeout(() => { URL.revokeObjectURL(url); document.body.removeChild(a); }, 500);
 }
 
+// ---------- Download with Ad Delay Modal ----------
+function showDownloadModal(downloadFn, seconds) {
+  if (seconds === undefined) seconds = 6;
+
+  const overlay = document.createElement('div');
+  overlay.className = 'dl-overlay';
+  overlay.innerHTML = `
+    <div class="dl-modal" role="dialog" aria-modal="true" aria-label="Preparing download">
+      <div class="dl-header">
+        <div class="dl-spinner"></div>
+        <div class="dl-info">
+          <p class="dl-title">Preparing your download</p>
+          <p class="dl-sub">Please wait while we process your file</p>
+        </div>
+      </div>
+      <div class="dl-progress-track">
+        <div class="dl-progress-fill" id="dlFill"></div>
+      </div>
+      <p class="dl-countdown">Download starts in <strong id="dlCount">${seconds}</strong>s</p>
+      <div class="dl-ad-wrap">
+        <span class="dl-ad-lbl">Advertisement</span>
+        <ins class="adsbygoogle"
+             style="display:block;width:100%;min-height:120px;"
+             data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX"
+             data-ad-slot="8888888888"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+  try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
+
+  const fill    = overlay.querySelector('#dlFill');
+  const countEl = overlay.querySelector('#dlCount');
+  const total   = seconds * 1000;
+  let elapsed   = 0;
+  const TICK    = 80;
+
+  const timer = setInterval(() => {
+    elapsed += TICK;
+    fill.style.width = Math.min(elapsed / total * 100, 100) + '%';
+    const left = Math.ceil(Math.max(total - elapsed, 0) / 1000);
+    if (parseInt(countEl.textContent) !== left) countEl.textContent = left;
+    if (elapsed >= total) {
+      clearInterval(timer);
+      downloadFn();
+      setTimeout(() => {
+        overlay.classList.add('dl-overlay-out');
+        setTimeout(() => overlay.remove(), 380);
+      }, 700);
+    }
+  }, TICK);
+}
+
 // ---------- Drag-over drop zone ----------
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.drop-zone').forEach(zone => {

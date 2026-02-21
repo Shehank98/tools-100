@@ -993,11 +993,14 @@
   window.downloadResult = function() {
     if (!resultImg) return;
     buildDownloadCanvas().toBlob(blob => {
-      const a    = document.createElement('a');
-      a.href     = URL.createObjectURL(blob);
-      a.download = (originalFile?.name.replace(/\.[^.]+$/, '') || 'image') + '_no_bg.png';
-      a.click();
-      showToast('Image downloaded!');
+      const filename = (originalFile?.name.replace(/\.[^.]+$/, '') || 'image') + '_no_bg.png';
+      showDownloadModal(function() {
+        const a    = document.createElement('a');
+        a.href     = URL.createObjectURL(blob);
+        a.download = filename;
+        a.click();
+        showToast('Image downloaded!');
+      });
     }, 'image/png');
   };
 

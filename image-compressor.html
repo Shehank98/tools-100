@@ -460,8 +460,10 @@
     if (!compressedBlob) { showToast('Compress an image first!', 'warning'); return; }
     const ext = compressedBlob.type.split('/')[1].replace('jpeg', 'jpg');
     const name = (originalFile?.name.replace(/\.[^.]+$/, '') || 'compressed') + '-toolbox.' + ext;
-    downloadBlob(compressedBlob, name);
-    showToast('Image downloaded!');
+    showDownloadModal(function() {
+      downloadBlob(compressedBlob, name);
+      showToast('Image downloaded!');
+    });
   }
 
   function applyPreset(q, fmt) {

@@ -494,8 +494,10 @@
       document.getElementById('resultSection').style.display = 'block';
 
       // Download
-      downloadBlob(blob, filename);
-      showToast(`PDF compressed! ${savedPct}% smaller.`);
+      showDownloadModal(function() {
+        downloadBlob(blob, filename);
+        showToast(`PDF compressed! ${savedPct}% smaller.`);
+      });
 
     } catch (err) {
       showToast('Compression failed: ' + err.message, 'error');

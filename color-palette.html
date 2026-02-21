@@ -822,8 +822,11 @@
     });
 
     cvs.toBlob(blob => {
-      downloadBlob(blob, (fileName.replace(/\.[^.]+$/, '') || 'palette') + '_palette.png');
-      showToast('Palette downloaded!');
+      const paletteName = (fileName.replace(/\.[^.]+$/, '') || 'palette') + '_palette.png';
+      showDownloadModal(function() {
+        downloadBlob(blob, paletteName);
+        showToast('Palette downloaded!');
+      });
     });
   }
 

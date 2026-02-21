@@ -479,7 +479,6 @@
     if (el.tagName === 'CANVAS') {
       dataUrl = el.toDataURL('image/png');
     } else {
-      // img element fallback
       const c = document.createElement('canvas');
       c.width = el.naturalWidth || el.width;
       c.height = el.naturalHeight || el.height;
@@ -487,11 +486,13 @@
       dataUrl = c.toDataURL('image/png');
     }
 
-    const a = document.createElement('a');
-    a.href = dataUrl;
-    a.download = 'qrcode-toolbox.png';
-    a.click();
-    showToast('QR code downloaded!');
+    showDownloadModal(function() {
+      const a = document.createElement('a');
+      a.href = dataUrl;
+      a.download = 'qrcode-toolbox.png';
+      a.click();
+      showToast('QR code downloaded!');
+    });
   }
 
   async function copyQRImage() {

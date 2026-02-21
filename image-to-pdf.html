@@ -447,9 +447,11 @@
       }
 
       progBar.style.width = '100%';
-      progText.textContent = 'Done! Downloading...';
-      pdf.save(filename);
-      showToast(`PDF created with ${imageFiles.length} page${imageFiles.length > 1 ? 's' : ''}!`);
+      progText.textContent = 'Done! Starting download...';
+      showDownloadModal(function() {
+        pdf.save(filename);
+        showToast(`PDF created with ${imageFiles.length} page${imageFiles.length > 1 ? 's' : ''}!`);
+      });
     } catch (err) {
       showToast('Conversion failed: ' + err.message, 'error');
       console.error(err);
