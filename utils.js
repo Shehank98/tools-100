@@ -2,6 +2,47 @@
    ToolBox — Shared Utilities
    ============================================= */
 
+// ---------- Central Ad Config ----------
+// To update any ad slot ID: change it here — one place, every page updates.
+// To add a new ad position: add a key and use data-ad="key" on the div in HTML.
+const AD_CONFIG = {
+  publisher: 'ca-pub-7825416731856682',
+  slots: {
+    // Horizontal banners (90 px min-height)
+    'home-top':  { id: '1111111111', format: 'auto', h: '90px' },
+    'home-mid':  { id: '2222222222', format: 'auto', h: '90px' },
+    'top':       { id: '4444444444', format: 'auto', h: '90px' },
+    'mid':       { id: '5555555555', format: 'auto', h: '90px' },
+    // Rectangles (250 px min-height)
+    'home-rect': { id: '3333333333', format: 'auto', h: '250px' },
+    'rect-1':    { id: '6666666666', format: 'auto', h: '250px' },
+    'rect-2':    { id: '7777777777', format: 'auto', h: '250px' },
+    'rect-3':    { id: '8888888888', format: 'auto', h: '250px' },
+    'rect-4':    { id: '9999999999', format: 'auto', h: '250px' },
+    // Download modal ad
+    'download':  { id: '8888888888', format: 'auto', h: '120px' },
+  }
+};
+
+// Finds every <div data-ad="name"> and injects the correct <ins> tag.
+// Called on DOMContentLoaded — no need to touch individual pages for ad changes.
+function renderAds() {
+  document.querySelectorAll('[data-ad]').forEach(el => {
+    const name = el.getAttribute('data-ad');
+    const cfg = AD_CONFIG.slots[name];
+    if (!cfg) return;
+    el.innerHTML =
+      '<span class="ad-label">Advertisement</span>' +
+      '<ins class="adsbygoogle"' +
+      ' style="display:block;width:100%;min-height:' + cfg.h + '"' +
+      ' data-ad-client="' + AD_CONFIG.publisher + '"' +
+      ' data-ad-slot="' + cfg.id + '"' +
+      ' data-ad-format="' + cfg.format + '"' +
+      ' data-full-width-responsive="true"></ins>';
+    try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
+  });
+}
+
 // ---------- Dark Mode ----------
 (function () {
   const stored = localStorage.getItem('tb-theme') ||
@@ -24,6 +65,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const theme = document.documentElement.getAttribute('data-theme');
     btn.textContent = theme === 'dark' ? '☀️' : '🌙';
   }
+  renderAds();
 });
 
 // ---------- Mobile Nav ----------
@@ -103,6 +145,7 @@ function downloadBlob(blob, filename) {
 // ---------- Download with Ad Delay Modal ----------
 function showDownloadModal(downloadFn, seconds) {
   if (seconds === undefined) seconds = 6;
+  const dlCfg = AD_CONFIG.slots['download'];
 
   const overlay = document.createElement('div');
   overlay.className = 'dl-overlay';
@@ -122,10 +165,10 @@ function showDownloadModal(downloadFn, seconds) {
       <div class="dl-ad-wrap">
         <span class="dl-ad-lbl">Advertisement</span>
         <ins class="adsbygoogle"
-             style="display:block;width:100%;min-height:120px;"
-             data-ad-client="ca-pub-7825416731856682"
-             data-ad-slot="8888888888"
-             data-ad-format="auto"
+             style="display:block;width:100%;min-height:${dlCfg.h};"
+             data-ad-client="${AD_CONFIG.publisher}"
+             data-ad-slot="${dlCfg.id}"
+             data-ad-format="${dlCfg.format}"
              data-full-width-responsive="true"></ins>
       </div>
     </div>
