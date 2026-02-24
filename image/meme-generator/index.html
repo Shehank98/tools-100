@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/favicon.svg" />
+  <title>Meme Generator — Free Online Meme Maker — OneKit</title>
+  <meta name="description" content="Free online meme generator. Upload any image, add top and bottom text, customise font size and colours, then download your meme as PNG instantly. No signup." />
+  <meta name="keywords" content="meme generator, free meme maker, online meme creator, meme with text, add text to image, create meme, meme template, caption image" />
+  <meta name="author" content="OneKit" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://onekitapp.com/image/meme-generator" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://onekitapp.com/image/meme-generator" />
+  <meta property="og:title" content="Meme Generator — Free Online Meme Maker | OneKit" />
+  <meta property="og:description" content="Upload any image, add captions, customise font and colours, then download your meme. Free, fast, no signup needed." />
+  <meta property="og:image" content="https://onekitapp.com/og-image.png" />
+  <meta property="og:site_name" content="OneKit" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Meme Generator — Free Online Meme Maker | OneKit" />
+  <meta name="twitter:description" content="Upload any image, add captions, customise font and colours, then download your meme." />
+  <meta name="twitter:image" content="https://onekitapp.com/og-image.png" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Meme Generator — Free Online Meme Maker | OneKit",
+    "url": "https://onekitapp.com/image/meme-generator",
+    "description": "Upload any image, add top and bottom text captions, customise font size and colours, then download your meme as PNG instantly.",
+    "publisher": { "@type": "Organization", "name": "OneKit", "url": "https://onekitapp.com" },
+    "applicationCategory": "UtilityApplication",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://onekitapp.com/"},
+      {"@type": "ListItem", "position": 2, "name": "Image Tools", "item": "https://onekitapp.com/image/"},
+      {"@type": "ListItem", "position": 3, "name": "Meme Generator", "item": "https://onekitapp.com/image/meme-generator"}
+    ]
+  }
+  </script>
+  <link rel="stylesheet" href="/style.css" />
+  <script src="/utils.js" defer></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7825416731856682" crossorigin="anonymous"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-EF06GYEGGC"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-EF06GYEGGC');
+  </script>
+  <style>
+    .meme-workspace {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+    .meme-controls { display: flex; flex-direction: column; gap: 16px; }
+    .meme-preview-wrap {
+      background: #0d1117;
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 340px;
+      overflow: hidden;
+      position: relative;
+    }
+    #memeCanvas { max-width: 100%; height: auto; display: none; border-radius: 4px; }
+    .meme-empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      color: #64748b;
+      padding: 60px 24px;
+      text-align: center;
+    }
+    .meme-empty-icon { font-size: 3.2rem; line-height: 1; }
+    .meme-empty p { font-size: .9rem; max-width: 220px; line-height: 1.6; }
+    .template-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 7px;
+    }
+    .tpl-btn {
+      aspect-ratio: 16/10;
+      border-radius: var(--radius-xs);
+      border: 2px solid var(--border);
+      cursor: pointer;
+      overflow: hidden;
+      transition: border-color var(--dur) var(--ease), transform var(--dur) var(--ease);
+      position: relative;
+      font-size: .6rem;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 3px;
+      text-shadow: 0 1px 3px rgba(0,0,0,.6);
+    }
+    .tpl-btn:hover { border-color: var(--clr-primary); transform: scale(1.04); }
+    .tpl-btn.active { border-color: var(--clr-primary); box-shadow: 0 0 0 3px var(--clr-primary-glow); }
+    .color-row { display: flex; gap: 14px; flex-wrap: wrap; }
+    .color-item { display: flex; align-items: center; gap: 6px; font-size: .82rem; font-weight: 500; color: var(--text-2); }
+    .preview-note { font-size: .74rem; color: var(--text-3); text-align: center; margin-top: 7px; }
+    @media (max-width: 860px) {
+      .meme-workspace { grid-template-columns: 1fr; }
+      .meme-preview-wrap { min-height: 220px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a href="/" class="logo">
+      <img src="/logo.svg" alt="OneKit" class="logo-img" width="120" height="29" />
+    </a>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/text/word-counter">Word Counter</a>
+      <a href="/text/font-changer">Font Changer</a>
+      <a href="/dev/password-generator">Password</a>
+      <a href="/dev/qr-generator">QR Code</a>
+      <a href="/image/image-compressor">Image Tools</a>
+      <a href="/convert/unit-converter">Converter</a>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-btn" id="darkToggle" onclick="toggleDarkMode()" title="Toggle dark mode">🌙</button>
+      <button class="icon-btn nav-toggle" onclick="openMobileNav()">☰</button>
+    </div>
+  </div>
+</header>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobileNav">
+  <div class="mobile-nav-backdrop" onclick="closeMobileNav()"></div>
+  <div class="mobile-nav-drawer">
+    <button class="mobile-nav-close" onclick="closeMobileNav()">✕</button>
+    <a href="/">🏠 Home</a>
+    <a href="/text/word-counter">📄 Word Counter</a>
+    <a href="/text/font-changer">✍️ Font Changer</a>
+    <a href="/convert/unit-converter">📐 Unit Converter</a>
+    <a href="/dev/password-generator">🔒 Password Generator</a>
+    <a href="/dev/qr-generator">📱 QR Code Generator</a>
+    <a href="/pdf/image-to-pdf">🖼️ Image to PDF</a>
+    <a href="/image/image-compressor">🗜️ Image Compressor</a>
+    <a href="/pdf/pdf-compressor">📋 PDF Compressor</a>
+    <a href="/finance/finance-tools">💰 Finance Tools</a>
+    <a href="/image/meme-generator" class="active">😂 Meme Generator</a>
+    <a href="/image/color-palette">🎨 Color Palette</a>
+  </div>
+</div>
+
+<main>
+  <!-- Top Ad -->
+  <div class="ad-unit ad-top" data-ad="top"></div>
+
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="/">Home</a>
+    <span>›</span>
+    <span>Meme Generator</span>
+  </nav>
+
+  <div class="tool-layout">
+    <!-- Main Column -->
+    <div>
+      <div class="tool-box">
+        <div class="tool-box-header">
+          <h1>Meme Generator</h1>
+          <p>Upload any image, add top and bottom captions, tweak the style, and download your meme as PNG — free, instant, no account needed.</p>
+        </div>
+
+        <div class="meme-workspace">
+
+          <!-- ── Controls ── -->
+          <div class="meme-controls">
+
+            <!-- Upload -->
+            <div class="form-group" style="margin-bottom:0;">
+              <label>Upload Image</label>
+              <div class="drop-zone" id="dropZone" style="padding:22px 16px;" onclick="document.getElementById('imgInput').click()">
+                <input type="file" id="imgInput" accept="image/*" style="display:none;" onchange="loadFile(this.files[0])">
+                <div class="drop-icon" style="font-size:2rem;margin-bottom:6px;">🖼️</div>
+                <div class="drop-text" style="font-size:.85rem;"><strong>Click or drag & drop</strong></div>
+                <div class="drop-hint">PNG, JPG, GIF, WebP</div>
+              </div>
+            </div>
+
+            <!-- Quick backgrounds -->
+            <div class="form-group" style="margin-bottom:0;">
+              <label>Quick Backgrounds</label>
+              <div class="template-grid">
+                <button class="tpl-btn" style="background:linear-gradient(135deg,#1e3a8a,#3b82f6);" onclick="loadTemplate('blue',this)">Blue</button>
+                <button class="tpl-btn" style="background:linear-gradient(135deg,#111,#374151);" onclick="loadTemplate('dark',this)">Dark</button>
+                <button class="tpl-btn" style="background:linear-gradient(135deg,#f9fafb,#e5e7eb);color:#374151;text-shadow:none;" onclick="loadTemplate('white',this)">White</button>
+                <button class="tpl-btn" style="background:linear-gradient(135deg,#4c1d95,#7c3aed);" onclick="loadTemplate('purple',this)">Purple</button>
+                <button class="tpl-btn" style="background:linear-gradient(135deg,#064e3b,#059669);" onclick="loadTemplate('green',this)">Green</button>
+                <button class="tpl-btn" style="background:linear-gradient(135deg,#7f1d1d,#dc2626);" onclick="loadTemplate('red',this)">Red</button>
+              </div>
+            </div>
+
+            <!-- Top text -->
+            <div class="form-group" style="margin-bottom:0;">
+              <label for="topText">Top Text</label>
+              <input type="text" id="topText" placeholder="TOP TEXT" maxlength="80" oninput="renderMeme()" />
+            </div>
+
+            <!-- Bottom text -->
+            <div class="form-group" style="margin-bottom:0;">
+              <label for="bottomText">Bottom Text</label>
+              <input type="text" id="bottomText" placeholder="BOTTOM TEXT" maxlength="80" oninput="renderMeme()" />
+            </div>
+
+            <!-- Font size -->
+            <div class="form-group" style="margin-bottom:0;">
+              <label>Font Size — <strong id="fontSizeVal">52</strong>px</label>
+              <input type="range" id="fontSize" min="18" max="120" value="52" oninput="document.getElementById('fontSizeVal').textContent=this.value; renderMeme();">
+            </div>
+
+            <!-- Font family -->
+            <div class="form-group" style="margin-bottom:0;">
+              <label for="fontFamily">Font</label>
+              <select id="fontFamily" onchange="renderMeme()">
+                <option value="Impact">Impact (Classic Meme)</option>
+                <option value="Arial Black">Arial Black</option>
+                <option value="Comic Sans MS">Comic Sans MS</option>
+                <option value="Georgia">Georgia</option>
+                <option value="Verdana">Verdana</option>
+              </select>
+            </div>
+
+            <!-- Colors -->
+            <div class="form-group" style="margin-bottom:0;">
+              <label>Text Style</label>
+              <div class="color-row">
+                <label class="color-item">
+                  Text <input type="color" id="textColor" value="#ffffff" onchange="renderMeme()">
+                </label>
+                <label class="color-item">
+                  Outline <input type="color" id="strokeColor" value="#000000" onchange="renderMeme()">
+                </label>
+                <label class="color-item" style="gap:7px;">
+                  <input type="checkbox" id="showOutline" checked onchange="renderMeme()"> Outline on
+                </label>
+              </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="btn-group" style="margin-top:4px;">
+              <button class="btn btn-success btn-lg btn-full" id="dlBtn" onclick="downloadMeme()" disabled>Download Meme</button>
+              <button class="btn btn-ghost btn-full" onclick="clearAll()">Clear All</button>
+            </div>
+          </div>
+
+          <!-- ── Canvas Preview ── -->
+          <div>
+            <div class="meme-preview-wrap" id="previewWrap">
+              <div class="meme-empty" id="memeEmpty">
+                <div class="meme-empty-icon">🎭</div>
+                <p>Upload an image or pick a background to start making memes</p>
+              </div>
+              <canvas id="memeCanvas"></canvas>
+            </div>
+            <p class="preview-note">Preview updates live as you type</p>
+          </div>
+
+        </div><!-- .meme-workspace -->
+      </div><!-- .tool-box -->
+
+      <!-- Mid Ad -->
+      <div class="ad-unit ad-mid" data-ad="mid"></div>
+
+      <!-- Tips -->
+      <div class="tool-box">
+        <h2>Tips for the best memes</h2>
+        <ul class="tips-list">
+          <li><strong>Impact font</strong> is the classic choice — bold, all-caps, with a black outline on white backgrounds.</li>
+          <li>Keep captions short: 3–6 words per line land harder than full sentences.</li>
+          <li>Wide landscape images (16:9) work best — plenty of space for top and bottom text.</li>
+          <li>For dark images, switch text colour to white with a dark outline. For light images, try dark text with no outline.</li>
+          <li>After downloading, share directly to WhatsApp, X (Twitter), Instagram Stories, or Reddit.</li>
+          <li>Make multiple versions — try different font sizes or colour combos and download each one.</li>
+        </ul>
+      </div>
+
+    </div><!-- Main column -->
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="ad-unit ad-rect" data-ad="rect-1"></div>
+
+      <div class="tool-box">
+        <h3>What can you make?</h3>
+        <ul class="tips-list">
+          <li>Classic top/bottom caption memes</li>
+          <li>Reaction images & image macros</li>
+          <li>Motivational & demotivational posters</li>
+          <li>Custom birthday or event cards</li>
+          <li>Funny social media posts</li>
+          <li>Office announcement graphics</li>
+        </ul>
+      </div>
+
+      <div class="tool-box">
+        <h3>Related Tools</h3>
+        <div class="related-tools">
+          <a href="/image/image-compressor" class="related-item">
+            <div class="related-icon" style="background:#fef9c3;">🗜️</div>
+            <div class="related-item-text">
+              <strong>Image Compressor</strong>
+              <span>Shrink image file size</span>
+            </div>
+          </a>
+          <a href="/image/color-palette" class="related-item">
+            <div class="related-icon" style="background:#ede9fe;">🎨</div>
+            <div class="related-item-text">
+              <strong>Color Palette</strong>
+              <span>Extract image colours</span>
+            </div>
+          </a>
+          <a href="/dev/qr-generator" class="related-item">
+            <div class="related-icon" style="background:#fff7ed;">📱</div>
+            <div class="related-item-text">
+              <strong>QR Code Generator</strong>
+              <span>Create scannable codes</span>
+            </div>
+          </a>
+          <a href="/pdf/image-to-pdf" class="related-item">
+            <div class="related-icon" style="background:#f0fdf4;">🖼️</div>
+            <div class="related-item-text">
+              <strong>Image to PDF</strong>
+              <span>Convert images to PDF</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </aside>
+
+  </div><!-- .tool-layout -->
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="/" class="logo" style="color:#fff;">
+          <img src="/logo-white.svg" alt="OneKit" class="logo-img" width="120" height="29" />
+        </a>
+        <p style="margin-top:12px;">Free, fast, privacy-friendly tools for everyday tasks.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Text Tools</h4>
+        <ul>
+          <li><a href="/text/word-counter">Word Counter</a></li>
+          <li><a href="/text/font-changer">Font Changer</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Converters</h4>
+        <ul>
+          <li><a href="/convert/unit-converter">Unit Converter</a></li>
+          <li><a href="/dev/qr-generator">QR Code Generator</a></li>
+          <li><a href="/pdf/image-to-pdf">Image to PDF</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Image Tools</h4>
+        <ul>
+          <li><a href="/image/image-compressor">Image Compressor</a></li>
+          <li><a href="/image/meme-generator">Meme Generator</a></li>
+          <li><a href="/image/color-palette">Color Palette</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 OneKit. All rights reserved.</span>
+      <div class="footer-links">
+        <a href="/privacy-policy">Privacy Policy</a>
+        <a href="/terms">Terms</a>
+        <a href="/contact">Contact</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  let loadedImg = null;
+  let activeBg  = null;
+
+  const BG_STOPS = {
+    blue:   ['#1e3a8a','#3b82f6'],
+    dark:   ['#111111','#374151'],
+    white:  ['#f9fafb','#e5e7eb'],
+    purple: ['#4c1d95','#7c3aed'],
+    green:  ['#064e3b','#059669'],
+    red:    ['#7f1d1d','#dc2626'],
+  };
+
+  /* ── Drag & Drop ── */
+  const dropZone = document.getElementById('dropZone');
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('drag-over');
+    const f = e.dataTransfer.files[0];
+    if (f && f.type.startsWith('image/')) loadFile(f);
+  });
+
+  /* ── Load uploaded file ── */
+  function loadFile(file) {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const image = new Image();
+      image.onload = () => {
+        loadedImg = image;
+        activeBg  = null;
+        document.querySelectorAll('.tpl-btn').forEach(b => b.classList.remove('active'));
+        renderMeme();
+      };
+      image.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  /* ── Load solid-colour template ── */
+  function loadTemplate(name, btn) {
+    loadedImg = null;
+    activeBg  = name;
+    document.querySelectorAll('.tpl-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderMeme();
+  }
+
+  /* ── Main render function ── */
+  function renderMeme() {
+    if (!loadedImg && !activeBg) return;
+
+    const canvas      = document.getElementById('memeCanvas');
+    const topText     = document.getElementById('topText').value.trim().toUpperCase();
+    const bottomText  = document.getElementById('bottomText').value.trim().toUpperCase();
+    const fontSize    = parseInt(document.getElementById('fontSize').value);
+    const textColor   = document.getElementById('textColor').value;
+    const strokeColor = document.getElementById('strokeColor').value;
+    const showOutline = document.getElementById('showOutline').checked;
+    const fontFamily  = document.getElementById('fontFamily').value;
+
+    /* Canvas dimensions */
+    let W = 900, H = 562;
+    if (loadedImg) {
+      W = loadedImg.naturalWidth;
+      H = loadedImg.naturalHeight;
+      const MAX = 1200;
+      if (W > MAX) { H = Math.round(H * MAX / W); W = MAX; }
+    }
+    canvas.width  = W;
+    canvas.height = H;
+
+    const ctx = canvas.getContext('2d');
+
+    /* Draw background */
+    if (loadedImg) {
+      ctx.drawImage(loadedImg, 0, 0, W, H);
+    } else {
+      const stops = BG_STOPS[activeBg];
+      const grad  = ctx.createLinearGradient(0, 0, W, H);
+      grad.addColorStop(0, stops[0]);
+      grad.addColorStop(1, stops[1]);
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, W, H);
+    }
+
+    /* Text settings */
+    ctx.font      = `900 ${fontSize}px "${fontFamily}", Impact, "Arial Black", sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.fillStyle = textColor;
+
+    const strokeW = Math.max(2, fontSize / 12);
+    const padY    = Math.round(fontSize * 0.28);
+    const lineH   = Math.round(fontSize * 1.18);
+    const maxW    = W * 0.92;
+
+    /* Word-wrap helper */
+    function wrapLines(text) {
+      if (!text) return [];
+      const words = text.split(' ');
+      const lines = [];
+      let cur = '';
+      for (const w of words) {
+        const test = cur ? cur + ' ' + w : w;
+        if (ctx.measureText(test).width > maxW && cur) { lines.push(cur); cur = w; }
+        else cur = test;
+      }
+      if (cur) lines.push(cur);
+      return lines;
+    }
+
+    /* Draw line helper */
+    function drawLine(line, x, y) {
+      if (showOutline) {
+        ctx.save();
+        ctx.strokeStyle = strokeColor;
+        ctx.lineWidth   = strokeW * 2;
+        ctx.lineJoin    = 'round';
+        ctx.strokeText(line, x, y);
+        ctx.restore();
+      }
+      ctx.fillText(line, x, y);
+    }
+
+    ctx.textBaseline = 'top';
+
+    /* Top text */
+    const topLines = wrapLines(topText);
+    topLines.forEach((line, i) => drawLine(line, W / 2, padY + i * lineH));
+
+    /* Bottom text */
+    const botLines = wrapLines(bottomText);
+    if (botLines.length) {
+      const totalH = botLines.length * lineH;
+      const startY = H - totalH - padY;
+      botLines.forEach((line, i) => drawLine(line, W / 2, startY + i * lineH));
+    }
+
+    /* Show canvas */
+    document.getElementById('memeEmpty').style.display  = 'none';
+    canvas.style.display = 'block';
+    document.getElementById('dlBtn').disabled = false;
+  }
+
+  /* ── Download ── */
+  function downloadMeme() {
+    const canvas = document.getElementById('memeCanvas');
+    if (canvas.style.display === 'none' || !canvas.width) {
+      showToast('Create a meme first!', 'warning');
+      return;
+    }
+    showDownloadModal(function() {
+      canvas.toBlob(blob => {
+        downloadBlob(blob, 'meme-onekit.png');
+        showToast('Meme downloaded!');
+      }, 'image/png');
+    });
+  }
+
+  /* ── Clear ── */
+  function clearAll() {
+    loadedImg = null;
+    activeBg  = null;
+    document.getElementById('topText').value    = '';
+    document.getElementById('bottomText').value = '';
+    document.getElementById('imgInput').value   = '';
+    document.querySelectorAll('.tpl-btn').forEach(b => b.classList.remove('active'));
+    const canvas = document.getElementById('memeCanvas');
+    canvas.style.display = 'none';
+    canvas.width = 0;
+    document.getElementById('memeEmpty').style.display = 'flex';
+    document.getElementById('dlBtn').disabled = true;
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/favicon.svg" />
+<title>Image to PDF Converter — JPG, PNG to PDF Free Online | OneKit</title>
+  <meta name="description" content="Convert JPG, PNG and WebP images to PDF for free. Combine multiple images into one PDF. Runs entirely in your browser — no upload to servers needed." />
+    <!-- SEO -->
+  <meta name="keywords" content="image to PDF, JPG to PDF, PNG to PDF, WebP to PDF, convert image to PDF online, free image to PDF converter, combine images into PDF, multiple images to PDF" />
+  <meta name="author" content="OneKit" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://onekitapp.com/pdf/image-to-pdf" />
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://onekitapp.com/pdf/image-to-pdf" />
+  <meta property="og:title" content="Image to PDF Converter — Free Online | OneKit" />
+  <meta property="og:description" content="Convert JPG, PNG and WebP images to PDF online for free. Combine multiple images into one PDF. No upload to servers, 100% private." />
+  <meta property="og:image" content="https://onekitapp.com/og-image.png" />
+  <meta property="og:site_name" content="OneKit" />
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Image to PDF Converter — Free Online | OneKit" />
+  <meta name="twitter:description" content="Convert JPG, PNG and WebP images to PDF online for free. Combine multiple images into one PDF. No upload to servers, 100% private." />
+  <meta name="twitter:image" content="https://onekitapp.com/og-image.png" />
+  <!-- Schema.org -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Image to PDF Converter — Free Online | OneKit",
+    "url": "https://onekitapp.com/pdf/image-to-pdf",
+    "description": "Convert JPG, PNG and WebP images to PDF online for free. Combine multiple images into one PDF. No upload to servers, 100% private.",
+    "publisher": {
+      "@type": "Organization",
+      "name": "OneKit",
+      "url": "https://onekitapp.com"
+    },
+    "applicationCategory": "UtilityApplication",
+    "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://onekitapp.com/"},
+      {"@type": "ListItem", "position": 2, "name": "PDF Tools", "item": "https://onekitapp.com/pdf/"},
+      {"@type": "ListItem", "position": 3, "name": "Image to PDF Converter", "item": "https://onekitapp.com/pdf/image-to-pdf"}
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How do I convert JPG to PDF for free?",
+        "acceptedAnswer": {"@type": "Answer", "text": "Upload your JPG, PNG or WebP images to OneKit's free Image to PDF converter. You can add multiple images, reorder them by dragging, then click Convert to download a combined PDF — all for free with no signup."}
+      },
+      {
+        "@type": "Question",
+        "name": "Can I combine multiple images into one PDF?",
+        "acceptedAnswer": {"@type": "Answer", "text": "Yes. OneKit's Image to PDF tool lets you upload multiple images at once and merges them into a single PDF file. You can drag to reorder the pages before converting."}
+      },
+      {
+        "@type": "Question",
+        "name": "Are my images uploaded to a server?",
+        "acceptedAnswer": {"@type": "Answer", "text": "No. The conversion runs entirely in your browser using JavaScript. Your images are never sent to any server, keeping your files 100% private."}
+      }
+    ]
+  }
+  </script>
+<link rel="stylesheet" href="/style.css" />
+  <script src="/utils.js" defer></script>
+  <!-- jsPDF library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7825416731856682" crossorigin="anonymous"></script>
+  <!-- Google Analytics GA4 — replace G-EF06GYEGGC with your Measurement ID -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-EF06GYEGGC"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-EF06GYEGGC');
+  </script>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a href="/" class="logo">
+      <img src="/logo.svg" alt="OneKit" class="logo-img" width="120" height="29" />
+    </a>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/text/word-counter">Word Counter</a>
+      <a href="/text/font-changer">Font Changer</a>
+      <a href="/dev/password-generator">Password</a>
+      <a href="/dev/qr-generator">QR Code</a>
+      <a href="/image/image-compressor" class="active">Image Tools</a>
+      <a href="/convert/unit-converter">Converter</a>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-btn" id="darkToggle" onclick="toggleDarkMode()" title="Toggle dark mode">🌙</button>
+      <button class="icon-btn nav-toggle" onclick="openMobileNav()">☰</button>
+    </div>
+  </div>
+</header>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobileNav">
+  <div class="mobile-nav-backdrop" onclick="closeMobileNav()"></div>
+  <div class="mobile-nav-drawer">
+    <button class="mobile-nav-close" onclick="closeMobileNav()">✕</button>
+    <a href="/">🏠 Home</a>
+    <a href="/text/word-counter">📄 Word Counter</a>
+    <a href="/text/font-changer">✍️ Font Changer</a>
+    <a href="/convert/unit-converter">📐 Unit Converter</a>
+    <a href="/dev/password-generator">🔒 Password Generator</a>
+    <a href="/dev/qr-generator">📱 QR Code Generator</a>
+    <a href="/pdf/image-to-pdf" class="active">🖼️ Image to PDF</a>
+    <a href="/image/image-compressor">🗜️ Image Compressor</a>
+    <a href="/pdf/pdf-compressor">📋 PDF Compressor</a>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main>
+
+  <!-- TOP AD -->
+  <div class="ad-unit ad-top" data-ad="top"></div>
+
+  <!-- BREADCRUMB -->
+  <div class="breadcrumb">
+    <a href="/">🏠 Home</a>
+    <span>›</span>
+    <a href="/pdf/">PDF Tools</a>
+    <span>›</span>
+    <span>Image to PDF</span>
+  </div>
+
+  <!-- TOOL LAYOUT -->
+  <div class="tool-layout">
+
+    <!-- LEFT: TOOL -->
+    <div>
+      <div class="tool-box">
+        <div class="tool-box-header">
+          <h1>🖼️ Image to PDF</h1>
+          <p>Upload multiple images and combine them into a single PDF. Free, instant, no upload to servers.</p>
+        </div>
+
+        <!-- Drop zone -->
+        <div class="drop-zone" id="dropZone">
+          <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp,image/gif"
+                 multiple onchange="handleFiles(this.files)" />
+          <div class="drop-icon">🖼️</div>
+          <div class="drop-text"><strong>Click to upload</strong> or drag &amp; drop images here</div>
+          <div class="drop-hint">Supports JPG, PNG, WebP, GIF • Multiple files allowed</div>
+        </div>
+
+        <!-- Image preview grid -->
+        <div id="previewSection" style="display:none;margin-top:20px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+            <label id="imageCount" style="margin:0;">0 images selected</label>
+            <button class="btn btn-danger btn-sm" onclick="clearImages()">🗑️ Clear All</button>
+          </div>
+          <div class="image-grid" id="imageGrid"></div>
+        </div>
+
+        <!-- Settings -->
+        <div id="settingsSection" style="display:none;margin-top:20px;padding-top:20px;border-top:1px solid var(--border);">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+            <div class="form-group" style="margin:0;">
+              <label for="pageSize">Page Size</label>
+              <select id="pageSize">
+                <option value="a4">A4 (210×297mm)</option>
+                <option value="letter">Letter (8.5×11 in)</option>
+                <option value="a3">A3 (297×420mm)</option>
+                <option value="a5">A5 (148×210mm)</option>
+                <option value="legal">Legal (8.5×14 in)</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin:0;">
+              <label for="orientation">Orientation</label>
+              <select id="orientation">
+                <option value="portrait">Portrait</option>
+                <option value="landscape">Landscape</option>
+                <option value="auto">Auto (per image)</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="imgFit">Image Fit</label>
+            <select id="imgFit">
+              <option value="fit">Fit to page (keep aspect ratio)</option>
+              <option value="fill">Fill page (may crop)</option>
+              <option value="original">Original size</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="pdfFilename">Output Filename</label>
+            <input type="text" id="pdfFilename" value="images-toolbox" placeholder="filename (without .pdf)" />
+          </div>
+
+          <!-- Convert button -->
+          <button class="btn btn-primary btn-lg btn-full" onclick="convertToPDF()" id="convertBtn">
+            📄 Convert to PDF &amp; Download
+          </button>
+
+          <!-- Progress -->
+          <div id="progressSection" style="display:none;margin-top:14px;">
+            <div style="font-size:.85rem;color:var(--text-2);margin-bottom:6px;" id="progressText">Processing...</div>
+            <div class="progress-wrap">
+              <div class="progress-bar" id="progressBar" style="width:0%;"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- MID AD -->
+      <div class="ad-unit ad-mid" data-ad="mid"></div>
+
+      <!-- Tips -->
+      <div class="tool-box">
+        <h2>💡 Tips & Notes</h2>
+        <ul class="tips-list">
+          <li>All processing happens <strong>in your browser</strong> — images are never uploaded.</li>
+          <li>Supported formats: <strong>JPG, PNG, WebP, GIF</strong>.</li>
+          <li>Images are added to the PDF in the <strong>order you select</strong> them.</li>
+          <li>For best print quality, use <strong>high-resolution</strong> source images (300 DPI+).</li>
+          <li>Use <strong>A4 / Letter</strong> for standard documents, <strong>A5</strong> for booklets.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- RIGHT: SIDEBAR -->
+    <aside class="sidebar">
+
+      <!-- Sidebar Ad -->
+      <div class="ad-unit ad-rect" data-ad="rect-1"></div>
+
+      <!-- Related Tools -->
+      <div class="tool-box">
+        <h3>Related Tools</h3>
+        <div class="related-tools">
+          <a href="/image/image-compressor" class="related-item">
+            <div class="related-icon" style="background:#fef9c3;">🗜️</div>
+            <div class="related-item-text">
+              <strong>Image Compressor</strong>
+              <span>Reduce image size</span>
+            </div>
+          </a>
+          <a href="/pdf/pdf-compressor" class="related-item">
+            <div class="related-icon" style="background:#f0fdf4;">📋</div>
+            <div class="related-item-text">
+              <strong>PDF Compressor</strong>
+              <span>Reduce PDF size</span>
+            </div>
+          </a>
+          <a href="/dev/qr-generator" class="related-item">
+            <div class="related-icon" style="background:#fff7ed;">📱</div>
+            <div class="related-item-text">
+              <strong>QR Code Generator</strong>
+              <span>Create QR codes</span>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- Sidebar Ad 2 -->
+      <div class="ad-unit ad-rect" data-ad="rect-2"></div>
+
+    </aside>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="/" class="logo" style="color:#fff;">
+          <img src="/logo-white.svg" alt="OneKit" class="logo-img logo-img-white" width="120" height="29" />
+        </a>
+        <p style="margin-top:12px;">Free, fast, privacy-friendly tools for everyday tasks.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Text Tools</h4>
+        <ul>
+          <li><a href="/text/word-counter">Word Counter</a></li>
+          <li><a href="/text/font-changer">Font Changer</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Converters</h4>
+        <ul>
+          <li><a href="/convert/unit-converter">Unit Converter</a></li>
+          <li><a href="/dev/qr-generator">QR Code Generator</a></li>
+          <li><a href="/pdf/image-to-pdf">Image to PDF</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Other Tools</h4>
+        <ul>
+          <li><a href="/dev/password-generator">Password Generator</a></li>
+          <li><a href="/image/image-compressor">Image Compressor</a></li>
+          <li><a href="/pdf/pdf-compressor">PDF Compressor</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 OneKit. All rights reserved.</span>
+      <div class="footer-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms</a>
+        <a href="#">Contact</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  let imageFiles = [];
+
+  // Drag and drop
+  const dropZone = document.getElementById('dropZone');
+  dropZone.addEventListener('dragover',  e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('drag-over');
+    const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+    addFiles(files);
+  });
+
+  function handleFiles(fileList) {
+    addFiles(Array.from(fileList));
+  }
+
+  function addFiles(files) {
+    files.forEach(f => {
+      if (!imageFiles.find(x => x.name === f.name && x.size === f.size)) {
+        imageFiles.push(f);
+      }
+    });
+    renderPreviews();
+  }
+
+  function renderPreviews() {
+    const grid = document.getElementById('imageGrid');
+    const preview = document.getElementById('previewSection');
+    const settings = document.getElementById('settingsSection');
+    const count = document.getElementById('imageCount');
+
+    if (imageFiles.length === 0) {
+      preview.style.display = 'none';
+      settings.style.display = 'none';
+      return;
+    }
+
+    preview.style.display = 'block';
+    settings.style.display = 'block';
+    count.textContent = `${imageFiles.length} image${imageFiles.length > 1 ? 's' : ''} selected`;
+
+    grid.innerHTML = '';
+    imageFiles.forEach((file, idx) => {
+      const url = URL.createObjectURL(file);
+      const div = document.createElement('div');
+      div.className = 'image-thumb';
+      div.innerHTML = `
+        <img src="${url}" alt="${file.name}" onload="URL.revokeObjectURL(this.src)" />
+        <div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.5);padding:3px 6px;font-size:.65rem;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${file.name}</div>
+        <button class="image-thumb-remove" onclick="removeImage(${idx})" title="Remove">✕</button>`;
+      grid.appendChild(div);
+    });
+  }
+
+  function removeImage(idx) {
+    imageFiles.splice(idx, 1);
+    renderPreviews();
+  }
+
+  function clearImages() {
+    imageFiles = [];
+    document.getElementById('fileInput').value = '';
+    renderPreviews();
+  }
+
+  async function convertToPDF() {
+    if (imageFiles.length === 0) { showToast('Please select at least one image.', 'warning'); return; }
+
+    const btn      = document.getElementById('convertBtn');
+    const progSec  = document.getElementById('progressSection');
+    const progBar  = document.getElementById('progressBar');
+    const progText = document.getElementById('progressText');
+
+    btn.disabled = true;
+    btn.textContent = '⏳ Converting...';
+    progSec.style.display = 'block';
+
+    const { jsPDF } = window.jspdf;
+    const pageSize   = document.getElementById('pageSize').value;
+    const orientation = document.getElementById('orientation').value;
+    const imgFit     = document.getElementById('imgFit').value;
+    const filename   = (document.getElementById('pdfFilename').value.trim() || 'images-toolbox') + '.pdf';
+
+    try {
+      let pdf = null;
+
+      for (let i = 0; i < imageFiles.length; i++) {
+        progText.textContent = `Processing image ${i + 1} of ${imageFiles.length}...`;
+        progBar.style.width  = ((i / imageFiles.length) * 90) + '%';
+
+        const dataUrl = await fileToDataURL(imageFiles[i]);
+        const img     = await loadImage(dataUrl);
+
+        // Determine orientation per-image if set to auto
+        let orient = orientation;
+        if (orientation === 'auto') {
+          orient = img.width >= img.height ? 'landscape' : 'portrait';
+        }
+
+        if (!pdf) {
+          pdf = new jsPDF({ orientation: orient === 'landscape' ? 'l' : 'p', unit: 'mm', format: pageSize });
+        } else {
+          pdf.addPage(pageSize, orient === 'landscape' ? 'l' : 'p');
+        }
+
+        const pdfW = pdf.internal.pageSize.getWidth();
+        const pdfH = pdf.internal.pageSize.getHeight();
+
+        let x = 0, y = 0, w = pdfW, h = pdfH;
+
+        if (imgFit === 'fit') {
+          const ratio = Math.min(pdfW / img.width, pdfH / img.height);
+          w = img.width * ratio;
+          h = img.height * ratio;
+          x = (pdfW - w) / 2;
+          y = (pdfH - h) / 2;
+        } else if (imgFit === 'original') {
+          const mmPerPx = 25.4 / 96; // 96dpi assumed
+          w = Math.min(img.width * mmPerPx, pdfW);
+          h = Math.min(img.height * mmPerPx, pdfH);
+        }
+
+        const fmt = imageFiles[i].type === 'image/png' ? 'PNG' : 'JPEG';
+        pdf.addImage(dataUrl, fmt, x, y, w, h);
+
+        await sleep(10);
+      }
+
+      progBar.style.width = '100%';
+      progText.textContent = 'Done! Starting download...';
+      showDownloadModal(function() {
+        pdf.save(filename);
+        showToast(`PDF created with ${imageFiles.length} page${imageFiles.length > 1 ? 's' : ''}!`);
+      });
+    } catch (err) {
+      showToast('Conversion failed: ' + err.message, 'error');
+      console.error(err);
+    } finally {
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.textContent = '📄 Convert to PDF & Download';
+        progSec.style.display = 'none';
+        progBar.style.width = '0%';
+      }, 1500);
+    }
+  }
+
+  function fileToDataURL(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload  = e => resolve(e.target.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function loadImage(src) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload  = () => resolve(img);
+      img.onerror = reject;
+      img.src = src;
+    });
+  }
+
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+</script>
+
+</body>
+</html>

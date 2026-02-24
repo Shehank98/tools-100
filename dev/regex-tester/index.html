@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/favicon.svg" />
+  <title>Regex Tester — Test & Debug Regular Expressions Online Free | OneKit</title>
+  <meta name="description" content="Free online regex tester. Test and debug regular expressions with live match highlighting, detailed match results, and a built-in cheat sheet. No signup required." />
+  <meta name="keywords" content="regex tester, regular expression tester, test regex online, regex debugger, regex checker, regex match tester, online regex tool, regex cheat sheet, javascript regex tester" />
+  <meta name="author" content="OneKit" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://onekitapp.com/dev/regex-tester" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://onekitapp.com/dev/regex-tester" />
+  <meta property="og:title" content="Regex Tester — Test Regular Expressions Online | OneKit" />
+  <meta property="og:description" content="Test and debug regular expressions online for free. Live match highlighting, match details, and a built-in cheat sheet." />
+  <meta property="og:image" content="https://onekitapp.com/og-image.png" />
+  <meta property="og:site_name" content="OneKit" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Regex Tester — Test Regular Expressions Online | OneKit" />
+  <meta name="twitter:description" content="Test and debug regular expressions online for free. Live match highlighting, match details, and a built-in cheat sheet." />
+  <meta name="twitter:image" content="https://onekitapp.com/og-image.png" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Regex Tester — Test & Debug Regular Expressions Online Free | OneKit",
+    "url": "https://onekitapp.com/dev/regex-tester",
+    "description": "Test and debug regular expressions online for free. Live match highlighting, detailed match results, and a built-in cheat sheet.",
+    "publisher": { "@type": "Organization", "name": "OneKit", "url": "https://onekitapp.com" },
+    "applicationCategory": "DeveloperApplication",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://onekitapp.com/"},
+      {"@type": "ListItem", "position": 2, "name": "Dev Tools", "item": "https://onekitapp.com/dev/"},
+      {"@type": "ListItem", "position": 3, "name": "Regex Tester", "item": "https://onekitapp.com/dev/regex-tester"}
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How do I test a regular expression online?",
+        "acceptedAnswer": {"@type": "Answer", "text": "Paste your regex pattern into OneKit's Regex Tester and enter your test string below. Matches are highlighted in real time as you type. You can also set regex flags (global, case-insensitive, multiline) using the buttons provided."}
+      },
+      {
+        "@type": "Question",
+        "name": "What regex flags are supported?",
+        "acceptedAnswer": {"@type": "Answer", "text": "OneKit's Regex Tester supports the standard JavaScript regex flags: g (global), i (case-insensitive), m (multiline), s (dotAll), and u (unicode)."}
+      }
+    ]
+  }
+  </script>
+  <link rel="stylesheet" href="/style.css" />
+  <script src="/utils.js" defer></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7825416731856682" crossorigin="anonymous"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-EF06GYEGGC"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-EF06GYEGGC');
+  </script>
+  <style>
+    .flag-group { display:flex; gap:8px; flex-wrap:wrap; margin-top:6px; }
+    .flag-chip {
+      display:flex; align-items:center; gap:6px;
+      padding:5px 14px; border:1.5px solid var(--border); border-radius:50px;
+      cursor:pointer; font-size:.82rem; background:var(--surface-1);
+      transition:background .15s,border-color .15s,color .15s; user-select:none;
+    }
+    .flag-chip input { display:none; }
+    .flag-chip.active { background:var(--primary); color:#fff; border-color:var(--primary); }
+
+    .pattern-wrap {
+      display:flex; align-items:center;
+      border:1.5px solid var(--border); border-radius:var(--radius);
+      overflow:hidden; background:var(--surface-1); transition:border-color .15s;
+    }
+    .pattern-wrap:focus-within { border-color:var(--primary); }
+    .pattern-delim {
+      padding:10px 12px; color:var(--text-3);
+      font-family:'Courier New',monospace; font-size:1.15rem; font-weight:700;
+      background:var(--surface-2); user-select:none;
+    }
+    .pattern-input {
+      flex:1; border:none !important; outline:none !important;
+      background:transparent !important; padding:10px 8px !important;
+      font-family:'Courier New',monospace; font-size:.93rem; box-shadow:none !important;
+    }
+    .pattern-flags {
+      padding:10px 14px; color:var(--primary);
+      font-family:'Courier New',monospace; font-size:1rem; font-weight:700;
+      background:var(--surface-2); user-select:none; min-width:24px;
+    }
+
+    .test-output {
+      min-height:130px; max-height:320px; overflow-y:auto;
+      padding:12px; border:1.5px solid var(--border); border-radius:var(--radius);
+      font-family:'Courier New',monospace; font-size:.88rem; line-height:1.8;
+      white-space:pre-wrap; word-break:break-all;
+      background:var(--surface-1); color:var(--text-1);
+    }
+    .test-output mark {
+      background:#fde68a; color:#1a1a1a; border-radius:2px; padding:0 1px;
+    }
+    [data-theme="dark"] .test-output mark { background:#78350f; color:#fef3c7; }
+
+    .match-list { display:flex; flex-direction:column; gap:5px; max-height:240px; overflow-y:auto; }
+    .match-item {
+      display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;
+      padding:7px 12px; background:var(--surface-1);
+      border:1px solid var(--border); border-radius:var(--radius); font-size:.82rem;
+    }
+    .match-num  { flex-shrink:0; font-weight:700; color:var(--primary); min-width:26px; }
+    .match-val  {
+      font-family:'Courier New',monospace; background:#fde68a; color:#1a1a1a;
+      padding:1px 6px; border-radius:3px; word-break:break-all;
+    }
+    [data-theme="dark"] .match-val { background:#78350f; color:#fef3c7; }
+    .match-pos  { color:var(--text-3); font-size:.77rem; }
+    .match-grps { color:var(--text-2); font-size:.77rem; font-family:'Courier New',monospace; }
+
+    .status-badge {
+      display:inline-flex; align-items:center; gap:5px;
+      padding:4px 12px; border-radius:50px; font-size:.82rem; font-weight:600;
+    }
+    .status-badge.ok   { background:#dcfce7; color:#15803d; }
+    .status-badge.err  { background:#fee2e2; color:#b91c1c; }
+    .status-badge.none { background:var(--surface-2); color:var(--text-3); }
+    [data-theme="dark"] .status-badge.ok  { background:#14532d; color:#86efac; }
+    [data-theme="dark"] .status-badge.err { background:#450a0a; color:#fca5a5; }
+
+    .pat-error { margin-top:5px; font-size:.79rem; color:#ef4444; display:none; }
+
+    .example-btn {
+      display:block; width:100%; text-align:left;
+      padding:7px 10px; border:1px solid var(--border); border-radius:var(--radius);
+      background:var(--surface-1); cursor:pointer; font-size:.8rem;
+      color:var(--text-1); transition:background .15s,border-color .15s;
+    }
+    .example-btn:hover { background:var(--surface-2); border-color:var(--primary); }
+    .example-name { font-weight:600; display:block; }
+    .example-pat  { font-family:'Courier New',monospace; color:var(--primary); font-size:.75rem; }
+
+    .cs-grid {
+      display:grid; grid-template-columns:auto 1fr; gap:0 12px; font-size:.78rem;
+    }
+    .cs-code {
+      font-family:'Courier New',monospace; color:var(--primary);
+      padding:4px 0; border-bottom:1px solid var(--border);
+    }
+    .cs-desc { color:var(--text-2); padding:4px 0; border-bottom:1px solid var(--border); }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a href="/" class="logo">
+      <img src="/logo.svg" alt="OneKit" class="logo-img" width="120" height="29" />
+    </a>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/text/word-counter">Word Counter</a>
+      <a href="/text/font-changer">Font Changer</a>
+      <a href="/dev/password-generator">Password</a>
+      <a href="/dev/qr-generator">QR Code</a>
+      <a href="/image/image-compressor">Image Tools</a>
+      <a href="/convert/unit-converter">Converter</a>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-btn" id="darkToggle" onclick="toggleDarkMode()" title="Toggle dark mode">🌙</button>
+      <button class="icon-btn nav-toggle" onclick="openMobileNav()">☰</button>
+    </div>
+  </div>
+</header>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobileNav">
+  <div class="mobile-nav-backdrop" onclick="closeMobileNav()"></div>
+  <div class="mobile-nav-drawer">
+    <button class="mobile-nav-close" onclick="closeMobileNav()">✕</button>
+    <a href="/">🏠 Home</a>
+    <a href="/text/word-counter">📄 Word Counter</a>
+    <a href="/text/font-changer">✍️ Font Changer</a>
+    <a href="/convert/unit-converter">📐 Unit Converter</a>
+    <a href="/dev/password-generator">🔒 Password Generator</a>
+    <a href="/dev/qr-generator">📱 QR Code Generator</a>
+    <a href="/dev/regex-tester" class="active">🔍 Regex Tester</a>
+    <a href="/text/document-templates">📝 Document Templates</a>
+    <a href="/pdf/image-to-pdf">🖼️ Image to PDF</a>
+    <a href="/image/image-compressor">🗜️ Image Compressor</a>
+    <a href="/pdf/pdf-compressor">📋 PDF Compressor</a>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main>
+
+  <!-- TOP AD -->
+  <div class="ad-unit ad-top" data-ad="top"></div>
+
+  <!-- BREADCRUMB -->
+  <div class="breadcrumb">
+    <a href="/">🏠 Home</a>
+    <span>›</span>
+    <a href="/dev/">Dev Tools</a>
+    <span>›</span>
+    <span>Regex Tester</span>
+  </div>
+
+  <!-- TOOL LAYOUT -->
+  <div class="tool-layout">
+
+    <!-- LEFT: TOOL -->
+    <div>
+      <div class="tool-box">
+        <div class="tool-box-header">
+          <h1>🔍 Regex Tester</h1>
+          <p>Test and debug regular expressions in real time. Matches are highlighted as you type — no page reload needed.</p>
+        </div>
+
+        <!-- Pattern -->
+        <div class="form-group">
+          <label>Regular Expression Pattern</label>
+          <div class="pattern-wrap">
+            <span class="pattern-delim">/</span>
+            <input class="pattern-input" id="patternInput" type="text"
+                   placeholder="e.g. \b\w+@\w+\.\w+\b"
+                   autocomplete="off" spellcheck="false" oninput="runTest()" />
+            <span class="pattern-delim">/</span>
+            <span class="pattern-flags" id="flagsDisplay">g</span>
+          </div>
+          <div class="pat-error" id="patternError"></div>
+        </div>
+
+        <!-- Flags -->
+        <div class="form-group">
+          <label>Flags</label>
+          <div class="flag-group" id="flagGroup">
+            <label class="flag-chip active" data-flag="g">
+              <input type="checkbox" checked /> g &mdash; global
+            </label>
+            <label class="flag-chip" data-flag="i">
+              <input type="checkbox" /> i &mdash; ignore case
+            </label>
+            <label class="flag-chip" data-flag="m">
+              <input type="checkbox" /> m &mdash; multiline
+            </label>
+            <label class="flag-chip" data-flag="s">
+              <input type="checkbox" /> s &mdash; dot all
+            </label>
+          </div>
+        </div>
+
+        <!-- Test string -->
+        <div class="form-group">
+          <label>Test String</label>
+          <textarea id="testInput" rows="6"
+                    placeholder="Paste or type the text you want to test against your pattern…"
+                    oninput="runTest()"
+                    style="font-family:'Courier New',monospace;font-size:.88rem;resize:vertical;"></textarea>
+        </div>
+
+        <!-- Status -->
+        <div style="margin-bottom:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <span class="status-badge none" id="statusBadge">Enter a pattern to start</span>
+        </div>
+
+        <!-- Highlighted preview -->
+        <div class="form-group">
+          <label>Match Preview</label>
+          <div class="test-output" id="testOutput">
+            <span style="color:var(--text-3);">Matches will be highlighted here as you type.</span>
+          </div>
+        </div>
+
+        <!-- Match details -->
+        <div id="matchSection" style="display:none;margin-top:16px;">
+          <div class="ad-unit" data-ad="mid" style="margin-bottom:16px;"></div>
+          <label>Match Details</label>
+          <div class="match-list" id="matchList"></div>
+        </div>
+
+        <!-- Actions -->
+        <div class="btn-group" style="margin-top:18px;">
+          <button class="btn btn-outline" onclick="copyPattern()">📋 Copy Pattern</button>
+          <button class="btn btn-ghost" onclick="clearAll()">🗑️ Clear All</button>
+        </div>
+
+      </div>
+
+      <!-- Bottom ad -->
+      <div class="ad-unit" data-ad="mid" style="margin-top:20px;"></div>
+
+      <!-- SEO / Info block -->
+      <div class="tool-box" style="margin-top:20px;">
+        <h2 style="font-size:1.05rem;">How to use the Regex Tester</h2>
+        <ol style="margin:0;padding-left:20px;line-height:1.9;font-size:.88rem;color:var(--text-2);">
+          <li>Type your regular expression in the <strong>Pattern</strong> field between the <code>/</code> delimiters.</li>
+          <li>Select the <strong>flags</strong> you need (global, ignore-case, multiline, dot-all).</li>
+          <li>Paste or type your <strong>test string</strong> — matches are highlighted instantly.</li>
+          <li>Scroll the <strong>Match Details</strong> section to see every match with its index position and capture groups.</li>
+          <li>Use the <strong>Quick Examples</strong> in the sidebar to load common patterns instantly.</li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- RIGHT: SIDEBAR -->
+    <aside class="sidebar">
+
+      <div class="ad-unit ad-rect" data-ad="rect-1"></div>
+
+      <!-- Quick examples -->
+      <div class="tool-box">
+        <h3>Quick Examples</h3>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <button class="example-btn" onclick="loadExample('Email address','[\\w.+-]+@[\\w-]+\\.[\\w.]+','Contact us at hello@example.com or support@onekit.io for help.')">
+            <span class="example-name">Email address</span>
+            <span class="example-pat">[\w.+-]+@[\w-]+\.[\w.]+</span>
+          </button>
+          <button class="example-btn" onclick="loadExample('URL','https?:\\/\\/[^\\s]+','Visit https://example.com or http://test.org/page for more info.')">
+            <span class="example-name">URL (http/https)</span>
+            <span class="example-pat">https?:\/\/[^\s]+</span>
+          </button>
+          <button class="example-btn" onclick="loadExample('Phone number','\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}','Call (555) 123-4567 or 555-987-6543 or 5551234567.')">
+            <span class="example-name">Phone number (US)</span>
+            <span class="example-pat">\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}</span>
+          </button>
+          <button class="example-btn" onclick="loadExample('IP address','\\b(?:\\d{1,3}\\.){3}\\d{1,3}\\b','Server 192.168.1.1 and gateway 10.0.0.1 are up.')">
+            <span class="example-name">IP address</span>
+            <span class="example-pat">\b(?:\d{1,3}\.){3}\d{1,3}\b</span>
+          </button>
+          <button class="example-btn" onclick="loadExample('Date YYYY-MM-DD','\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])','Dates: 2024-01-15 and 2025-12-31 are valid. 2024-13-01 is not.')">
+            <span class="example-name">Date (YYYY-MM-DD)</span>
+            <span class="example-pat">\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\d|3[01])</span>
+          </button>
+          <button class="example-btn" onclick="loadExample('Hex color','#(?:[0-9a-fA-F]{6}|[0-9a-fA-F]{3})\\b','Colors: #ff0000 #abc #1a2b3c and #FFFFFF used in CSS.')">
+            <span class="example-name">Hex color code</span>
+            <span class="example-pat">#(?:[0-9a-fA-F]{6}|[0-9a-fA-F]{3})\b</span>
+          </button>
+          <button class="example-btn" onclick="loadExample('HTML tag','<([a-z][a-z0-9]*)(?:\\s[^>]*)?>.*?<\\/\\1>','&lt;p class=\"intro\"&gt;Hello world&lt;/p&gt; and &lt;span&gt;test&lt;/span&gt;')">
+            <span class="example-name">HTML tag (basic)</span>
+            <span class="example-pat">&lt;([a-z][a-z0-9]*)(?:\s[^>]*)?>.*?&lt;\/\1&gt;</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Cheat sheet -->
+      <div class="tool-box">
+        <h3>Regex Cheat Sheet</h3>
+        <div class="cs-grid">
+          <span class="cs-code">.</span>       <span class="cs-desc">Any character (except newline)</span>
+          <span class="cs-code">\d</span>      <span class="cs-desc">Digit [0-9]</span>
+          <span class="cs-code">\D</span>      <span class="cs-desc">Non-digit</span>
+          <span class="cs-code">\w</span>      <span class="cs-desc">Word char [a-zA-Z0-9_]</span>
+          <span class="cs-code">\W</span>      <span class="cs-desc">Non-word character</span>
+          <span class="cs-code">\s</span>      <span class="cs-desc">Whitespace</span>
+          <span class="cs-code">\b</span>      <span class="cs-desc">Word boundary</span>
+          <span class="cs-code">^</span>       <span class="cs-desc">Start of string / line</span>
+          <span class="cs-code">$</span>       <span class="cs-desc">End of string / line</span>
+          <span class="cs-code">*</span>       <span class="cs-desc">0 or more (greedy)</span>
+          <span class="cs-code">+</span>       <span class="cs-desc">1 or more (greedy)</span>
+          <span class="cs-code">?</span>       <span class="cs-desc">0 or 1 — optional</span>
+          <span class="cs-code">*?</span>      <span class="cs-desc">0 or more (lazy)</span>
+          <span class="cs-code">{n,m}</span>   <span class="cs-desc">Between n and m times</span>
+          <span class="cs-code">[abc]</span>   <span class="cs-desc">Character class</span>
+          <span class="cs-code">[^abc]</span>  <span class="cs-desc">Negated class</span>
+          <span class="cs-code">(abc)</span>   <span class="cs-desc">Capture group</span>
+          <span class="cs-code">(?:abc)</span> <span class="cs-desc">Non-capture group</span>
+          <span class="cs-code">a|b</span>     <span class="cs-desc">a or b</span>
+          <span class="cs-code">(?=…)</span>  <span class="cs-desc">Positive lookahead</span>
+          <span class="cs-code">(?!…)</span>  <span class="cs-desc">Negative lookahead</span>
+        </div>
+      </div>
+
+      <div class="ad-unit ad-rect" data-ad="rect-2"></div>
+
+      <!-- Related tools -->
+      <div class="tool-box">
+        <h3>Related Tools</h3>
+        <div class="related-tools">
+          <a href="/text/word-counter" class="related-item">
+            <div class="related-icon" style="background:#ede9fe;">📄</div>
+            <div class="related-item-text">
+              <strong>Word Counter</strong>
+              <span>Count words &amp; characters</span>
+            </div>
+          </a>
+          <a href="/text/document-templates" class="related-item">
+            <div class="related-icon" style="background:#dcfce7;">📝</div>
+            <div class="related-item-text">
+              <strong>Document Templates</strong>
+              <span>Download .docx templates</span>
+            </div>
+          </a>
+          <a href="/dev/password-generator" class="related-item">
+            <div class="related-icon" style="background:#fff7ed;">🔒</div>
+            <div class="related-item-text">
+              <strong>Password Generator</strong>
+              <span>Generate secure passwords</span>
+            </div>
+          </a>
+        </div>
+      </div>
+
+    </aside>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="/" class="logo" style="color:#fff;">
+          <img src="/logo-white.svg" alt="OneKit" class="logo-img logo-img-white" width="120" height="29" />
+        </a>
+        <p style="margin-top:12px;">Free, fast, privacy-friendly tools for everyday tasks.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Text Tools</h4>
+        <ul>
+          <li><a href="/text/word-counter">Word Counter</a></li>
+          <li><a href="/text/font-changer">Font Changer</a></li>
+          <li><a href="/dev/regex-tester">Regex Tester</a></li>
+          <li><a href="/text/document-templates">Document Templates</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Converters</h4>
+        <ul>
+          <li><a href="/convert/unit-converter">Unit Converter</a></li>
+          <li><a href="/dev/qr-generator">QR Code Generator</a></li>
+          <li><a href="/pdf/image-to-pdf">Image to PDF</a></li>
+          <li><a href="/pdf/pdf-to-jpg">PDF to JPG</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Other Tools</h4>
+        <ul>
+          <li><a href="/dev/password-generator">Password Generator</a></li>
+          <li><a href="/image/image-compressor">Image Compressor</a></li>
+          <li><a href="/pdf/pdf-compressor">PDF Compressor</a></li>
+          <li><a href="/image/meme-generator">Meme Generator</a></li>
+          <li><a href="/image/color-palette">Color Palette</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Finance</h4>
+        <ul>
+          <li><a href="/finance/finance-tools">Finance Tools</a></li>
+          <li><a href="/finance/mortgage-calculator">Mortgage Calculator</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="/about">About Us</a></li>
+          <li><a href="/contact">Contact</a></li>
+          <li><a href="/privacy-policy">Privacy Policy</a></li>
+          <li><a href="/terms">Terms &amp; Conditions</a></li>
+          <li><a href="/disclaimer">Disclaimer</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 OneKit. All rights reserved.</span>
+      <div class="footer-links">
+        <a href="/about">About</a>
+        <a href="/privacy-policy">Privacy Policy</a>
+        <a href="/terms">Terms</a>
+        <a href="/disclaimer">Disclaimer</a>
+        <a href="/contact">Contact</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ---- Flag chips ----
+  document.getElementById('flagGroup').addEventListener('click', e => {
+    const chip = e.target.closest('.flag-chip');
+    if (!chip) return;
+    chip.classList.toggle('active');
+    chip.querySelector('input').checked = chip.classList.contains('active');
+    updateFlagsDisplay();
+    runTest();
+  });
+
+  function getFlags() {
+    return Array.from(document.querySelectorAll('.flag-chip.active'))
+      .map(c => c.getAttribute('data-flag')).join('');
+  }
+
+  function updateFlagsDisplay() {
+    document.getElementById('flagsDisplay').textContent = getFlags() || '';
+  }
+
+  function esc(str) {
+    return str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
+
+  // ---- Core tester ----
+  function runTest() {
+    const patVal   = document.getElementById('patternInput').value;
+    const testVal  = document.getElementById('testInput').value;
+    const flags    = getFlags();
+    const output   = document.getElementById('testOutput');
+    const badge    = document.getElementById('statusBadge');
+    const matchSec = document.getElementById('matchSection');
+    const matchList= document.getElementById('matchList');
+    const errEl    = document.getElementById('patternError');
+
+    errEl.style.display = 'none';
+
+    if (!patVal) {
+      output.innerHTML = '<span style="color:var(--text-3);">Matches will be highlighted here as you type.</span>';
+      badge.className = 'status-badge none';
+      badge.textContent = 'Enter a pattern to start';
+      matchSec.style.display = 'none';
+      return;
+    }
+
+    let regex;
+    try {
+      // Always include 'g' for matchAll; deduplicate flags
+      const allFlags = [...new Set(('g' + flags).split(''))].join('');
+      regex = new RegExp(patVal, allFlags);
+    } catch (err) {
+      errEl.textContent = 'Invalid pattern: ' + err.message;
+      errEl.style.display = 'block';
+      output.innerHTML = esc(testVal) || '<span style="color:var(--text-3);">Matches will be highlighted here as you type.</span>';
+      badge.className = 'status-badge err';
+      badge.textContent = '✗ Invalid pattern';
+      matchSec.style.display = 'none';
+      return;
+    }
+
+    if (!testVal) {
+      output.innerHTML = '<span style="color:var(--text-3);">Matches will be highlighted here as you type.</span>';
+      badge.className = 'status-badge none';
+      badge.textContent = 'Enter test string to match';
+      matchSec.style.display = 'none';
+      return;
+    }
+
+    const matches = [...testVal.matchAll(regex)];
+
+    if (matches.length === 0) {
+      output.textContent = testVal;
+      badge.className = 'status-badge none';
+      badge.textContent = '0 matches found';
+      matchSec.style.display = 'none';
+      return;
+    }
+
+    // Build highlighted HTML
+    let html = '', last = 0;
+    for (const m of matches) {
+      html += esc(testVal.slice(last, m.index));
+      html += '<mark>' + esc(m[0] || '') + '</mark>';
+      last = m.index + (m[0].length || 1);
+    }
+    html += esc(testVal.slice(last));
+    output.innerHTML = html;
+
+    badge.className = 'status-badge ok';
+    badge.textContent = `✓ ${matches.length} match${matches.length !== 1 ? 'es' : ''}`;
+
+    // Build match list
+    matchList.innerHTML = '';
+    matches.forEach((m, i) => {
+      const div = document.createElement('div');
+      div.className = 'match-item';
+      let grpHtml = '';
+      if (m.length > 1) {
+        const parts = Array.from(m).slice(1).map((g, gi) =>
+          `<span>group ${gi + 1}: <span class="match-val" style="font-size:.75rem;">${g !== undefined ? esc(g) : '<em>undefined</em>'}</span></span>`
+        ).join(' ');
+        grpHtml = `<span class="match-grps">${parts}</span>`;
+      }
+      div.innerHTML =
+        `<span class="match-num">#${i + 1}</span>` +
+        `<span class="match-val">${esc(m[0])}</span>` +
+        `<span class="match-pos">index ${m.index}–${m.index + m[0].length}</span>` +
+        grpHtml;
+      matchList.appendChild(div);
+    });
+
+    matchSec.style.display = 'block';
+  }
+
+  // ---- Helpers ----
+  function copyPattern() {
+    const p = document.getElementById('patternInput').value;
+    const f = getFlags();
+    if (!p) { showToast('No pattern to copy.', 'warning'); return; }
+    copyToClipboard(`/${p}/${f}`);
+  }
+
+  function clearAll() {
+    document.getElementById('patternInput').value = '';
+    document.getElementById('testInput').value = '';
+    runTest();
+  }
+
+  function loadExample(name, pattern, testStr) {
+    document.getElementById('patternInput').value = pattern;
+    document.getElementById('testInput').value = testStr;
+    runTest();
+    showToast('Loaded: ' + name, 'info');
+  }
+</script>
+
+</body>
+</html>

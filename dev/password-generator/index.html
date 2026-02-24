@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/favicon.svg" />
+<title>Password Generator — Create Strong Random Passwords Free Online | OneKit</title>
+  <meta name="description" content="Free password generator. Create strong, cryptographically secure random passwords up to 128 characters. Choose uppercase, numbers, symbols. No signup — works instantly." />
+    <!-- SEO -->
+  <meta name="keywords" content="password generator, strong password generator, secure password generator, random password generator, free password maker, generate password online, 128 character password, complex password creator" />
+  <meta name="author" content="OneKit" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://onekitapp.com/dev/password-generator" />
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://onekitapp.com/dev/password-generator" />
+  <meta property="og:title" content="Password Generator — Create Strong Random Passwords Free Online | OneKit" />
+  <meta property="og:description" content="Generate strong, secure random passwords online for free. Choose length up to 128 chars, uppercase, numbers and symbols. Instant, private, no signup." />
+  <meta property="og:image" content="https://onekitapp.com/og-image.png" />
+  <meta property="og:site_name" content="OneKit" />
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Password Generator — Create Strong Random Passwords Free Online | OneKit" />
+  <meta name="twitter:description" content="Generate strong, secure random passwords online for free. Choose length up to 128 chars, uppercase, numbers and symbols. Instant, private, no signup." />
+  <meta name="twitter:image" content="https://onekitapp.com/og-image.png" />
+  <!-- Schema.org -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Password Generator — Free Strong Password Creator | OneKit",
+    "url": "https://onekitapp.com/dev/password-generator",
+    "description": "Generate strong, cryptographically secure random passwords online. Customize length, include symbols, numbers and more. Free, instant, and private.",
+    "publisher": {
+      "@type": "Organization",
+      "name": "OneKit",
+      "url": "https://onekitapp.com"
+    },
+    "applicationCategory": "SecurityApplication",
+    "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://onekitapp.com/"},
+      {"@type": "ListItem", "position": 2, "name": "Dev Tools", "item": "https://onekitapp.com/dev/"},
+      {"@type": "ListItem", "position": 3, "name": "Password Generator", "item": "https://onekitapp.com/dev/password-generator"}
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How do I create a strong password?",
+        "acceptedAnswer": {"@type": "Answer", "text": "A strong password should be at least 12–16 characters long and include a mix of uppercase letters, lowercase letters, numbers, and special symbols. Use OneKit's free password generator to create one instantly — no signup needed."}
+      },
+      {
+        "@type": "Question",
+        "name": "Is this password generator safe to use?",
+        "acceptedAnswer": {"@type": "Answer", "text": "Yes. OneKit's password generator runs entirely in your browser using the Web Crypto API. Generated passwords are never sent to any server, making it completely private and secure."}
+      },
+      {
+        "@type": "Question",
+        "name": "What is the maximum password length?",
+        "acceptedAnswer": {"@type": "Answer", "text": "You can generate passwords up to 128 characters long. For most accounts a length of 16–32 characters with mixed character types provides excellent security."}
+      }
+    ]
+  }
+  </script>
+<link rel="stylesheet" href="/style.css" />
+  <script src="/utils.js" defer></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7825416731856682" crossorigin="anonymous"></script>
+  <!-- Google Analytics GA4 — replace G-EF06GYEGGC with your Measurement ID -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-EF06GYEGGC"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-EF06GYEGGC');
+  </script>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a href="/" class="logo">
+      <img src="/logo.svg" alt="OneKit" class="logo-img" width="120" height="29" />
+    </a>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/text/word-counter">Word Counter</a>
+      <a href="/text/font-changer">Font Changer</a>
+      <a href="/dev/password-generator" class="active">Password</a>
+      <a href="/dev/qr-generator">QR Code</a>
+      <a href="/image/image-compressor">Image Tools</a>
+      <a href="/convert/unit-converter">Converter</a>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-btn" id="darkToggle" onclick="toggleDarkMode()" title="Toggle dark mode">🌙</button>
+      <button class="icon-btn nav-toggle" onclick="openMobileNav()">☰</button>
+    </div>
+  </div>
+</header>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobileNav">
+  <div class="mobile-nav-backdrop" onclick="closeMobileNav()"></div>
+  <div class="mobile-nav-drawer">
+    <button class="mobile-nav-close" onclick="closeMobileNav()">✕</button>
+    <a href="/">🏠 Home</a>
+    <a href="/text/word-counter">📄 Word Counter</a>
+    <a href="/text/font-changer">✍️ Font Changer</a>
+    <a href="/convert/unit-converter">📐 Unit Converter</a>
+    <a href="/dev/password-generator" class="active">🔒 Password Generator</a>
+    <a href="/dev/qr-generator">📱 QR Code Generator</a>
+    <a href="/pdf/image-to-pdf">🖼️ Image to PDF</a>
+    <a href="/image/image-compressor">🗜️ Image Compressor</a>
+    <a href="/pdf/pdf-compressor">📋 PDF Compressor</a>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main>
+
+  <!-- TOP AD -->
+  <div class="ad-unit ad-top" data-ad="top"></div>
+
+  <!-- BREADCRUMB -->
+  <div class="breadcrumb">
+    <a href="/">🏠 Home</a>
+    <span>›</span>
+    <a href="/dev/">Dev Tools</a>
+    <span>›</span>
+    <span>Password Generator</span>
+  </div>
+
+  <!-- TOOL LAYOUT -->
+  <div class="tool-layout">
+
+    <!-- LEFT: TOOL -->
+    <div>
+      <div class="tool-box">
+        <div class="tool-box-header">
+          <h1>🔒 Password Generator</h1>
+          <p>Generate strong, cryptographically secure passwords tailored to your needs.</p>
+        </div>
+
+        <!-- Generated password -->
+        <label>Generated Password</label>
+        <div class="password-output">
+          <input type="text" id="passwordOutput" readonly placeholder="Click Generate Password..." />
+          <button class="btn btn-outline" onclick="copyPassword()" title="Copy password">📋</button>
+          <button class="btn btn-ghost" onclick="toggleVisibility()" id="visBtn" title="Show/hide">👁️</button>
+        </div>
+
+        <!-- Strength meter -->
+        <div class="strength-meter">
+          <div class="strength-track">
+            <div class="strength-fill" id="strengthFill" style="width:0%;"></div>
+          </div>
+          <span class="strength-label" id="strengthLabel" style="color:var(--text-3);">No password generated yet</span>
+        </div>
+
+        <!-- Length slider -->
+        <div class="form-group">
+          <label>Password Length — <strong id="lenVal">16</strong> characters</label>
+          <input type="range" id="lenSlider" min="6" max="64" value="16"
+                 oninput="document.getElementById('lenVal').textContent=this.value" />
+          <div style="display:flex;justify-content:space-between;font-size:.75rem;color:var(--text-3);margin-top:2px;">
+            <span>6</span><span>20</span><span>40</span><span>64</span>
+          </div>
+        </div>
+
+        <!-- Options -->
+        <div class="form-group">
+          <label>Include Character Types</label>
+          <div class="checkbox-group">
+            <label class="checkbox-item">
+              <input type="checkbox" id="inclUpper" checked /> Uppercase letters (A–Z)
+            </label>
+            <label class="checkbox-item">
+              <input type="checkbox" id="inclLower" checked /> Lowercase letters (a–z)
+            </label>
+            <label class="checkbox-item">
+              <input type="checkbox" id="inclNums" checked /> Numbers (0–9)
+            </label>
+            <label class="checkbox-item">
+              <input type="checkbox" id="inclSyms" checked /> Symbols (!@#$%^&amp;*)
+            </label>
+            <label class="checkbox-item">
+              <input type="checkbox" id="noAmbig" /> Exclude ambiguous characters (0, O, l, 1, I)
+            </label>
+          </div>
+        </div>
+
+        <!-- Generate buttons -->
+        <div class="btn-group">
+          <button class="btn btn-primary btn-lg" onclick="generatePassword()">🔒 Generate Password</button>
+          <button class="btn btn-ghost" onclick="generateBulk()">📋 Generate 5 Passwords</button>
+        </div>
+
+        <!-- Bulk output -->
+        <div id="bulkWrap" style="display:none;margin-top:20px;">
+          <label style="margin-bottom:10px;">5 Generated Passwords — click any to copy</label>
+          <div id="bulkList" style="display:flex;flex-direction:column;gap:8px;"></div>
+        </div>
+
+      </div>
+
+      <!-- MID AD -->
+      <div class="ad-unit ad-mid" data-ad="mid"></div>
+
+      <!-- Tips -->
+      <div class="tool-box">
+        <h2>🛡️ Password Security Tips</h2>
+        <ul class="tips-list">
+          <li>Use <strong>at least 12 characters</strong> for any important account.</li>
+          <li>Use a <strong>different password for every account</strong> — never reuse.</li>
+          <li>Store passwords in a trusted <strong>password manager</strong> (Bitwarden, 1Password).</li>
+          <li>Enable <strong>two-factor authentication (2FA)</strong> wherever available.</li>
+          <li>Avoid passwords based on your name, birthday or common dictionary words.</li>
+          <li>Change your passwords after any known <strong>data breach</strong>.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- RIGHT: SIDEBAR -->
+    <aside class="sidebar">
+
+      <!-- Sidebar Ad -->
+      <div class="ad-unit ad-rect" data-ad="rect-3"></div>
+
+      <!-- Strength Guide -->
+      <div class="tool-box">
+        <h3>🛡️ Strength Guide</h3>
+        <div style="display:flex;flex-direction:column;gap:10px;font-size:.83rem;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:36px;height:8px;background:#ef4444;border-radius:50px;flex-shrink:0;"></div>
+            <span><strong>Weak</strong> — easily guessed</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:36px;height:8px;background:#f97316;border-radius:50px;flex-shrink:0;"></div>
+            <span><strong>Fair</strong> — could be better</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:36px;height:8px;background:#eab308;border-radius:50px;flex-shrink:0;"></div>
+            <span><strong>Good</strong> — reasonable security</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:36px;height:8px;background:#22c55e;border-radius:50px;flex-shrink:0;"></div>
+            <span><strong>Strong</strong> — great security</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:36px;height:8px;background:#10b981;border-radius:50px;flex-shrink:0;"></div>
+            <span><strong>Very Strong</strong> — excellent!</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Related Tools -->
+      <div class="tool-box">
+        <h3>Related Tools</h3>
+        <div class="related-tools">
+          <a href="/text/word-counter" class="related-item">
+            <div class="related-icon" style="background:#ede9fe;">📄</div>
+            <div class="related-item-text">
+              <strong>Word Counter</strong>
+              <span>Count words & chars</span>
+            </div>
+          </a>
+          <a href="/dev/qr-generator" class="related-item">
+            <div class="related-icon" style="background:#fff7ed;">📱</div>
+            <div class="related-item-text">
+              <strong>QR Code Generator</strong>
+              <span>Create QR codes</span>
+            </div>
+          </a>
+          <a href="/convert/unit-converter" class="related-item">
+            <div class="related-icon" style="background:#e0f2fe;">📐</div>
+            <div class="related-item-text">
+              <strong>Unit Converter</strong>
+              <span>Convert any unit</span>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- Sidebar Ad 2 -->
+      <div class="ad-unit ad-rect" data-ad="rect-4"></div>
+
+    </aside>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="/" class="logo" style="color:#fff;">
+          <img src="/logo-white.svg" alt="OneKit" class="logo-img logo-img-white" width="120" height="29" />
+        </a>
+        <p style="margin-top:12px;">Free, fast, privacy-friendly tools for everyday tasks.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Text Tools</h4>
+        <ul>
+          <li><a href="/text/word-counter">Word Counter</a></li>
+          <li><a href="/text/font-changer">Font Changer</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Converters</h4>
+        <ul>
+          <li><a href="/convert/unit-converter">Unit Converter</a></li>
+          <li><a href="/dev/qr-generator">QR Code Generator</a></li>
+          <li><a href="/pdf/image-to-pdf">Image to PDF</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Other Tools</h4>
+        <ul>
+          <li><a href="/dev/password-generator">Password Generator</a></li>
+          <li><a href="/image/image-compressor">Image Compressor</a></li>
+          <li><a href="/pdf/pdf-compressor">PDF Compressor</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 OneKit. All rights reserved.</span>
+      <div class="footer-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms</a>
+        <a href="#">Contact</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const CHARS = {
+    upper:   'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+    lower:   'abcdefghijklmnopqrstuvwxyz',
+    nums:    '0123456789',
+    syms:    '!@#$%^&*()-_=+[]{}|;:,.<>?',
+    ambig:   /[0OlI1]/g
+  };
+
+  function buildCharset() {
+    let cs = '';
+    if (document.getElementById('inclUpper').checked) cs += CHARS.upper;
+    if (document.getElementById('inclLower').checked) cs += CHARS.lower;
+    if (document.getElementById('inclNums').checked)  cs += CHARS.nums;
+    if (document.getElementById('inclSyms').checked)  cs += CHARS.syms;
+    if (document.getElementById('noAmbig').checked)   cs = cs.replace(CHARS.ambig, '');
+    return cs || CHARS.lower;
+  }
+
+  function randomPassword(len, charset) {
+    const arr = new Uint32Array(len);
+    crypto.getRandomValues(arr);
+    return Array.from(arr, n => charset[n % charset.length]).join('');
+  }
+
+  function strengthScore(pwd) {
+    let s = 0;
+    if (pwd.length >= 8)  s++;
+    if (pwd.length >= 12) s++;
+    if (pwd.length >= 16) s++;
+    if (pwd.length >= 20) s++;
+    if (/[A-Z]/.test(pwd)) s++;
+    if (/[a-z]/.test(pwd)) s++;
+    if (/[0-9]/.test(pwd)) s++;
+    if (/[^A-Za-z0-9]/.test(pwd)) s++;
+    return s;
+  }
+
+  const STRENGTH_MAP = [
+    { pct: 12,  bg: '#ef4444', label: 'Very Weak' },
+    { pct: 25,  bg: '#ef4444', label: 'Weak' },
+    { pct: 38,  bg: '#f97316', label: 'Fair' },
+    { pct: 50,  bg: '#f97316', label: 'Moderate' },
+    { pct: 62,  bg: '#eab308', label: 'Good' },
+    { pct: 75,  bg: '#22c55e', label: 'Strong' },
+    { pct: 88,  bg: '#10b981', label: 'Very Strong' },
+    { pct: 100, bg: '#10b981', label: 'Excellent!' },
+  ];
+
+  function renderStrength(pwd) {
+    const score = strengthScore(pwd);
+    const m = STRENGTH_MAP[Math.min(score, STRENGTH_MAP.length - 1)];
+    const fill  = document.getElementById('strengthFill');
+    const label = document.getElementById('strengthLabel');
+    fill.style.width      = m.pct + '%';
+    fill.style.background = m.bg;
+    label.textContent     = m.label;
+    label.style.color     = m.bg;
+  }
+
+  function generatePassword() {
+    const len = parseInt(document.getElementById('lenSlider').value);
+    const cs  = buildCharset();
+    const pwd = randomPassword(len, cs);
+    const inp = document.getElementById('passwordOutput');
+    inp.value = pwd;
+    inp.type  = 'text';
+    document.getElementById('visBtn').textContent = '🙈';
+    document.getElementById('bulkWrap').style.display = 'none';
+    renderStrength(pwd);
+  }
+
+  function generateBulk() {
+    const len  = parseInt(document.getElementById('lenSlider').value);
+    const cs   = buildCharset();
+    const list = document.getElementById('bulkList');
+    list.innerHTML = '';
+    const pwds = Array.from({ length: 5 }, () => randomPassword(len, cs));
+    pwds.forEach(pwd => {
+      const row = document.createElement('div');
+      row.style.cssText = 'display:flex;gap:8px;align-items:center;';
+      row.innerHTML = `
+        <input type="text" value="${pwd}" readonly
+          style="flex:1;font-family:monospace;font-size:.88rem;font-weight:600;letter-spacing:.5px;background:var(--surface-2);" />
+        <button class="btn btn-outline btn-sm" onclick="copyToClipboard('${pwd}')">📋</button>`;
+      list.appendChild(row);
+    });
+    document.getElementById('bulkWrap').style.display = 'block';
+    renderStrength(pwds[0]);
+    document.getElementById('passwordOutput').value = '';
+    document.getElementById('strengthFill').style.width = '0%';
+    document.getElementById('strengthLabel').textContent = 'See passwords below';
+    document.getElementById('strengthLabel').style.color = 'var(--text-3)';
+  }
+
+  async function copyPassword() {
+    const val = document.getElementById('passwordOutput').value;
+    if (!val) { showToast('Generate a password first!', 'warning'); return; }
+    await copyToClipboard(val, 'Password copied to clipboard!');
+  }
+
+  function toggleVisibility() {
+    const inp = document.getElementById('passwordOutput');
+    const btn = document.getElementById('visBtn');
+    if (inp.type === 'text') {
+      inp.type = 'password';
+      btn.textContent = '👁️';
+    } else {
+      inp.type = 'text';
+      btn.textContent = '🙈';
+    }
+  }
+
+  // Auto-generate on load
+  window.addEventListener('DOMContentLoaded', generatePassword);
+</script>
+
+</body>
+</html>
