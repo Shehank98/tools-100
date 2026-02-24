@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="/favicon.svg" />
-<title>Image Compressor — Compress JPG, PNG & WebP Free Online | OneKit</title>
-  <meta name="description" content="Free online image compressor. Reduce JPG, PNG and WebP file sizes without losing quality. Side-by-side before/after preview. No upload — 100% browser-based and private." />
+<title>Image Compressor - Compress JPG, PNG & WebP Free Online | OneKit</title>
+  <meta name="description" content="Free online image compressor. Reduce JPG, PNG and WebP file sizes without losing quality. Side-by-side before/after preview. No upload - 100% browser-based and private." />
   <!-- SEO -->
   <meta name="keywords" content="image compressor, compress image online, reduce image size, JPG compressor, PNG compressor, WebP optimizer, compress photo free, image optimizer online" />
   <meta name="author" content="OneKit" />
@@ -15,13 +15,13 @@
   <!-- Open Graph -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://onekitapp.com/image/image-compressor" />
-  <meta property="og:title" content="Image Compressor — Compress JPG, PNG & WebP Free Online | OneKit" />
+  <meta property="og:title" content="Image Compressor - Compress JPG, PNG & WebP Free Online | OneKit" />
   <meta property="og:description" content="Compress JPG, PNG and WebP images online for free. Before/after preview shows exact file size savings. No uploads, 100% private." />
   <meta property="og:image" content="https://onekitapp.com/og-image.png" />
   <meta property="og:site_name" content="OneKit" />
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Image Compressor — Compress JPG, PNG & WebP Free Online | OneKit" />
+  <meta name="twitter:title" content="Image Compressor - Compress JPG, PNG & WebP Free Online | OneKit" />
   <meta name="twitter:description" content="Compress JPG, PNG and WebP images online for free. Before/after preview shows exact file size savings. No uploads, 100% private." />
   <meta name="twitter:image" content="https://onekitapp.com/og-image.png" />
   <!-- Schema.org -->
@@ -29,9 +29,9 @@
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "Image Compressor — Compress JPG, PNG & WebP Free Online | OneKit",
+    "name": "Image Compressor - Compress JPG, PNG & WebP Free Online | OneKit",
     "url": "https://onekitapp.com/image/image-compressor",
-    "description": "Compress JPG, PNG and WebP images online for free. Side-by-side before/after preview. No uploads needed — runs entirely in your browser.",
+    "description": "Compress JPG, PNG and WebP images online for free. Side-by-side before/after preview. No uploads needed - runs entirely in your browser.",
     "publisher": {
       "@type": "Organization",
       "name": "OneKit",
@@ -124,7 +124,7 @@
       .compare-grid { grid-template-columns: 1fr; }
     }
   </style>
-  <!-- Google Analytics GA4 — replace G-EF06GYEGGC with your Measurement ID -->
+  <!-- Google Analytics GA4 - replace G-EF06GYEGGC with your Measurement ID -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-EF06GYEGGC"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -214,14 +214,14 @@
 
           <!-- Quality -->
           <div class="form-group">
-            <label>Quality — <strong id="qualityVal">80</strong>%
+            <label>Quality - <strong id="qualityVal">80</strong>%
               <span style="font-size:.75rem;color:var(--text-3);font-weight:400;margin-left:8px;" id="qualityHint">Good balance</span>
             </label>
             <input type="range" id="qualityRange" min="1" max="100" value="80"
                    oninput="updateQualityLabel();compressImage()" />
             <div style="display:flex;justify-content:space-between;font-size:.72rem;color:var(--text-3);margin-top:2px;">
-              <span>1% — Smallest file</span>
-              <span>100% — Best quality</span>
+              <span>1% - Smallest file</span>
+              <span>100% - Best quality</span>
             </div>
           </div>
 
@@ -229,9 +229,9 @@
           <div class="form-group">
             <label for="outputFormat">Output Format</label>
             <select id="outputFormat" onchange="compressImage()">
-              <option value="image/jpeg">JPG — Best for photos</option>
-              <option value="image/png">PNG — Best for graphics / transparency</option>
-              <option value="image/webp">WebP — Modern, smallest size</option>
+              <option value="image/jpeg">JPG - Best for photos</option>
+              <option value="image/png">PNG - Best for graphics / transparency</option>
+              <option value="image/webp">WebP - Modern, smallest size</option>
             </select>
           </div>
 
@@ -255,17 +255,17 @@
           <div class="size-compare">
             <div class="size-box">
               <div class="label">Original</div>
-              <div class="value" id="origSize">—</div>
+              <div class="value" id="origSize">-</div>
             </div>
             <div class="size-arrow">→</div>
             <div class="size-box saved">
               <div class="label">Compressed</div>
-              <div class="value" id="compSize">—</div>
+              <div class="value" id="compSize">-</div>
             </div>
           </div>
 
           <div style="text-align:center;margin:4px 0 12px;">
-            <span class="savings-badge" id="savingsBadge">—</span>
+            <span class="savings-badge" id="savingsBadge">-</span>
           </div>
 
           <!-- Before / After preview -->
@@ -273,14 +273,14 @@
             <div class="compare-panel">
               <div class="compare-header">
                 <span>Original</span>
-                <span id="origDim" style="color:var(--text-3);font-weight:400;">—</span>
+                <span id="origDim" style="color:var(--text-3);font-weight:400;">-</span>
               </div>
               <img id="origPreview" class="compare-img" alt="Original" />
             </div>
             <div class="compare-panel">
               <div class="compare-header">
                 <span>Compressed</span>
-                <span id="compDim" style="color:var(--clr-success);font-weight:400;">—</span>
+                <span id="compDim" style="color:var(--clr-success);font-weight:400;">-</span>
               </div>
               <img id="compPreview" class="compare-img" alt="Compressed" />
             </div>
@@ -302,11 +302,11 @@
       <div class="tool-box">
         <h2>💡 Compression Tips</h2>
         <ul class="tips-list">
-          <li><strong>80–85% quality</strong> is the sweet spot for most photos — minimal visual difference, great file size reduction.</li>
-          <li>Use <strong>WebP format</strong> for the smallest output — it's supported in all modern browsers.</li>
+          <li><strong>80–85% quality</strong> is the sweet spot for most photos - minimal visual difference, great file size reduction.</li>
+          <li>Use <strong>WebP format</strong> for the smallest output - it's supported in all modern browsers.</li>
           <li>Use <strong>PNG</strong> when your image has transparent areas.</li>
           <li>Resizing to a smaller dimension also dramatically reduces file size.</li>
-          <li>Reduce to <strong>1200px wide</strong> max for web use — full HD screens don't need more.</li>
+          <li>Reduce to <strong>1200px wide</strong> max for web use - full HD screens don't need more.</li>
         </ul>
       </div>
     </div>

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="/favicon.svg" />
-<title>Color Palette Extractor — Get HEX, RGB & HSL Colors from Images Free | OneKit</title>
+<title>Color Palette Extractor - Get HEX, RGB & HSL Colors from Images Free | OneKit</title>
   <meta name="description" content="Extract dominant colors from any image. Get HEX, RGB and HSL codes instantly. Copy to clipboard or export as CSS variables. Free, private, 100% browser-based." />
     <!-- SEO -->
   <meta name="keywords" content="color palette extractor, extract colors from image, image color picker, dominant colors, HEX color code extractor, RGB colors from image, HSL color codes, CSS color palette generator, color palette from photo" />
@@ -15,13 +15,13 @@
   <!-- Open Graph -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://onekitapp.com/image/color-palette" />
-  <meta property="og:title" content="Color Palette Extractor — Extract Colors from Images | OneKit" />
+  <meta property="og:title" content="Color Palette Extractor - Extract Colors from Images | OneKit" />
   <meta property="og:description" content="Extract dominant colors from any image. Get HEX, RGB and HSL codes. Export as CSS variables. Free online color palette extractor." />
   <meta property="og:image" content="https://onekitapp.com/og-image.png" />
   <meta property="og:site_name" content="OneKit" />
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Color Palette Extractor — Extract Colors from Images | OneKit" />
+  <meta name="twitter:title" content="Color Palette Extractor - Extract Colors from Images | OneKit" />
   <meta name="twitter:description" content="Extract dominant colors from any image. Get HEX, RGB and HSL codes. Export as CSS variables. Free online color palette extractor." />
   <meta name="twitter:image" content="https://onekitapp.com/og-image.png" />
   <!-- Schema.org -->
@@ -29,7 +29,7 @@
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "Color Palette Extractor — Get HEX, RGB & HSL Colors from Images Free | OneKit",
+    "name": "Color Palette Extractor - Get HEX, RGB & HSL Colors from Images Free | OneKit",
     "url": "https://onekitapp.com/image/color-palette",
     "description": "Extract dominant colors from any image. Get HEX, RGB and HSL codes. Export as CSS variables. Free online color palette extractor.",
     "publisher": {
@@ -286,7 +286,7 @@
     /* Hidden download canvas */
     #palDownloadCanvas { display: none; }
   </style>
-  <!-- Google Analytics GA4 — replace G-EF06GYEGGC with your Measurement ID -->
+  <!-- Google Analytics GA4 - replace G-EF06GYEGGC with your Measurement ID -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-EF06GYEGGC"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -348,7 +348,7 @@
   <div class="hero-dot" style="width:10px;height:10px;right:20%;top:68%;animation-duration:3.5s;animation-delay:2s;"></div>
   <div class="hero-dot" style="width:6px;height:6px;left:42%;top:10%;animation-duration:4.5s;animation-delay:1.5s;"></div>
   <h1>🎨 Color Palette Extractor</h1>
-  <p>Upload any image and instantly extract its dominant colors. Get HEX, RGB &amp; HSL codes — copy to clipboard or export as CSS variables.</p>
+  <p>Upload any image and instantly extract its dominant colors. Get HEX, RGB &amp; HSL codes - copy to clipboard or export as CSS variables.</p>
   <div class="cpe-hero-badges">
     <span class="cpe-badge">🎨 Dominant Colors</span>
     <span class="cpe-badge">🔒 100% Private</span>
@@ -381,9 +381,9 @@
             <span class="uz-icon">🖌️</span>
           </div>
           <div class="uz-title">Drop an image here</div>
-          <div class="uz-sub">or click to browse — JPG, PNG, WebP, GIF, BMP</div>
+          <div class="uz-sub">or click to browse - JPG, PNG, WebP, GIF, BMP</div>
           <button class="uz-btn" type="button">🎨 Extract Palette</button>
-          <div class="uz-formats">Max 20 MB · No upload — runs entirely in your browser</div>
+          <div class="uz-formats">Max 20 MB · No upload - runs entirely in your browser</div>
         </div>
       </div>
       <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="handleFileSelect(event)" />
@@ -493,7 +493,7 @@
         <a href="/" class="logo" style="color:#fff;">
           <img src="/logo-white.svg" alt="OneKit" class="logo-img logo-img-white" width="120" height="29" />
         </a>
-        <p style="margin-top:12px;">Free, fast, privacy-friendly tools for everyday tasks. No account, no cost — just open and use.</p>
+        <p style="margin-top:12px;">Free, fast, privacy-friendly tools for everyday tasks. No account, no cost - just open and use.</p>
       </div>
       <div class="footer-col">
         <h4>Image Tools</h4>
@@ -538,7 +538,7 @@
 </footer>
 
 <!-- ═══════════════════════════════════════════════════════
-     JAVASCRIPT — Pure browser, no dependencies
+     JAVASCRIPT - Pure browser, no dependencies
      Algorithm: k-means++ clustering on sampled pixels
 ════════════════════════════════════════════════════════ -->
 <script>
@@ -586,7 +586,7 @@
 
   /* k-means on image pixels */
   function extractPalette(imgEl, k) {
-    /* Scale to 250×250 max for speed — color accuracy stays high */
+    /* Scale to 250×250 max for speed - color accuracy stays high */
     const MAX = 250;
     const scale = Math.min(MAX / imgEl.naturalWidth, MAX / imgEl.naturalHeight, 1);
     const w = Math.max(1, Math.round(imgEl.naturalWidth  * scale));
@@ -678,7 +678,7 @@
   /* ── Main handler ── */
   function processFile(file) {
     if (file.size > 20 * 1024 * 1024) {
-      showToast('Image too large — max 20 MB.', 'error');
+      showToast('Image too large - max 20 MB.', 'error');
       return;
     }
     fileName = file.name;

@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="/favicon.svg" />
-<title>PDF Compressor — Reduce PDF File Size Free Online | OneKit</title>
-  <meta name="description" content="Free PDF compressor online. Reduce PDF file size in your browser — no upload to servers, no account needed. Privacy-first, instant results." />
+<title>PDF Compressor - Reduce PDF File Size Free Online | OneKit</title>
+  <meta name="description" content="Free PDF compressor online. Reduce PDF file size in your browser - no upload to servers, no account needed. Privacy-first, instant results." />
     <!-- SEO -->
   <meta name="keywords" content="PDF compressor, compress PDF online, reduce PDF size, PDF optimizer, shrink PDF file, free PDF compressor, PDF file reducer, compress PDF without losing quality" />
   <meta name="author" content="OneKit" />
@@ -15,23 +15,23 @@
   <!-- Open Graph -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://onekitapp.com/pdf/pdf-compressor" />
-  <meta property="og:title" content="PDF Compressor — Reduce PDF File Size Online Free | OneKit" />
-  <meta property="og:description" content="Compress PDF files online for free. Reduce PDF size while maintaining quality — all processed in your browser, no upload needed." />
+  <meta property="og:title" content="PDF Compressor - Reduce PDF File Size Online Free | OneKit" />
+  <meta property="og:description" content="Compress PDF files online for free. Reduce PDF size while maintaining quality - all processed in your browser, no upload needed." />
   <meta property="og:image" content="https://onekitapp.com/og-image.png" />
   <meta property="og:site_name" content="OneKit" />
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="PDF Compressor — Reduce PDF File Size Online Free | OneKit" />
-  <meta name="twitter:description" content="Compress PDF files online for free. Reduce PDF size while maintaining quality — all processed in your browser, no upload needed." />
+  <meta name="twitter:title" content="PDF Compressor - Reduce PDF File Size Online Free | OneKit" />
+  <meta name="twitter:description" content="Compress PDF files online for free. Reduce PDF size while maintaining quality - all processed in your browser, no upload needed." />
   <meta name="twitter:image" content="https://onekitapp.com/og-image.png" />
   <!-- Schema.org -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "PDF Compressor — Reduce PDF File Size Free Online | OneKit",
+    "name": "PDF Compressor - Reduce PDF File Size Free Online | OneKit",
     "url": "https://onekitapp.com/pdf/pdf-compressor",
-    "description": "Compress PDF files online for free. Reduce PDF size while maintaining quality — all processed in your browser, no upload needed.",
+    "description": "Compress PDF files online for free. Reduce PDF size while maintaining quality - all processed in your browser, no upload needed.",
     "publisher": {
       "@type": "Organization",
       "name": "OneKit",
@@ -60,7 +60,7 @@
       {
         "@type": "Question",
         "name": "How do I reduce a PDF file size for free?",
-        "acceptedAnswer": {"@type": "Answer", "text": "Upload your PDF to OneKit's free PDF Compressor. The tool re-renders each page at a lower quality level and rebuilds the PDF, significantly reducing the file size. Everything runs in your browser — no upload to servers needed."}
+        "acceptedAnswer": {"@type": "Answer", "text": "Upload your PDF to OneKit's free PDF Compressor. The tool re-renders each page at a lower quality level and rebuilds the PDF, significantly reducing the file size. Everything runs in your browser - no upload to servers needed."}
       },
       {
         "@type": "Question",
@@ -84,7 +84,7 @@
   <!-- jsPDF for rebuilding compressed PDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7825416731856682" crossorigin="anonymous"></script>
-  <!-- Google Analytics GA4 — replace G-EF06GYEGGC with your Measurement ID -->
+  <!-- Google Analytics GA4 - replace G-EF06GYEGGC with your Measurement ID -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-EF06GYEGGC"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -157,7 +157,7 @@
       <div class="tool-box">
         <div class="tool-box-header">
           <h1>📋 PDF Compressor</h1>
-          <p>Reduce your PDF file size. Select a compression level and download — no file ever leaves your device.</p>
+          <p>Reduce your PDF file size. Select a compression level and download - no file ever leaves your device.</p>
         </div>
 
         <!-- Drop Zone -->
@@ -174,8 +174,8 @@
           <div style="display:flex;align-items:center;gap:12px;padding:14px;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm);">
             <span style="font-size:2rem;">📋</span>
             <div style="flex:1;min-width:0;">
-              <div style="font-weight:600;color:var(--text-1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" id="fileName">—</div>
-              <div style="font-size:.8rem;color:var(--text-3);margin-top:2px;" id="fileDetails">—</div>
+              <div style="font-weight:600;color:var(--text-1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" id="fileName">-</div>
+              <div style="font-size:.8rem;color:var(--text-3);margin-top:2px;" id="fileDetails">-</div>
             </div>
             <button class="btn btn-danger btn-sm" onclick="resetTool()">✕</button>
           </div>
@@ -217,7 +217,7 @@
 
           <!-- DPI info -->
           <div class="alert alert-info" style="font-size:.83rem;">
-            ℹ️ <strong>Note:</strong> Compression is achieved by re-rendering each page at a lower resolution. Results vary by PDF content — image-heavy PDFs compress significantly more than text-only PDFs.
+            ℹ️ <strong>Note:</strong> Compression is achieved by re-rendering each page at a lower resolution. Results vary by PDF content - image-heavy PDFs compress significantly more than text-only PDFs.
           </div>
 
           <button class="btn btn-primary btn-lg btn-full" id="compressBtn" onclick="compressPDF()">
@@ -237,12 +237,12 @@
             <div class="size-compare">
               <div class="size-box">
                 <div class="label">Original</div>
-                <div class="value" id="origSize">—</div>
+                <div class="value" id="origSize">-</div>
               </div>
               <div class="size-arrow">→</div>
               <div class="size-box saved">
                 <div class="label">Compressed</div>
-                <div class="value" id="compSize">—</div>
+                <div class="value" id="compSize">-</div>
               </div>
             </div>
             <div style="text-align:center;margin:4px 0;">
@@ -260,11 +260,11 @@
       <div class="tool-box">
         <h2>💡 PDF Compression Tips</h2>
         <ul class="tips-list">
-          <li>PDFs with <strong>many images</strong> compress the most — up to 80% reduction.</li>
+          <li>PDFs with <strong>many images</strong> compress the most - up to 80% reduction.</li>
           <li><strong>Text-only PDFs</strong> will see minimal compression since text is already compact.</li>
           <li>Use <strong>Light mode</strong> for important documents where quality matters (legal, medical).</li>
           <li>Use <strong>Heavy mode</strong> for drafts, references, or when email attachment size is the issue.</li>
-          <li>All processing is done <strong>entirely in your browser</strong> — your PDF stays private.</li>
+          <li>All processing is done <strong>entirely in your browser</strong> - your PDF stays private.</li>
         </ul>
       </div>
     </div>
@@ -498,7 +498,7 @@
         badge.style.background = '#d1fae5';
         badge.style.color      = '#065f46';
       } else {
-        badge.textContent   = `⚠️ No reduction achieved — PDF is likely already optimised.`;
+        badge.textContent   = `⚠️ No reduction achieved - PDF is likely already optimised.`;
         badge.style.background = '#fef9c3';
         badge.style.color      = '#92400e';
       }
