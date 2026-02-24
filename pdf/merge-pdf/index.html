@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/favicon.svg" />
+  <title>Merge PDF - Combine PDF Files Online Free | OneKit</title>
+  <meta name="description" content="Merge multiple PDF files into one online for free. Combine PDFs of any size instantly in your browser - no upload to servers, no account needed. Fast, private, and easy." />
+  <!-- SEO -->
+  <meta name="keywords" content="merge PDF, combine PDF online, join PDF files, merge PDF files free, PDF merger, combine multiple PDFs, merge PDF without upload, PDF joiner online, free PDF merge tool" />
+  <meta name="author" content="OneKit" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://onekitapp.com/pdf/merge-pdf" />
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://onekitapp.com/pdf/merge-pdf" />
+  <meta property="og:title" content="Merge PDF - Combine PDF Files Online Free | OneKit" />
+  <meta property="og:description" content="Combine multiple PDF files into one for free. Merge PDFs of any size in your browser - no upload, no account, completely private." />
+  <meta property="og:image" content="https://onekitapp.com/og-image.png" />
+  <meta property="og:site_name" content="OneKit" />
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Merge PDF - Combine PDF Files Online Free | OneKit" />
+  <meta name="twitter:description" content="Combine multiple PDF files into one for free. Merge PDFs of any size in your browser - no upload, no account, completely private." />
+  <meta name="twitter:image" content="https://onekitapp.com/og-image.png" />
+  <!-- Schema.org WebApplication -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Merge PDF - Combine PDF Files Online Free | OneKit",
+    "url": "https://onekitapp.com/pdf/merge-pdf",
+    "description": "Combine multiple PDF files into one for free. Merge PDFs of any size in your browser - no upload, no account, completely private.",
+    "publisher": {
+      "@type": "Organization",
+      "name": "OneKit",
+      "url": "https://onekitapp.com"
+    },
+    "applicationCategory": "UtilityApplication",
+    "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
+  }
+  </script>
+  <!-- Schema.org BreadcrumbList -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://onekitapp.com/"},
+      {"@type": "ListItem", "position": 2, "name": "PDF Tools", "item": "https://onekitapp.com/pdf/"},
+      {"@type": "ListItem", "position": 3, "name": "Merge PDF", "item": "https://onekitapp.com/pdf/merge-pdf"}
+    ]
+  }
+  </script>
+  <!-- Schema.org FAQPage -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How do I merge PDF files online for free?",
+        "acceptedAnswer": {"@type": "Answer", "text": "Upload two or more PDF files to OneKit's free Merge PDF tool. Drag to reorder them if needed, then click Merge PDF. Your combined PDF will be downloaded instantly - all processing happens in your browser with no file upload to any server."}
+      },
+      {
+        "@type": "Question",
+        "name": "Is there a file size limit for merging PDFs?",
+        "acceptedAnswer": {"@type": "Answer", "text": "OneKit's Merge PDF tool supports PDFs of any size. Since all processing happens locally in your browser, the only limit is your device's available memory. For very large files, a modern desktop browser is recommended."}
+      },
+      {
+        "@type": "Question",
+        "name": "Is it safe to merge PDFs with OneKit?",
+        "acceptedAnswer": {"@type": "Answer", "text": "Yes, completely safe. Your PDF files never leave your device - all merging is done locally in your browser using JavaScript. No files are uploaded to any server, ensuring full privacy."}
+      },
+      {
+        "@type": "Question",
+        "name": "Can I change the order of PDF pages before merging?",
+        "acceptedAnswer": {"@type": "Answer", "text": "Yes. After adding your PDF files you can drag and drop them to reorder before merging. The final PDF will follow the order shown on screen."}
+      }
+    ]
+  }
+  </script>
+  <link rel="stylesheet" href="/style.css" />
+  <script src="/utils.js" defer></script>
+  <!-- pdf-lib for PDF merging -->
+  <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7825416731856682" crossorigin="anonymous"></script>
+  <!-- Google Analytics GA4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-EF06GYEGGC"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-EF06GYEGGC');
+  </script>
+  <style>
+    .file-list { display:flex; flex-direction:column; gap:8px; margin-top:16px; }
+    .file-item {
+      display:flex; align-items:center; gap:12px;
+      padding:10px 14px;
+      background:var(--surface-2);
+      border:1px solid var(--border);
+      border-radius:var(--radius-sm);
+      cursor:grab;
+      user-select:none;
+    }
+    .file-item.drag-active { opacity:.5; }
+    .file-item.drag-over-target { border-color:var(--clr-primary); background:var(--clr-primary-glow); }
+    .file-item-icon { font-size:1.5rem; flex-shrink:0; }
+    .file-item-name { flex:1; min-width:0; font-weight:600; color:var(--text-1); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .file-item-size { font-size:.78rem; color:var(--text-3); flex-shrink:0; }
+    .file-item-remove { flex-shrink:0; }
+    .drag-handle { color:var(--text-3); font-size:1.1rem; cursor:grab; flex-shrink:0; }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a href="/" class="logo">
+      <img src="/logo.svg" alt="OneKit" class="logo-img" width="120" height="29" />
+    </a>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/text/word-counter">Word Counter</a>
+      <a href="/text/font-changer">Font Changer</a>
+      <a href="/dev/password-generator">Password</a>
+      <a href="/dev/qr-generator">QR Code</a>
+      <a href="/image/image-compressor">Image Tools</a>
+      <a href="/convert/unit-converter">Converter</a>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-btn" id="darkToggle" onclick="toggleDarkMode()" title="Toggle dark mode">🌙</button>
+      <button class="icon-btn nav-toggle" onclick="openMobileNav()">☰</button>
+    </div>
+  </div>
+</header>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobileNav">
+  <div class="mobile-nav-backdrop" onclick="closeMobileNav()"></div>
+  <div class="mobile-nav-drawer">
+    <button class="mobile-nav-close" onclick="closeMobileNav()">✕</button>
+    <a href="/">🏠 Home</a>
+    <a href="/text/word-counter">📄 Word Counter</a>
+    <a href="/text/font-changer">✍️ Font Changer</a>
+    <a href="/convert/unit-converter">📐 Unit Converter</a>
+    <a href="/dev/password-generator">🔒 Password Generator</a>
+    <a href="/dev/qr-generator">📱 QR Code Generator</a>
+    <a href="/pdf/image-to-pdf">🖼️ Image to PDF</a>
+    <a href="/pdf/pdf-compressor">🗜️ PDF Compressor</a>
+    <a href="/pdf/merge-pdf" class="active">📎 Merge PDF</a>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main>
+
+  <!-- TOP AD -->
+  <div class="ad-unit ad-top" data-ad="top"></div>
+
+  <!-- BREADCRUMB -->
+  <div class="breadcrumb">
+    <a href="/">🏠 Home</a>
+    <span>›</span>
+    <a href="/pdf/">PDF Tools</a>
+    <span>›</span>
+    <span>Merge PDF</span>
+  </div>
+
+  <!-- TOOL LAYOUT -->
+  <div class="tool-layout">
+
+    <!-- LEFT: TOOL -->
+    <div>
+      <div class="tool-box">
+        <div class="tool-box-header">
+          <h1>📎 Merge PDF</h1>
+          <p>Combine multiple PDF files into one. Add your PDFs, drag to reorder, then download - no file ever leaves your device.</p>
+        </div>
+
+        <!-- Drop Zone -->
+        <div class="drop-zone" id="dropZone">
+          <input type="file" id="fileInput" accept="application/pdf" multiple
+                 onchange="addFiles(this.files)" />
+          <div class="drop-icon">📎</div>
+          <div class="drop-text"><strong>Click to upload</strong> or drag &amp; drop PDF files</div>
+          <div class="drop-hint">PDF files only - any size - multiple files supported</div>
+        </div>
+
+        <!-- File List -->
+        <div id="fileListSection" style="display:none;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-top:16px;margin-bottom:4px;">
+            <span style="font-size:.85rem;color:var(--text-2);">Drag to reorder pages</span>
+            <button class="btn btn-sm" onclick="document.getElementById('fileInput').click()">+ Add more PDFs</button>
+          </div>
+          <div class="file-list" id="fileList"></div>
+
+          <div style="margin-top:20px;padding-top:20px;border-top:1px solid var(--border);">
+            <div class="alert alert-info" style="font-size:.83rem;margin-bottom:16px;">
+              ℹ️ <strong>Note:</strong> PDFs of any size are supported. All processing is done locally in your browser - your files stay private.
+            </div>
+            <button class="btn btn-primary btn-lg btn-full" id="mergeBtn" onclick="mergePDFs()">
+              📎 Merge PDFs &amp; Download
+            </button>
+          </div>
+
+          <!-- Progress -->
+          <div id="progressSection" style="display:none;margin-top:16px;">
+            <div style="font-size:.85rem;color:var(--text-2);margin-bottom:6px;" id="progressText">Merging...</div>
+            <div class="progress-wrap">
+              <div class="progress-bar" id="progressBar" style="width:0%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MID AD -->
+      <div class="ad-unit ad-mid" data-ad="mid"></div>
+
+      <!-- Tips -->
+      <div class="tool-box">
+        <h2>💡 PDF Merge Tips</h2>
+        <ul class="tips-list">
+          <li>Add <strong>as many PDFs as you need</strong> - there is no file count limit.</li>
+          <li><strong>Drag and drop</strong> the file cards to change the order before merging.</li>
+          <li>All page sizes and orientations are preserved in the merged output.</li>
+          <li>All processing happens <strong>entirely in your browser</strong> - nothing is uploaded.</li>
+          <li>Use the <strong>PDF Compressor</strong> after merging if the combined file is too large.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- RIGHT: SIDEBAR -->
+    <aside class="sidebar">
+
+      <!-- Sidebar Ad -->
+      <div class="ad-unit ad-rect" data-ad="rect-1"></div>
+
+      <!-- When to merge -->
+      <div class="tool-box">
+        <h3>📌 When to Merge PDFs</h3>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:.83rem;color:var(--text-2);">
+          <div style="padding:8px;background:var(--surface-2);border-radius:var(--radius-xs);">📑 Combine chapters into one document</div>
+          <div style="padding:8px;background:var(--surface-2);border-radius:var(--radius-xs);">📧 Send multiple files as one email attachment</div>
+          <div style="padding:8px;background:var(--surface-2);border-radius:var(--radius-xs);">🗂️ Merge scanned pages into a single PDF</div>
+          <div style="padding:8px;background:var(--surface-2);border-radius:var(--radius-xs);">📝 Combine a report with its appendices</div>
+          <div style="padding:8px;background:var(--surface-2);border-radius:var(--radius-xs);">🧾 Join invoices and receipts together</div>
+        </div>
+      </div>
+
+      <!-- Related Tools -->
+      <div class="tool-box">
+        <h3>Related Tools</h3>
+        <div class="related-tools">
+          <a href="/pdf/pdf-compressor" class="related-item">
+            <div class="related-icon" style="background:#fee2e2;">🗜️</div>
+            <div class="related-item-text">
+              <strong>PDF Compressor</strong>
+              <span>Reduce PDF file size</span>
+            </div>
+          </a>
+          <a href="/pdf/image-to-pdf" class="related-item">
+            <div class="related-icon" style="background:#dbeafe;">🖼️</div>
+            <div class="related-item-text">
+              <strong>Image to PDF</strong>
+              <span>Convert images to PDF</span>
+            </div>
+          </a>
+          <a href="/pdf/pdf-to-jpg" class="related-item">
+            <div class="related-icon" style="background:#dcfce7;">🖼️</div>
+            <div class="related-item-text">
+              <strong>PDF to JPG</strong>
+              <span>Extract pages as images</span>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- FAQ -->
+      <div class="tool-box">
+        <h3>Frequently Asked Questions</h3>
+        <div style="display:flex;flex-direction:column;gap:14px;font-size:.85rem;">
+          <div>
+            <strong style="color:var(--text-1);">Is there a file size limit?</strong>
+            <p style="margin:4px 0 0;color:var(--text-2);">No. OneKit's Merge PDF supports files of any size. The only constraint is your device's available memory.</p>
+          </div>
+          <div>
+            <strong style="color:var(--text-1);">Are my PDFs uploaded anywhere?</strong>
+            <p style="margin:4px 0 0;color:var(--text-2);">Never. All merging happens locally in your browser using JavaScript. Your files are completely private.</p>
+          </div>
+          <div>
+            <strong style="color:var(--text-1);">How many PDFs can I merge?</strong>
+            <p style="margin:4px 0 0;color:var(--text-2);">As many as you need. Add files one batch at a time using the "Add more PDFs" button.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar Ad 2 -->
+      <div class="ad-unit ad-rect" data-ad="rect-2"></div>
+
+    </aside>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="/" class="logo" style="color:#fff;">
+          <img src="/logo-white.svg" alt="OneKit" class="logo-img logo-img-white" width="120" height="29" />
+        </a>
+        <p style="margin-top:12px;">Free, fast, privacy-friendly tools for everyday tasks.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Text Tools</h4>
+        <ul>
+          <li><a href="/text/word-counter">Word Counter</a></li>
+          <li><a href="/text/font-changer">Font Changer</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Converters</h4>
+        <ul>
+          <li><a href="/convert/unit-converter">Unit Converter</a></li>
+          <li><a href="/dev/qr-generator">QR Code Generator</a></li>
+          <li><a href="/pdf/image-to-pdf">Image to PDF</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>PDF Tools</h4>
+        <ul>
+          <li><a href="/pdf/merge-pdf">Merge PDF</a></li>
+          <li><a href="/pdf/pdf-compressor">PDF Compressor</a></li>
+          <li><a href="/pdf/pdf-to-jpg">PDF to JPG</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 OneKit. All rights reserved.</span>
+      <div class="footer-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms</a>
+        <a href="#">Contact</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // File list state: [{file, id}]
+  let fileItems = [];
+  let idCounter = 0;
+
+  // Drag/drop onto drop zone
+  const dropZone = document.getElementById('dropZone');
+  dropZone.addEventListener('dragover',  e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('drag-over');
+    const pdfs = Array.from(e.dataTransfer.files).filter(f => f.type === 'application/pdf');
+    if (!pdfs.length) { showToast('Please drop PDF files only.', 'warning'); return; }
+    addFiles(pdfs);
+  });
+
+  function addFiles(files) {
+    const pdfs = Array.from(files).filter(f => f.type === 'application/pdf');
+    if (!pdfs.length) { showToast('Please select PDF files only.', 'warning'); return; }
+    pdfs.forEach(f => fileItems.push({ file: f, id: idCounter++ }));
+    renderFileList();
+    document.getElementById('fileInput').value = '';
+  }
+
+  function removeFile(id) {
+    fileItems = fileItems.filter(item => item.id !== id);
+    renderFileList();
+  }
+
+  function renderFileList() {
+    const list = document.getElementById('fileList');
+    const section = document.getElementById('fileListSection');
+
+    if (!fileItems.length) {
+      section.style.display = 'none';
+      return;
+    }
+    section.style.display = 'block';
+
+    list.innerHTML = fileItems.map((item, idx) => `
+      <div class="file-item" draggable="true"
+           data-idx="${idx}"
+           ondragstart="onDragStart(event,${idx})"
+           ondragover="onDragOver(event,${idx})"
+           ondragleave="onDragLeave(event)"
+           ondrop="onDrop(event,${idx})">
+        <span class="drag-handle" title="Drag to reorder">&#8597;</span>
+        <span class="file-item-icon">📋</span>
+        <span class="file-item-name" title="${escHtml(item.file.name)}">${escHtml(item.file.name)}</span>
+        <span class="file-item-size">${formatBytes(item.file.size)}</span>
+        <button class="btn btn-danger btn-sm file-item-remove" onclick="removeFile(${item.id})">✕</button>
+      </div>
+    `).join('');
+  }
+
+  function escHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // Drag-to-reorder within list
+  let dragSrcIdx = null;
+
+  function onDragStart(e, idx) {
+    dragSrcIdx = idx;
+    e.currentTarget.classList.add('drag-active');
+    e.dataTransfer.effectAllowed = 'move';
+  }
+
+  function onDragOver(e, idx) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    if (idx !== dragSrcIdx) e.currentTarget.classList.add('drag-over-target');
+  }
+
+  function onDragLeave(e) {
+    e.currentTarget.classList.remove('drag-over-target');
+  }
+
+  function onDrop(e, targetIdx) {
+    e.preventDefault();
+    e.currentTarget.classList.remove('drag-over-target');
+    if (dragSrcIdx === null || dragSrcIdx === targetIdx) return;
+    const moved = fileItems.splice(dragSrcIdx, 1)[0];
+    fileItems.splice(targetIdx, 0, moved);
+    dragSrcIdx = null;
+    renderFileList();
+  }
+
+  async function mergePDFs() {
+    if (fileItems.length < 2) { showToast('Add at least 2 PDF files to merge.', 'warning'); return; }
+
+    const btn      = document.getElementById('mergeBtn');
+    const progSec  = document.getElementById('progressSection');
+    const progBar  = document.getElementById('progressBar');
+    const progText = document.getElementById('progressText');
+
+    btn.disabled = true;
+    btn.textContent = '⏳ Merging...';
+    progSec.style.display = 'block';
+    progBar.style.width = '0%';
+
+    try {
+      const { PDFDocument } = PDFLib;
+      const merged = await PDFDocument.create();
+
+      for (let i = 0; i < fileItems.length; i++) {
+        progText.textContent = `Processing file ${i + 1} of ${fileItems.length}: ${fileItems[i].file.name}`;
+        progBar.style.width = ((i / fileItems.length) * 90) + '%';
+
+        const bytes  = await fileItems[i].file.arrayBuffer();
+        const srcPdf = await PDFDocument.load(bytes, { ignoreEncryption: true });
+        const pages  = await merged.copyPages(srcPdf, srcPdf.getPageIndices());
+        pages.forEach(p => merged.addPage(p));
+
+        await new Promise(r => setTimeout(r, 0)); // keep UI responsive
+      }
+
+      progText.textContent = 'Finalising merged PDF...';
+      progBar.style.width  = '95%';
+
+      const pdfBytes = await merged.save();
+      const blob     = new Blob([pdfBytes], { type: 'application/pdf' });
+
+      progBar.style.width = '100%';
+      progText.textContent = 'Done!';
+
+      showDownloadModal(function() {
+        downloadBlob(blob, 'merged.pdf');
+        showToast(`Merged ${fileItems.length} PDFs successfully!`);
+      });
+
+    } catch (err) {
+      showToast('Merge failed: ' + err.message, 'error');
+      console.error(err);
+    } finally {
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.textContent = '📎 Merge PDFs & Download';
+        progSec.style.display = 'none';
+        progBar.style.width = '0%';
+      }, 1200);
+    }
+  }
+</script>
+
+</body>
+</html>
