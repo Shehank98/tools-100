@@ -67,10 +67,22 @@ export async function seed() {
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
+  // Connection-level errors (no reachable database) are treated as a no-op
+  // exit 0: this happens when `npm run seed` is run at BUILD time, where the
+  // database is not reachable yet. The app auto-seeds at runtime on boot, so
+  // there is nothing to do here and the build must not fail.
+  const CONN_ERRORS = ['ENOTFOUND', 'ECONNREFUSED', 'ETIMEDOUT', 'EAI_AGAIN'];
   seed()
     .then(() => pool.end())
     .then(() => process.exit(0))
     .catch((err) => {
+      if (CONN_ERRORS.includes(err.code)) {
+        console.warn(
+          `[seed] database not reachable (${err.code}). Skipping. ` +
+          'The app seeds automatically at runtime on boot; do not run seed as a build step.'
+        );
+        process.exit(0);
+      }
       console.error('[seed] failed:', err);
       process.exit(1);
     });
