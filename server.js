@@ -6,8 +6,9 @@ import connectPgSimple from 'connect-pg-simple';
 import cookieParser from 'cookie-parser';
 
 import { config, isProd } from './src/config/index.js';
-import { pool } from './src/db/pool.js';
+import { pool, query } from './src/db/pool.js';
 import { runMigrations } from './src/db/migrate.js';
+import { seed } from './src/db/seed.js';
 import { adminLocals } from './src/middleware/auth.js';
 import { scheduleDiscovery } from './src/services/discovery.js';
 
@@ -97,6 +98,23 @@ async function start() {
     } catch (err) {
       console.error('[startup] migrations failed:', err.message);
       // Don't crash the whole app if the DB is briefly unavailable at boot.
+    }
+  }
+
+  // Auto-seed: populate the catalog when the tools table is empty (first
+  // deploy), or when RESEED_ON_BOOT is set. No manual `npm run seed` needed.
+  if (config.autoSeed) {
+    try {
+      const { rows } = await query('SELECT COUNT(*)::int AS n FROM tools');
+      const isEmpty = rows[0].n === 0;
+      if (isEmpty || config.reseedOnBoot) {
+        console.log(`[startup] auto-seeding catalog (${isEmpty ? 'empty database' : 'RESEED_ON_BOOT'})...`);
+        await seed();
+      } else {
+        console.log(`[startup] catalog already has ${rows[0].n} tools, skipping auto-seed`);
+      }
+    } catch (err) {
+      console.error('[startup] auto-seed failed:', err.message);
     }
   }
 

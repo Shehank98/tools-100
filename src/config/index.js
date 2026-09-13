@@ -24,6 +24,11 @@ export const config = {
     enabled: bool(process.env.DISCOVERY_ENABLED, false),
     cron: process.env.DISCOVERY_CRON || '0 7 * * *',
   },
+  // Auto-seed the catalog on boot when the tools table is empty (so a fresh
+  // deploy is populated with no manual `npm run seed` step). RESEED_ON_BOOT
+  // forces a catalog upsert even when the table already has rows.
+  autoSeed: bool(process.env.AUTO_SEED, true),
+  reseedOnBoot: bool(process.env.RESEED_ON_BOOT, false),
 };
 
 export const isProd = config.env === 'production';
