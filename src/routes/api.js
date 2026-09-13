@@ -18,7 +18,6 @@ router.get('/search', async (req, res) => {
         name: t.name,
         slug: t.slug,
         category: t.category_name || '',
-        icon: t.category_icon || '🔧',
       })),
     });
   } catch (err) {

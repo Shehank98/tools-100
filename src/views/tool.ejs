@@ -13,26 +13,20 @@
 
     <div class="tool-detail">
       <div>
-        <section class="panel">
-          <div class="tool-hero-top">
-            <div class="big-ico">
-              <% if (tool.icon_url) { %><img src="<%= tool.icon_url %>" alt="" width="40" height="40" /><% } else { %><%= tool.category_icon || '🔧' %><% } %>
-            </div>
-            <div>
-              <h1><%= tool.name %></h1>
-              <div class="tool-meta-row">
-                <% if (tool.category_name) { %><span>📂 <a href="/category/<%= tool.category_slug %>"><%= tool.category_name %></a></span><% } %>
-                <span>👆 <%= tool.click_count.toLocaleString() %> opens</span>
-                <span>🔗 <%= hostname %></span>
-              </div>
-            </div>
+        <section class="panel tool-hero">
+          <% if (tool.category_name) { %><span class="tool-cat"><%= tool.category_name %></span><% } %>
+          <h1><%= tool.name %></h1>
+          <div class="tool-meta-row">
+            <span><%= tool.click_count.toLocaleString() %> opens</span>
+            <span><%= hostname %></span>
+            <span>Free</span>
           </div>
 
-          <p style="font-size:1.05rem; color:var(--text-soft);"><%= tool.description %></p>
+          <p style="font-size:1.02rem; color:var(--text-soft);"><%= tool.description %></p>
 
           <div style="margin:22px 0;">
-            <a class="btn btn-primary" href="/go/<%= tool.slug %>" rel="nofollow noopener" target="_blank" style="font-size:1.05rem; padding:14px 26px;">
-              Open <%= tool.name %> ↗
+            <a class="btn btn-primary" href="/go/<%= tool.slug %>" rel="nofollow noopener" target="_blank" style="font-size:1rem; padding:13px 26px;">
+              Open <%= tool.name %>
             </a>
           </div>
 
@@ -52,7 +46,7 @@
           <div class="section-head"><div><h2>Related tools</h2></div></div>
           <div class="tool-grid">
             <% related.forEach(function (r) { %>
-              <%- include('partials/tool-card', { tool: r }) %>
+              <%- include('partials/tool-card', { tool: r, hideCat: true }) %>
             <% }); %>
           </div>
         </section>
@@ -62,11 +56,11 @@
       <aside class="aside-sticky">
         <div class="panel">
           <h2 style="font-size:1rem;">Quick facts</h2>
-          <div class="stat-line"><span>Category</span><span><%= tool.category_name || '—' %></span></div>
+          <div class="stat-line"><span>Category</span><span><%= tool.category_name || 'General' %></span></div>
           <div class="stat-line"><span>Price</span><span>Free</span></div>
           <div class="stat-line"><span>Opens</span><span><%= tool.click_count.toLocaleString() %></span></div>
           <div class="stat-line"><span>Added</span><span><%= addedDate %></span></div>
-          <a class="btn btn-primary btn-block" style="margin-top:16px;" href="/go/<%= tool.slug %>" rel="nofollow noopener" target="_blank">Launch tool ↗</a>
+          <a class="btn btn-primary btn-block" style="margin-top:16px;" href="/go/<%= tool.slug %>" rel="nofollow noopener" target="_blank">Launch tool</a>
         </div>
         <%- include('partials/ad', { variant: 'sidebar', slotId: '' }) %>
       </aside>

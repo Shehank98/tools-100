@@ -333,7 +333,7 @@ function validateTool(data) {
 function readCategoryForm(body) {
   return {
     name: (body.name || '').trim(),
-    icon: (body.icon || '').trim() || '🧰',
+    icon: (body.icon || '').trim(),
     description: (body.description || '').trim(),
     sort_order: parseInt(body.sort_order, 10) || 0,
   };

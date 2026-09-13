@@ -7,19 +7,19 @@
   %>
   <div class="admin-head">
     <h1><%= isEdit ? 'Edit tool' : 'New tool' %></h1>
-    <a class="btn btn-ghost" href="/admin/tools">← Back to tools</a>
+    <a class="btn btn-ghost" href="/admin/tools">Back to tools</a>
   </div>
 
   <% if (error) { %><div class="alert alert-error"><%= error %></div><% } %>
 
   <form action="<%= action %>" method="post" class="panel form-grid" style="max-width:720px;">
     <div class="field">
-      <label for="name">Name <span class="hint">— required</span></label>
+      <label for="name">Name <span class="hint">(required)</span></label>
       <input type="text" id="name" name="name" value="<%= t.name || '' %>" required maxlength="120" />
     </div>
     <div class="field">
-      <label for="url">URL <span class="hint">— required, the destination link</span></label>
-      <input type="url" id="url" name="url" value="<%= t.url || '' %>" required placeholder="https://…" />
+      <label for="url">URL <span class="hint">(required, the destination link)</span></label>
+      <input type="url" id="url" name="url" value="<%= t.url || '' %>" required placeholder="https://" />
     </div>
     <div class="field">
       <label for="description">Description</label>
@@ -29,20 +29,16 @@
       <div class="field">
         <label for="category_id">Category</label>
         <select id="category_id" name="category_id">
-          <option value="">— None —</option>
+          <option value="">No category</option>
           <% categories.forEach(function (c) { %>
-            <option value="<%= c.id %>" <%= String(t.category_id) === String(c.id) ? 'selected' : '' %>><%= c.icon %> <%= c.name %></option>
+            <option value="<%= c.id %>" <%= String(t.category_id) === String(c.id) ? 'selected' : '' %>><%= c.name %></option>
           <% }); %>
         </select>
       </div>
       <div class="field">
-        <label for="tags">Tags <span class="hint">— comma separated</span></label>
+        <label for="tags">Tags <span class="hint">(comma separated)</span></label>
         <input type="text" id="tags" name="tags" value="<%= tagsStr %>" placeholder="pdf, convert, image" />
       </div>
-    </div>
-    <div class="field">
-      <label for="icon_url">Icon URL <span class="hint">— optional, else category icon is used</span></label>
-      <input type="url" id="icon_url" name="icon_url" value="<%= t.icon_url || '' %>" placeholder="https://…/icon.png" />
     </div>
     <div class="form-row">
       <label class="field-check"><input type="checkbox" name="is_featured" <%= t.is_featured ? 'checked' : '' %> /> Featured</label>

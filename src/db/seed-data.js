@@ -1,18 +1,18 @@
 // Curated seed content so the site has real, unique data from day one
-// (needed for AdSense approval — no lorem ipsum, no placeholders).
+// (needed for AdSense approval, no lorem ipsum, no placeholders).
 // URLs point at well-known free online tools.
 
 export const categories = [
-  { name: 'PDF Tools',        icon: '📄', sort_order: 1,  description: 'Convert, compress, merge, split and edit PDF files online for free.' },
-  { name: 'Image Tools',      icon: '🖼️', sort_order: 2,  description: 'Compress, resize, convert and edit images right in your browser.' },
-  { name: 'Converters',       icon: '🔄', sort_order: 3,  description: 'Convert files, units, and currencies between hundreds of formats.' },
-  { name: 'Text Tools',       icon: '✍️', sort_order: 4,  description: 'Count words, compare text, change case and clean up your writing.' },
-  { name: 'Calculators',      icon: '🧮', sort_order: 5,  description: 'Free calculators for math, finance, health and everyday problems.' },
-  { name: 'Developer Tools',  icon: '💻', sort_order: 6,  description: 'Format JSON, test regex, encode data and other coding helpers.' },
-  { name: 'SEO & Marketing',  icon: '📈', sort_order: 7,  description: 'Research keywords, audit pages and grow your organic traffic.' },
-  { name: 'Security & Privacy', icon: '🔒', sort_order: 8, description: 'Check breaches, generate passwords and keep your data safe.' },
-  { name: 'Productivity',     icon: '⚡', sort_order: 9,  description: 'Shorten links, generate QR codes and get more done, faster.' },
-  { name: 'Color & Design',   icon: '🎨', sort_order: 10, description: 'Build color palettes, pick fonts and find free design assets.' },
+  { name: 'PDF Tools', sort_order: 1,  description: 'Convert, compress, merge, split and edit PDF files online for free.' },
+  { name: 'Image Tools', sort_order: 2,  description: 'Compress, resize, convert and edit images right in your browser.' },
+  { name: 'Converters', sort_order: 3,  description: 'Convert files, units, and currencies between hundreds of formats.' },
+  { name: 'Text Tools', sort_order: 4,  description: 'Count words, compare text, change case and clean up your writing.' },
+  { name: 'Calculators', sort_order: 5,  description: 'Free calculators for math, finance, health and everyday problems.' },
+  { name: 'Developer Tools', sort_order: 6,  description: 'Format JSON, test regex, encode data and other coding helpers.' },
+  { name: 'SEO & Marketing', sort_order: 7,  description: 'Research keywords, audit pages and grow your organic traffic.' },
+  { name: 'Security & Privacy', sort_order: 8, description: 'Check breaches, generate passwords and keep your data safe.' },
+  { name: 'Productivity', sort_order: 9,  description: 'Shorten links, generate QR codes and get more done, faster.' },
+  { name: 'Color & Design', sort_order: 10, description: 'Build color palettes, pick fonts and find free design assets.' },
 ];
 
 // category = the category `name` above.
@@ -23,7 +23,7 @@ export const tools = [
     description: 'Convert each page of a PDF into a high-quality JPG image, or extract all embedded images. Free, no signup, works in the browser.' },
   { name: 'Compress PDF', category: 'PDF Tools', url: 'https://smallpdf.com/compress-pdf',
     tags: ['pdf', 'compress', 'reduce size'],
-    description: 'Shrink the file size of a PDF while keeping it readable — perfect for email attachments and uploads with size limits.' },
+    description: 'Shrink the file size of a PDF while keeping it readable, perfect for email attachments and uploads with size limits.' },
   { name: 'Merge PDF', category: 'PDF Tools', url: 'https://www.ilovepdf.com/merge_pdf',
     tags: ['pdf', 'merge', 'combine'],
     description: 'Combine multiple PDF files into a single document in the order you want. Drag, drop, reorder and download.' },
@@ -32,7 +32,7 @@ export const tools = [
     description: 'Turn a PDF into an editable Microsoft Word (.docx) document while preserving layout, text and images.' },
   { name: 'Edit PDF', category: 'PDF Tools', url: 'https://www.sejda.com/pdf-editor',
     tags: ['pdf', 'edit', 'annotate'],
-    description: 'Add text, shapes, images, links and annotations to a PDF and rearrange pages — no desktop software required.' },
+    description: 'Add text, shapes, images, links and annotations to a PDF and rearrange pages, no desktop software required.' },
 
   // ── Image Tools ──
   { name: 'Image Compressor', category: 'Image Tools', url: 'https://tinypng.com', featured: true,
@@ -43,10 +43,10 @@ export const tools = [
     description: 'Automatically remove the background from any photo in seconds using AI, and download a clean transparent PNG.' },
   { name: 'Image Optimizer', category: 'Image Tools', url: 'https://squoosh.app',
     tags: ['image', 'optimize', 'webp', 'avif'],
-    description: 'Compare image formats and quality side by side, then export smaller WebP, AVIF or JPEG files — all offline in your browser.' },
+    description: 'Compare image formats and quality side by side, then export smaller WebP, AVIF or JPEG files, all offline in your browser.' },
   { name: 'Online Photo Editor', category: 'Image Tools', url: 'https://www.photopea.com',
     tags: ['image', 'editor', 'photoshop', 'psd'],
-    description: 'A free, full-featured photo editor that opens PSD files and works much like Photoshop — right in your browser.' },
+    description: 'A free, full-featured photo editor that opens PSD files and works much like Photoshop, right in your browser.' },
   { name: 'Resize Image', category: 'Image Tools', url: 'https://www.iloveimg.com/resize-image',
     tags: ['image', 'resize', 'dimensions'],
     description: 'Change the width and height of images in bulk by pixels or percentage while keeping the aspect ratio.' },
@@ -54,7 +54,7 @@ export const tools = [
   // ── Converters ──
   { name: 'File Converter', category: 'Converters', url: 'https://cloudconvert.com', featured: true,
     tags: ['convert', 'file', 'format'],
-    description: 'Convert between 200+ formats — documents, images, audio, video, ebooks and more — from a single online tool.' },
+    description: 'Convert between 200+ formats, documents, images, audio, video, ebooks and more, from a single online tool.' },
   { name: 'Any File Converter', category: 'Converters', url: 'https://convertio.co',
     tags: ['convert', 'file', 'format'],
     description: 'Drag any file in and pick the format you need. Supports hundreds of conversions with no software to install.' },
@@ -168,7 +168,7 @@ export const tools = [
     description: 'Jot down and auto-save quick notes in the browser without installing anything.' },
   { name: 'Screen Recorder', category: 'Productivity', url: 'https://www.loom.com',
     tags: ['screen', 'record', 'video', 'productivity'],
-    description: 'Record your screen and camera and instantly share a link — great for demos and quick explainers.' },
+    description: 'Record your screen and camera and instantly share a link, great for demos and quick explainers.' },
 
   // ── Color & Design ──
   { name: 'Color Palette Generator', category: 'Color & Design', url: 'https://coolors.co', featured: true,

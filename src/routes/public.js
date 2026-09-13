@@ -13,23 +13,37 @@ const router = express.Router();
 // ── Homepage ──
 router.get('/', async (req, res, next) => {
   try {
-    const [categories, trending, recent] = await Promise.all([
+    const [categories, allTools] = await Promise.all([
       Categories.listWithCounts(),
-      Tools.trending(8),
-      Tools.recent(8),
+      Tools.allActive(),
     ]);
-    const totalTools = categories.reduce((n, c) => n + Number(c.tool_count || 0), 0);
+
+    // Group tools under their category for the directory layout (iLovePDF-style).
+    const byCat = new Map();
+    for (const t of allTools) {
+      if (!t.category_id) continue;
+      if (!byCat.has(t.category_id)) byCat.set(t.category_id, []);
+      byCat.get(t.category_id).push(t);
+    }
+    const groups = categories
+      .map((category) => ({
+        category,
+        tools: (byCat.get(category.id) || []).sort(
+          (a, b) => (b.is_featured - a.is_featured) || a.name.localeCompare(b.name)
+        ),
+      }))
+      .filter((g) => g.tools.length > 0);
+
+    const totalTools = allTools.length;
     res.render('home', {
       nav: 'home',
       meta: buildMeta({
-        description: `Search ${totalTools}+ free online tools in one clean, fast directory — PDF, image, text, converter, calculator, developer, SEO and security tools. ${config.siteTagline}`,
+        description: `Browse ${totalTools}+ free online tools in one clean, fast directory: PDF, image, text, converter, calculator, developer, SEO and security tools. ${config.siteTagline}`,
         jsonLd: [websiteJsonLd()],
       }),
-      categories,
-      trending,
-      recent,
+      groups,
       totalTools,
-      totalCategories: categories.length,
+      totalCategories: groups.length,
     });
   } catch (err) { next(err); }
 });
@@ -47,7 +61,7 @@ router.get('/category/:slug', async (req, res, next) => {
     res.render('category', {
       nav: 'categories',
       meta: buildMeta({
-        title: `${category.name} — Free Online ${category.name}`,
+        title: `Free ${category.name}`,
         description: `${category.description} Browse ${tools.length} free ${category.name.toLowerCase()} on ${config.siteName}.`,
         path: `/category/${category.slug}`,
         jsonLd: [
@@ -82,7 +96,7 @@ router.get('/tool/:slug', async (req, res, next) => {
     res.render('tool', {
       nav: '',
       meta: buildMeta({
-        title: `${tool.name} — Free Online Tool`,
+        title: `${tool.name}, Free Online Tool`,
         description: tool.description,
         path: `/tool/${tool.slug}`,
         ogType: 'article',

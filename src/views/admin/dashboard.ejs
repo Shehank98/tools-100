@@ -13,7 +13,7 @@
     <div class="stat-card"><div class="n"><%= stats.total_categories %></div><div class="l">Categories</div></div>
     <div class="stat-card">
       <div class="n"><%= stats.pending_submissions %></div>
-      <div class="l">Pending review <% if (stats.pending_submissions > 0) { %><a href="/admin/submissions">→ review</a><% } %></div>
+      <div class="l">Pending review <% if (stats.pending_submissions > 0) { %><a href="/admin/submissions">review</a><% } %></div>
     </div>
     <div class="stat-card"><div class="n"><%= Number(stats.total_clicks).toLocaleString() %></div><div class="l">Total tool opens</div></div>
   </div>
@@ -29,7 +29,7 @@
           <% topClicked.forEach(function (t) { %>
             <tr>
               <td><a href="/tool/<%= t.slug %>" target="_blank"><%= t.name %></a></td>
-              <td class="muted"><%= t.category_name || '—' %></td>
+              <td class="muted"><%= t.category_name || '-' %></td>
               <td><strong><%= Number(t.click_count).toLocaleString() %></strong></td>
             </tr>
           <% }); %>
@@ -42,7 +42,7 @@
         <thead><tr><th>Searches with no results</th><th>Times</th></tr></thead>
         <tbody>
           <% if (!missed.length) { %>
-            <tr><td colspan="2" class="muted">Nothing missed in the last 30 days. 🎉</td></tr>
+            <tr><td colspan="2" class="muted">Nothing missed in the last 30 days.</td></tr>
           <% } %>
           <% missed.forEach(function (m) { %>
             <tr><td><%= m.query %></td><td><%= m.n %></td></tr>

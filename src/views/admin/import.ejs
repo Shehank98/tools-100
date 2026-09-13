@@ -1,7 +1,7 @@
 <%- include('partials/top') %>
   <div class="admin-head">
     <h1>Bulk import tools</h1>
-    <a class="btn btn-ghost" href="/admin/tools">← Back to tools</a>
+    <a class="btn btn-ghost" href="/admin/tools">Back to tools</a>
   </div>
 
   <% if (error) { %><div class="alert alert-error"><%= error %></div><% } %>
@@ -23,7 +23,7 @@
   <div class="panel" style="max-width:680px;">
     <form action="/admin/import" method="post" enctype="multipart/form-data" class="form-grid">
       <div class="field">
-        <label for="file">CSV file <span class="hint">— max 2 MB</span></label>
+        <label for="file">CSV file <span class="hint">(max 2 MB)</span></label>
         <input type="file" id="file" name="file" accept=".csv,text/csv" required />
       </div>
       <div class="form-actions">

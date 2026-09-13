@@ -5,83 +5,54 @@
   <!-- HERO + SEARCH -->
   <section class="hero">
     <div class="container">
-      <span class="hero-badge">✨ <%= totalTools %> free tools · <%= totalCategories %> categories</span>
-      <h1>Every online tool,<br /><span class="grad">in one place.</span></h1>
-      <p class="lead">Search a hand-curated directory of the best free tools for PDFs, images, text, code, SEO and more — no signup, no clutter.</p>
+      <h1>Every online tool, in one place</h1>
+      <p class="lead">A hand-curated directory of the best free tools for PDFs, images, text, code, SEO and more. No signup, no clutter.</p>
 
       <div class="search" data-search>
-        <div class="search-input-wrap">
-          <span class="search-icon">🔍</span>
-          <input type="search" id="q" placeholder="Search tools… try “pdf to jpg” or “compress image”"
-                 autocomplete="off" aria-label="Search tools" data-search-input />
-        </div>
+        <input type="search" id="q" placeholder="Search tools, e.g. pdf to jpg, compress image, word counter"
+               autocomplete="off" aria-label="Search tools" data-search-input />
         <div class="search-results" data-search-results role="listbox"></div>
-        <p class="search-hint">Popular: <a href="/search?q=pdf">PDF</a> · <a href="/search?q=image">Image</a> · <a href="/search?q=converter">Converter</a> · <a href="/search?q=password">Password</a></p>
+        <p class="search-hint">Popular: <a href="/search?q=pdf">PDF</a>, <a href="/search?q=image">Image</a>, <a href="/search?q=converter">Converter</a>, <a href="/search?q=password">Password</a></p>
       </div>
+
+      <p class="hero-stats"><%= totalTools %> tools across <%= totalCategories %> categories</p>
     </div>
   </section>
 
-  <!-- HEADER BANNER AD (below nav/hero, never above search) -->
+  <!-- CATEGORY QUICK-NAV -->
+  <nav class="cat-quicknav" aria-label="Tool categories">
+    <div class="container">
+      <div class="track">
+        <% groups.forEach(function (g) { %>
+          <a href="#<%= g.category.slug %>"><%= g.category.name %></a>
+        <% }); %>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HEADER BANNER AD (below nav, never above search) -->
   <div class="container">
     <%- include('partials/ad', { variant: 'banner', slotId: '' }) %>
   </div>
 
-  <!-- CATEGORIES -->
-  <section class="section" id="categories">
-    <div class="container">
-      <div class="section-head">
-        <div>
-          <h2>Browse by category</h2>
-          <p>Find the right tool by the job you need done.</p>
+  <!-- DIRECTORY: every category with its tools -->
+  <div class="container" id="categories">
+    <% groups.forEach(function (g, gi) { %>
+      <section class="dir-block" id="<%= g.category.slug %>">
+        <div class="dir-head">
+          <h2><%= g.category.name %></h2>
+          <a href="/category/<%= g.category.slug %>">View all <%= g.tools.length %></a>
         </div>
-      </div>
-      <div class="cat-grid">
-        <% categories.forEach(function (category) { %>
-          <%- include('partials/category-card', { category: category }) %>
-        <% }); %>
-      </div>
-    </div>
-  </section>
-
-  <!-- TRENDING -->
-  <% if (trending.length) { %>
-  <section class="section" id="trending" style="padding-top:8px;">
-    <div class="container">
-      <div class="section-head">
-        <div>
-          <h2>🔥 Trending tools</h2>
-          <p>The tools people are clicking most right now.</p>
+        <p class="dir-desc"><%= g.category.description %></p>
+        <div class="tool-grid">
+          <% g.tools.forEach(function (tool) { %>
+            <%- include('partials/tool-card', { tool: tool, hideCat: true }) %>
+          <% }); %>
         </div>
-      </div>
-      <div class="tool-grid">
-        <% trending.forEach(function (tool, i) { %>
-          <%- include('partials/tool-card', { tool: tool }) %>
-          <% if (i === 3) { %><%- include('partials/ad', { variant: 'infeed', slotId: '' }) %><% } %>
-        <% }); %>
-      </div>
-    </div>
-  </section>
-  <% } %>
-
-  <!-- RECENTLY ADDED -->
-  <% if (recent.length) { %>
-  <section class="section" id="recent" style="padding-top:8px;">
-    <div class="container">
-      <div class="section-head">
-        <div>
-          <h2>🆕 Recently added</h2>
-          <p>Fresh tools added to the directory.</p>
-        </div>
-        <a class="link-all" href="/submit">Know a tool we’re missing? →</a>
-      </div>
-      <div class="tool-grid">
-        <% recent.forEach(function (tool) { %>
-          <%- include('partials/tool-card', { tool: tool }) %>
-        <% }); %>
-      </div>
-    </div>
-  </section>
-  <% } %>
+      </section>
+      <% if (gi === 2) { %><%- include('partials/ad', { variant: 'infeed', slotId: '' }) %><% } %>
+    <% }); %>
+  </div>
 </main>
 
 <%- include('partials/footer') %>

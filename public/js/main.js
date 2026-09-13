@@ -43,16 +43,15 @@
 
     function render(items, q) {
       if (!items.length) {
-        out.innerHTML = '<div class="sr-empty">No tools found for “' + escapeHtml(q) +
-          '”. <a href="/submit">Suggest it →</a></div>';
+        out.innerHTML = '<div class="sr-empty">No tools found for "' + escapeHtml(q) +
+          '". <a href="/submit">Suggest it</a></div>';
         out.classList.add('show');
         return;
       }
       out.innerHTML = items.map(function (t) {
         return '<a href="/tool/' + encodeURIComponent(t.slug) + '" role="option">' +
-          '<span class="sr-ico">' + (t.icon || '🔧') + '</span>' +
-          '<span><span class="sr-name">' + escapeHtml(t.name) + '</span><br>' +
-          '<span class="sr-cat">' + escapeHtml(t.category || '') + '</span></span></a>';
+          '<span class="sr-name">' + escapeHtml(t.name) + '</span>' +
+          '<span class="sr-cat">' + escapeHtml(t.category || '') + '</span></a>';
       }).join('');
       out.classList.add('show');
       activeIndex = -1;

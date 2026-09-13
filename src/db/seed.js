@@ -20,7 +20,7 @@ export async function seed() {
              description = EXCLUDED.description,
              sort_order = EXCLUDED.sort_order
        RETURNING id`,
-      [c.name, slug, c.icon, c.description, c.sort_order]
+      [c.name, slug, c.icon || '', c.description, c.sort_order]
     );
     catIdBySlug.set(c.name, rows[0].id);
   }

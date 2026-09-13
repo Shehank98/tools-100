@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title><%= meta.title %></title>
   <meta name="robots" content="noindex, nofollow" />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧰</text></svg>" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%232f5cff'/><text x='16' y='22' font-family='Arial,sans-serif' font-size='18' font-weight='700' fill='white' text-anchor='middle'>O</text></svg>" />
   <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
 <% if (typeof active !== 'undefined') { %>
 <header class="admin-top">
   <div class="container admin-top-inner">
-    <a href="/admin" class="logo"><span class="logo-mark"><span>🧰</span></span> <%= siteName %> Admin</a>
+    <a href="/admin" class="logo">One<b>Kit</b> Admin</a>
     <nav class="admin-nav">
       <a href="/admin" class="<%= active === 'dashboard' ? 'active' : '' %>">Dashboard</a>
       <a href="/admin/tools" class="<%= active === 'tools' ? 'active' : '' %>">Tools</a>
@@ -21,7 +21,7 @@
       <a href="/admin/import" class="<%= active === 'import' ? 'active' : '' %>">Import</a>
     </nav>
     <div class="admin-right">
-      <a href="/" target="_blank" class="faint" style="font-size:0.85rem;">View site ↗</a>
+      <a href="/" target="_blank" class="faint" style="font-size:0.85rem;">View site</a>
       <% if (admin) { %><span class="who"><%= admin.email %></span><% } %>
       <form action="/admin/logout" method="post" class="inline-form">
         <button class="btn btn-ghost btn-sm" type="submit">Log out</button>

@@ -2,28 +2,22 @@
   <% var c = category || {}; var isEdit = c && c.id; var action = isEdit ? ('/admin/categories/' + c.id) : '/admin/categories'; %>
   <div class="admin-head">
     <h1><%= isEdit ? 'Edit category' : 'New category' %></h1>
-    <a class="btn btn-ghost" href="/admin/categories">← Back</a>
+    <a class="btn btn-ghost" href="/admin/categories">Back</a>
   </div>
 
   <% if (error) { %><div class="alert alert-error"><%= error %></div><% } %>
 
   <form action="<%= action %>" method="post" class="panel form-grid" style="max-width:560px;">
-    <div class="form-row">
-      <div class="field">
-        <label for="name">Name <span class="hint">— required</span></label>
-        <input type="text" id="name" name="name" value="<%= c.name || '' %>" required maxlength="80" />
-      </div>
-      <div class="field">
-        <label for="icon">Icon <span class="hint">— an emoji</span></label>
-        <input type="text" id="icon" name="icon" value="<%= c.icon || '🧰' %>" maxlength="8" />
-      </div>
+    <div class="field">
+      <label for="name">Name <span class="hint">(required)</span></label>
+      <input type="text" id="name" name="name" value="<%= c.name || '' %>" required maxlength="80" />
     </div>
     <div class="field">
       <label for="description">Description</label>
       <textarea id="description" name="description" maxlength="300"><%= c.description || '' %></textarea>
     </div>
     <div class="field">
-      <label for="sort_order">Sort order <span class="hint">— lower shows first</span></label>
+      <label for="sort_order">Sort order <span class="hint">(lower shows first)</span></label>
       <input type="number" id="sort_order" name="sort_order" value="<%= c.sort_order || 0 %>" style="max-width:140px;" />
     </div>
     <div class="form-actions">

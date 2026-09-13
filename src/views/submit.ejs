@@ -4,14 +4,13 @@
 <main>
   <div class="container">
     <div class="prose" style="padding-top:28px;">
-      <header class="page-head" style="padding:0 0 18px;">
-        <div class="ph-ico">➕</div>
+      <header class="page-head" style="padding:0 0 22px;">
         <h1>Submit a tool</h1>
         <p>Know a great free online tool we should list? Suggest it below. Every submission is reviewed by a human before it goes live.</p>
       </header>
 
       <% if (success) { %>
-        <div class="alert alert-success">✅ Thanks! Your submission was received and is now in our review queue.</div>
+        <div class="alert alert-success">Thanks! Your submission was received and is now in our review queue.</div>
       <% } %>
       <% if (error) { %>
         <div class="alert alert-error"><%= error %></div>
@@ -19,24 +18,24 @@
 
       <form action="/submit" method="post" class="panel form-grid">
         <div class="field">
-          <label for="name">Tool name <span class="hint">— required</span></label>
+          <label for="name">Tool name <span class="hint">(required)</span></label>
           <input type="text" id="name" name="name" value="<%= form.name || '' %>" required maxlength="120" placeholder="e.g. PDF to JPG Converter" />
         </div>
         <div class="field">
-          <label for="url">Tool URL <span class="hint">— required</span></label>
+          <label for="url">Tool URL <span class="hint">(required)</span></label>
           <input type="url" id="url" name="url" value="<%= form.url || '' %>" required placeholder="https://example.com/tool" />
         </div>
         <div class="field">
-          <label for="category_guess">Which category fits best? <span class="hint">— optional</span></label>
+          <label for="category_guess">Which category fits best? <span class="hint">(optional)</span></label>
           <select id="category_guess" name="category_guess">
             <option value="">Not sure</option>
             <% categories.forEach(function (c) { %>
-              <option value="<%= c.name %>" <%= form.category_guess === c.name ? 'selected' : '' %>><%= c.icon %> <%= c.name %></option>
+              <option value="<%= c.name %>" <%= form.category_guess === c.name ? 'selected' : '' %>><%= c.name %></option>
             <% }); %>
           </select>
         </div>
         <div class="field">
-          <label for="description">Short description <span class="hint">— optional</span></label>
+          <label for="description">Short description <span class="hint">(optional)</span></label>
           <textarea id="description" name="description" maxlength="400" placeholder="What does it do? One or two sentences."><%= form.description || '' %></textarea>
         </div>
         <div class="form-actions">

@@ -8,7 +8,6 @@
 
   <% if (!submissions.length) { %>
     <div class="empty">
-      <div class="em-ico">✅</div>
       <p>The queue is empty. New user submissions and auto-discovered tools will appear here.</p>
     </div>
   <% } else { %>
@@ -23,14 +22,14 @@
                 <a href="<%= s.url %>" target="_blank" rel="noopener nofollow" class="faint" style="font-size:0.82rem;"><%= s.url %></a>
                 <% if (s.description) { %><br><span class="muted" style="font-size:0.85rem;"><%= s.description %></span><% } %>
               </td>
-              <td class="muted"><%= s.category_guess || '—' %></td>
+              <td class="muted"><%= s.category_guess || '-' %></td>
               <td><span class="chip chip-off"><%= s.source %></span></td>
               <td>
                 <form action="/admin/submissions/<%= s.id %>/approve" method="post" class="inline-form" id="approve-<%= s.id %>">
                   <select name="category_id" style="padding:8px 10px; border:1px solid var(--border); border-radius:8px; background:var(--surface); color:var(--text);">
-                    <option value="">— None —</option>
+                    <option value="">No category</option>
                     <% categories.forEach(function (c) { %>
-                      <option value="<%= c.id %>" <%= (s.category_guess && s.category_guess.toLowerCase() === c.name.toLowerCase()) ? 'selected' : '' %>><%= c.icon %> <%= c.name %></option>
+                      <option value="<%= c.id %>" <%= (s.category_guess && s.category_guess.toLowerCase() === c.name.toLowerCase()) ? 'selected' : '' %>><%= c.name %></option>
                     <% }); %>
                   </select>
                 </form>

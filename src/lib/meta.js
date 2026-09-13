@@ -4,10 +4,10 @@ const abs = (path = '') => `${config.siteUrl}${path}`;
 
 // Build the meta object every page template expects.
 export function buildMeta({ title, description, path = '', ogType = 'website', jsonLd = [], noindex = false }) {
-  const full = title ? `${title} · ${config.siteName}` : `${config.siteName} — ${config.siteTagline}`;
+  const full = title ? `${title} · ${config.siteName}` : `${config.siteName} · ${config.siteTagline}`;
   return {
     title: full,
-    description: description || `${config.siteName} — a free, searchable directory of the best online tools.`,
+    description: description || `${config.siteName}, a free searchable directory of the best online tools.`,
     canonical: abs(path),
     ogType,
     jsonLd,

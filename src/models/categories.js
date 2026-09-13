@@ -31,7 +31,7 @@ export async function create({ name, slug, icon, description, sort_order }) {
   const { rows } = await query(
     `INSERT INTO categories (name, slug, icon, description, sort_order)
      VALUES ($1, $2, $3, $4, $5) RETURNING *`,
-    [name, slug, icon || '🧰', description || '', sort_order || 0]
+    [name, slug, icon || '', description || '', sort_order || 0]
   );
   return rows[0];
 }
@@ -41,7 +41,7 @@ export async function update(id, { name, slug, icon, description, sort_order }) 
     `UPDATE categories
      SET name = $2, slug = $3, icon = $4, description = $5, sort_order = $6
      WHERE id = $1 RETURNING *`,
-    [id, name, slug, icon || '🧰', description || '', sort_order || 0]
+    [id, name, slug, icon || '', description || '', sort_order || 0]
   );
   return rows[0];
 }
