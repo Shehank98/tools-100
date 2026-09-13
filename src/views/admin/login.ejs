@@ -1,0 +1,23 @@
+<%- include('partials/top') %>
+  <div class="login-wrap">
+    <div class="login-card">
+      <a href="/" class="logo"><span class="logo-mark"><span>🧰</span></span> <%= siteName %></a>
+      <h1 style="font-size:1.3rem; margin:0 0 4px;">Admin sign in</h1>
+      <p class="muted" style="margin:0 0 20px; font-size:0.9rem;">Manage tools, categories and the review queue.</p>
+
+      <% if (error) { %><div class="alert alert-error"><%= error %></div><% } %>
+
+      <form action="/admin/login" method="post" class="form-grid">
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" value="<%= email %>" required autocomplete="username" autofocus />
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required autocomplete="current-password" />
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Sign in</button>
+      </form>
+    </div>
+  </div>
+<%- include('partials/bottom') %>

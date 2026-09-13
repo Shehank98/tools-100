@@ -1,0 +1,22 @@
+<%
+  // Reusable ad slot. Renders a real AdSense unit when a publisher id and
+  // slot id are configured; otherwise a clearly-labelled placeholder so the
+  // layout is designed around ads from day one.
+  var variant = variant || 'banner';
+  var slotId = slotId || '';
+  var label = { banner: 'Advertisement', sidebar: 'Advertisement', infeed: 'Sponsored' }[variant] || 'Advertisement';
+  var cls = variant === 'sidebar' ? 'ad-slot--sidebar' : (variant === 'infeed' ? 'ad-slot--infeed' : '');
+%>
+<div class="ad-slot <%= cls %>" aria-label="Advertisement" role="complementary">
+  <% if (adsenseClient && slotId) { %>
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="<%= adsenseClient %>"
+         data-ad-slot="<%= slotId %>"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  <% } else { %>
+    <%= label %>
+  <% } %>
+</div>

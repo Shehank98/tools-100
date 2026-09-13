@@ -1,0 +1,6 @@
+<a class="cat-card" href="/category/<%= category.slug %>">
+  <div class="cat-ico"><%= category.icon %></div>
+  <h3><%= category.name %></h3>
+  <p><%= category.description %></p>
+  <span class="count"><%= category.tool_count || 0 %> tool<%= Number(category.tool_count) === 1 ? '' : 's' %> →</span>
+</a>

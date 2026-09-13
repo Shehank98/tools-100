@@ -1,0 +1,54 @@
+<%- include('partials/top') %>
+  <div class="admin-head">
+    <h1>Dashboard</h1>
+    <div style="display:flex; gap:10px;">
+      <a class="btn btn-ghost" href="/admin/import">Bulk import</a>
+      <a class="btn btn-primary" href="/admin/tools/new">+ Add tool</a>
+    </div>
+  </div>
+
+  <div class="stat-grid">
+    <div class="stat-card"><div class="n"><%= stats.total_tools %></div><div class="l">Total tools</div></div>
+    <div class="stat-card"><div class="n"><%= stats.active_tools %></div><div class="l">Active tools</div></div>
+    <div class="stat-card"><div class="n"><%= stats.total_categories %></div><div class="l">Categories</div></div>
+    <div class="stat-card">
+      <div class="n"><%= stats.pending_submissions %></div>
+      <div class="l">Pending review <% if (stats.pending_submissions > 0) { %><a href="/admin/submissions">→ review</a><% } %></div>
+    </div>
+    <div class="stat-card"><div class="n"><%= Number(stats.total_clicks).toLocaleString() %></div><div class="l">Total tool opens</div></div>
+  </div>
+
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+    <div class="table-wrap">
+      <table class="data">
+        <thead><tr><th>Top clicked tools</th><th>Category</th><th>Opens</th></tr></thead>
+        <tbody>
+          <% if (!topClicked.length) { %>
+            <tr><td colspan="3" class="muted">No clicks recorded yet.</td></tr>
+          <% } %>
+          <% topClicked.forEach(function (t) { %>
+            <tr>
+              <td><a href="/tool/<%= t.slug %>" target="_blank"><%= t.name %></a></td>
+              <td class="muted"><%= t.category_name || '—' %></td>
+              <td><strong><%= Number(t.click_count).toLocaleString() %></strong></td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="table-wrap">
+      <table class="data">
+        <thead><tr><th>Searches with no results</th><th>Times</th></tr></thead>
+        <tbody>
+          <% if (!missed.length) { %>
+            <tr><td colspan="2" class="muted">Nothing missed in the last 30 days. 🎉</td></tr>
+          <% } %>
+          <% missed.forEach(function (m) { %>
+            <tr><td><%= m.query %></td><td><%= m.n %></td></tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<%- include('partials/bottom') %>

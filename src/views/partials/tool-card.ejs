@@ -1,0 +1,23 @@
+<%
+  var isNew = tool.created_at && (Date.now() - new Date(tool.created_at).getTime()) < 1000 * 60 * 60 * 24 * 21;
+%>
+<article class="tool-card">
+  <div class="tool-card-top">
+    <div class="tool-ico">
+      <% if (tool.icon_url) { %><img src="<%= tool.icon_url %>" alt="" width="26" height="26" loading="lazy" /><% } else { %><%= tool.category_icon || '🔧' %><% } %>
+    </div>
+    <div>
+      <h3><a href="/tool/<%= tool.slug %>"><%= tool.name %></a></h3>
+      <% if (tool.category_name) { %>
+        <a class="tool-cat" href="/category/<%= tool.category_slug %>"><%= tool.category_name %></a>
+      <% } %>
+    </div>
+  </div>
+  <p class="desc"><%= tool.description %></p>
+  <div class="tool-foot">
+    <div style="display:flex; gap:6px;">
+      <% if (tool.is_featured) { %><span class="badge badge-featured">★ Featured</span><% } else if (isNew) { %><span class="badge badge-new">New</span><% } %>
+    </div>
+    <a class="tool-open" href="/go/<%= tool.slug %>" rel="nofollow noopener" target="_blank">Open ↗</a>
+  </div>
+</article>

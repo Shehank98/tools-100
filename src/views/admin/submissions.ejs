@@ -1,0 +1,50 @@
+<%- include('partials/top') %>
+  <div class="admin-head">
+    <h1>Review queue <% if (submissions.length) { %><span class="pill-count"><%= submissions.length %></span><% } %></h1>
+    <span class="muted" style="font-size:0.9rem;">Approve to publish as a live tool, or reject to discard.</span>
+  </div>
+
+  <% if (flash) { %><div class="alert alert-success"><%= flash %></div><% } %>
+
+  <% if (!submissions.length) { %>
+    <div class="empty">
+      <div class="em-ico">✅</div>
+      <p>The queue is empty. New user submissions and auto-discovered tools will appear here.</p>
+    </div>
+  <% } else { %>
+    <div class="table-wrap">
+      <table class="data">
+        <thead><tr><th>Tool</th><th>Guessed category</th><th>Source</th><th>Assign category</th><th>Action</th></tr></thead>
+        <tbody>
+          <% submissions.forEach(function (s) { %>
+            <tr>
+              <td style="white-space:normal; max-width:340px;">
+                <strong><%= s.name %></strong><br>
+                <a href="<%= s.url %>" target="_blank" rel="noopener nofollow" class="faint" style="font-size:0.82rem;"><%= s.url %></a>
+                <% if (s.description) { %><br><span class="muted" style="font-size:0.85rem;"><%= s.description %></span><% } %>
+              </td>
+              <td class="muted"><%= s.category_guess || '—' %></td>
+              <td><span class="chip chip-off"><%= s.source %></span></td>
+              <td>
+                <form action="/admin/submissions/<%= s.id %>/approve" method="post" class="inline-form" id="approve-<%= s.id %>">
+                  <select name="category_id" style="padding:8px 10px; border:1px solid var(--border); border-radius:8px; background:var(--surface); color:var(--text);">
+                    <option value="">— None —</option>
+                    <% categories.forEach(function (c) { %>
+                      <option value="<%= c.id %>" <%= (s.category_guess && s.category_guess.toLowerCase() === c.name.toLowerCase()) ? 'selected' : '' %>><%= c.icon %> <%= c.name %></option>
+                    <% }); %>
+                  </select>
+                </form>
+              </td>
+              <td class="actions">
+                <button class="btn btn-primary btn-sm" type="submit" form="approve-<%= s.id %>">Approve</button>
+                <form action="/admin/submissions/<%= s.id %>/reject" method="post" class="inline-form">
+                  <button class="btn btn-danger btn-sm" type="submit">Reject</button>
+                </form>
+              </td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+<%- include('partials/bottom') %>

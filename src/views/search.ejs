@@ -1,0 +1,39 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+
+<main>
+  <div class="container">
+    <header class="page-head" style="padding-top:28px;">
+      <h1>Search results</h1>
+      <p><% if (q) { %><%= results.length %> result<%= results.length === 1 ? '' : 's' %> for “<strong><%= q %></strong>”<% } else { %>Type something to search the directory.<% } %></p>
+    </header>
+
+    <div class="search" data-search style="max-width:560px; margin:0 0 26px;">
+      <form action="/search" method="get">
+        <div class="search-input-wrap">
+          <span class="search-icon">🔍</span>
+          <input type="search" name="q" value="<%= q %>" placeholder="Search tools…" aria-label="Search tools" data-search-input autocomplete="off" />
+        </div>
+        <div class="search-results" data-search-results role="listbox"></div>
+      </form>
+    </div>
+
+    <% if (q && results.length) { %>
+      <div class="tool-grid">
+        <% results.forEach(function (tool, i) { %>
+          <%- include('partials/tool-card', { tool: tool }) %>
+          <% if (i === 5) { %><%- include('partials/ad', { variant: 'infeed', slotId: '' }) %><% } %>
+        <% }); %>
+      </div>
+    <% } else if (q) { %>
+      <div class="empty">
+        <div class="em-ico">🔎</div>
+        <p>No tools matched “<%= q %>”.</p>
+        <p class="faint">We logged your search — it helps us decide what to add next.</p>
+        <a class="btn btn-primary" href="/submit">Suggest this tool</a>
+      </div>
+    <% } %>
+  </div>
+</main>
+
+<%- include('partials/footer') %>

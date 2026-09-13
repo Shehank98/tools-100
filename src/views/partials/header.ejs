@@ -1,0 +1,15 @@
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="/" class="logo" aria-label="<%= siteName %> home">
+      <span class="logo-mark"><span>🧰</span></span>
+      <%= siteName %>
+    </a>
+    <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false" data-nav-toggle>☰</button>
+    <nav class="nav" id="main-nav">
+      <a href="/" class="<%= nav === 'home' ? 'active' : '' %>">Home</a>
+      <a href="/#categories" class="<%= nav === 'categories' ? 'active' : '' %>">Categories</a>
+      <a href="/about" class="<%= nav === 'about' ? 'active' : '' %>">About</a>
+      <a href="/submit" class="<%= nav === 'submit' ? 'active' : '' %>">Submit a Tool</a>
+    </nav>
+  </div>
+</header>

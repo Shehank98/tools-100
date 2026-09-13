@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= meta.title %></title>
+  <meta name="description" content="<%= meta.description %>" />
+  <link rel="canonical" href="<%= meta.canonical %>" />
+
+  <!-- Open Graph / social -->
+  <meta property="og:type" content="<%= meta.ogType || 'website' %>" />
+  <meta property="og:site_name" content="<%= siteName %>" />
+  <meta property="og:title" content="<%= meta.title %>" />
+  <meta property="og:description" content="<%= meta.description %>" />
+  <meta property="og:url" content="<%= meta.canonical %>" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="<%= meta.title %>" />
+  <meta name="twitter:description" content="<%= meta.description %>" />
+  <% if (meta.noindex) { %><meta name="robots" content="noindex, nofollow" /><% } %>
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧰</text></svg>" />
+  <link rel="preconnect" href="https://pagead2.googlesyndication.com" />
+  <link rel="stylesheet" href="/css/style.css" />
+
+  <% (meta.jsonLd || []).forEach(function (obj) { %>
+  <script type="application/ld+json"><%- JSON.stringify(obj) %></script>
+  <% }); %>
+
+  <% if (adsenseClient) { %>
+  <!-- Google AdSense: loads async + deferred so it never blocks render -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=<%= adsenseClient %>" crossorigin="anonymous"></script>
+  <% } %>
+</head>
+<body>

@@ -1,0 +1,6 @@
+name,url,description,category,tags,featured
+Speed Test,https://fast.com,Check your internet download speed instantly.,Productivity,"speed,internet",false
+Excalidraw,https://excalidraw.com,Virtual hand-drawn style whiteboard.,Color & Design,"draw;diagram;whiteboard",true
+Carbon,https://carbon.now.sh,Create beautiful images of your source code.,Developer Tools,"code,screenshot",false
+Crontab Guru,https://crontab.guru,Write and understand cron expressions.,Developer Tools,"cron,schedule",false
+TinyWow,https://tinywow.com,"Free PDF, image and writing tools with no watermarks.",PDF Tools,"pdf,free",true

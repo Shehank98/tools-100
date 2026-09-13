@@ -1,0 +1,51 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+
+<main>
+  <div class="container">
+    <nav class="crumb" aria-label="Breadcrumb">
+      <a href="/">Home</a><span class="sep">/</span>
+      <a href="/#categories">Categories</a><span class="sep">/</span>
+      <span><%= category.name %></span>
+    </nav>
+
+    <header class="page-head">
+      <div class="ph-ico"><%= category.icon %></div>
+      <h1><%= category.name %></h1>
+      <p><%= category.description %></p>
+    </header>
+
+    <%- include('partials/ad', { variant: 'banner', slotId: '' }) %>
+
+    <div class="tool-detail" style="grid-template-columns: 1fr; display:block;">
+      <!-- Tag filter -->
+      <% if (tags.length) { %>
+      <div class="tag-row" style="margin-bottom:22px;">
+        <a class="tag <%= !activeTag ? 'active' : '' %>" href="/category/<%= category.slug %>">All</a>
+        <% tags.forEach(function (t) { %>
+          <a class="tag <%= activeTag === t ? 'active' : '' %>" href="/category/<%= category.slug %>?tag=<%= encodeURIComponent(t) %>"><%= t %></a>
+        <% }); %>
+      </div>
+      <% } %>
+
+      <% if (tools.length) { %>
+        <div class="tool-grid">
+          <% tools.forEach(function (tool, i) { %>
+            <%- include('partials/tool-card', { tool: tool }) %>
+            <% if (i > 0 && (i + 1) % 6 === 0) { %>
+              <%- include('partials/ad', { variant: 'infeed', slotId: '' }) %>
+            <% } %>
+          <% }); %>
+        </div>
+      <% } else { %>
+        <div class="empty">
+          <div class="em-ico">🗂️</div>
+          <p>No tools here yet<%= activeTag ? ' for “' + activeTag + '”' : '' %>.</p>
+          <a class="btn btn-primary" href="/submit">Suggest a tool</a>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</main>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,41 @@
+<%- include('partials/top') %>
+  <div class="admin-head">
+    <h1>Bulk import tools</h1>
+    <a class="btn btn-ghost" href="/admin/tools">← Back to tools</a>
+  </div>
+
+  <% if (error) { %><div class="alert alert-error"><%= error %></div><% } %>
+  <% if (result) { %>
+    <div class="alert alert-success">
+      Imported <strong><%= result.created %></strong> tool<%= result.created === 1 ? '' : 's' %>,
+      skipped <strong><%= result.skipped %></strong>.
+    </div>
+    <% if (result.errors.length) { %>
+      <div class="alert alert-error">
+        <strong>Skipped rows:</strong>
+        <ul style="margin:8px 0 0; padding-left:20px;">
+          <% result.errors.forEach(function (e) { %><li><%= e %></li><% }); %>
+        </ul>
+      </div>
+    <% } %>
+  <% } %>
+
+  <div class="panel" style="max-width:680px;">
+    <form action="/admin/import" method="post" enctype="multipart/form-data" class="form-grid">
+      <div class="field">
+        <label for="file">CSV file <span class="hint">— max 2 MB</span></label>
+        <input type="file" id="file" name="file" accept=".csv,text/csv" required />
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Upload &amp; import</button>
+      </div>
+    </form>
+
+    <hr style="border:0; border-top:1px solid var(--border); margin:22px 0;" />
+    <h2 style="font-size:1rem;">CSV format</h2>
+    <p class="muted" style="font-size:0.9rem;">First row must be a header. Columns: <code>name</code>, <code>url</code> (required), plus optional <code>description</code>, <code>category</code> (name or slug), <code>tags</code> (comma or semicolon separated), <code>featured</code> (true/false).</p>
+    <pre style="background:var(--surface-2); padding:14px; border-radius:10px; overflow:auto; font-size:0.82rem;">name,url,description,category,tags,featured
+Speed Test,https://fast.com,Check your internet speed,Productivity,"speed,internet",false
+Excalidraw,https://excalidraw.com,Whiteboard &amp; sketching,Color & Design,"draw,diagram",true</pre>
+  </div>
+<%- include('partials/bottom') %>

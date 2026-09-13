@@ -1,0 +1,42 @@
+<%- include('partials/top') %>
+  <div class="admin-head">
+    <h1>Tools</h1>
+    <div style="display:flex; gap:10px; align-items:center;">
+      <form action="/admin/tools" method="get" class="inline-form">
+        <input type="search" name="q" value="<%= q %>" placeholder="Search tools…" style="padding:9px 12px; border:1px solid var(--border); border-radius:9px; background:var(--surface); color:var(--text);" />
+      </form>
+      <a class="btn btn-primary" href="/admin/tools/new">+ Add tool</a>
+    </div>
+  </div>
+
+  <% if (flash) { %><div class="alert alert-success"><%= flash %></div><% } %>
+
+  <div class="table-wrap">
+    <table class="data">
+      <thead>
+        <tr><th>Name</th><th>Category</th><th>Status</th><th>Featured</th><th>Opens</th><th>Source</th><th></th></tr>
+      </thead>
+      <tbody>
+        <% if (!tools.length) { %>
+          <tr><td colspan="7" class="muted">No tools<%= q ? ' matching “' + q + '”' : '' %>. <a href="/admin/tools/new">Add one →</a></td></tr>
+        <% } %>
+        <% tools.forEach(function (t) { %>
+          <tr>
+            <td><a href="/admin/tools/<%= t.id %>/edit"><strong><%= t.name %></strong></a><br><span class="faint" style="font-size:0.8rem;">/tool/<%= t.slug %></span></td>
+            <td class="muted"><%= t.category_name || '—' %></td>
+            <td><span class="chip <%= t.is_active ? 'chip-on' : 'chip-off' %>"><%= t.is_active ? 'Active' : 'Hidden' %></span></td>
+            <td><%= t.is_featured ? '★' : '—' %></td>
+            <td><%= Number(t.click_count).toLocaleString() %></td>
+            <td class="muted"><%= t.source %></td>
+            <td class="actions">
+              <a class="btn btn-ghost btn-sm" href="/admin/tools/<%= t.id %>/edit">Edit</a>
+              <form action="/admin/tools/<%= t.id %>/delete" method="post" class="inline-form" onsubmit="return confirm('Delete “<%= t.name.replace(/'/g, "\\'") %>”?');">
+                <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+              </form>
+            </td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+<%- include('partials/bottom') %>
