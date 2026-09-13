@@ -33,6 +33,11 @@ app.locals.siteTagline = config.siteTagline;
 app.locals.siteUrl = config.siteUrl;
 app.locals.adsenseClient = config.adsenseClient;
 app.locals.year = new Date().getFullYear();
+// Cache-busting token for static assets (css/js). Changes on every deploy so
+// browsers never serve a stale stylesheet. Uses the Railway commit sha when
+// available, otherwise the boot time.
+app.locals.assetVersion =
+  (process.env.RAILWAY_GIT_COMMIT_SHA || '').slice(0, 8) || String(Date.now());
 
 // Static assets (cached in production).
 app.use(express.static(path.join(__dirname, 'public'), {
